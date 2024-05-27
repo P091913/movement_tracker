@@ -181,7 +181,12 @@ def add_friend():
     return redirect(url_for('activity'))
 
 
-if __name__ == "__main__":
+def create_app():
     with app.app_context():
         db.create_all()
+    return app
+
+
+if __name__ == "__main__":
+    app = create_app()
     app.run(host='192.168.86.23', port=5000, debug=True, threaded=False)
