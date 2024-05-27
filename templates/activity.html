@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% block styles %}
+  <style>
+    /* Custom CSS */
+    .list-group-item:hover {
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+  {% endblock %}
+</head>
+<body>
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="container">
+  <h1 class="mt-4 mb-3">Activity Feed</h1>
+
+  <div class="row">
+    <div class="col-md-8">
+      <!-- Activity Feed -->
+      {% for post in posts %}
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">{{ post.author.username }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted"></h6>
+            </div>
+            <div>
+              <button class="btn btn-outline-primary btn-sm">Like</button>
+              <button class="btn btn-outline-secondary btn-sm">Comment</button>
+            </div>
+          </div>
+          <p class="card-text mt-3">{{ post.content }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="col-md-4">
+      <!-- Sidebar with additional information or actions -->
+      <div class="card">
+        <div class="card-header">
+          Quick Actions
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" data-toggle="modal" data-target="#newPostModal">Create Post</li>
+          <li class="list-group-item" data-toggle="modal" data-target="#addFriendModal">Add a Friend</li>
+          <li class="list-group-item">Upload Photo</li>
+          <li class="list-group-item">View Profile</li>
+          <!-- Add more quick actions -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Post Modal -->
+<div class="modal fade" id="newPostModal" tabindex="-1" role="dialog" aria-labelledby="newPostModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newPostModalLabel">Create New Post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- New Post Form -->
+        <form action="{{ url_for('create_post') }}" method="POST">
+          <div class="form-group">
+            <label for="postContent">Post Content</label>
+            <textarea class="form-control" id="postContent" name="postContent" rows="3" required></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Create Post</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Friend Modal -->
+<div class="modal fade" id="addFriendModal" tabindex="-1" role="dialog" aria-labelledby="addFriendModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addFriendModalLabel">Add a Friend</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Add Friend Form -->
+        <form action="{{ url_for('add_friend') }}" method="POST">
+          <div class="form-group">
+            <label for="friendUsername">Friend's Username</label>
+            <input type="text" class="form-control" id="friendUsername" name="friendUsername" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add Friend</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+</body>
+</html>
