@@ -189,4 +189,5 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(host='192.168.86.23', port=5000, debug=True, threaded=False)
+    #app.run(host='192.168.86.23', port=5000, debug=True, threaded=False)
+    app.run()
