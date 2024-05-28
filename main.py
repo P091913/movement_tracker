@@ -3,6 +3,7 @@ from flask_login import *
 from flask_sqlalchemy import SQLAlchemy
 from models import *
 from val_creat import *
+from email_validator import validate_email, EmailNotValidError
 
 app = Flask(__name__)
 app.secret_key = "dfdf23hh34"
@@ -21,7 +22,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html", page='index')
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -32,7 +33,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.password == password:
             login_user(user)
-            return redirect(url_for('social'))
+            return redirect(url_for('book'))
         else:
             flash("Invalid Username and Password")
     return render_template("login.html")
@@ -45,15 +46,15 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route("/social")
+@app.route("/book")
 @login_required
 # @relog_required
-def social():
+def book():
     moves = Moves.query.all()
     user_moves = db.session.query(Moves.move_id, Moves.move_name, UserMoves.status). \
         join(Moves, UserMoves.move_id == Moves.move_id). \
         filter(UserMoves.user_id == current_user.id).all()
-    return render_template("social.html", moves=moves, user_moves=user_moves)
+    return render_template("book.html", moves=moves, user_moves=user_moves)
 
 
 @app.route("/create", methods=['POST', 'GET'])
@@ -62,16 +63,39 @@ def create():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        if len(check_empty_fields(username, password, email)) == 0:
-            user = User()
-            user.username = username
-            user.password = password
-            user.email = email
-            db.session.add(user)
-            db.session.commit()
-            return redirect(url_for('index'))
-        else:
-            flash("Invalid Username and Password or email")
+        try:
+            # Check that the email address is valid. Turn on check_deliverability
+            # for first-time validations like on account creation pages (but not
+            # login pages).
+            emailinfo = validate_email(email, check_deliverability=False)
+
+            # After this point, use only the normalized form of the email address,
+            # especially before going to a database query.
+            email = emailinfo.normalized
+
+            if len(check_empty_fields(username, password, email)) == 0:
+                existing_user = User.query.filter_by(email=email).first()
+                if existing_user:
+                    flash("Email address already exists. Please use a different email.")
+                else:
+                    existing_username = User.query.filter_by(username=username).first()
+                    if existing_username:
+                        flash("Username already exists.")
+                    else:
+                        # Create a new user if the email doesn't exist
+                        user = User()
+                        user.username = username
+                        user.password = password
+                        user.email = email
+                        db.session.add(user)
+                        db.session.commit()
+                        return redirect(url_for('login'))
+            else:
+                flash("Invalid Username and Password or email")
+        except EmailNotValidError as e:
+            # The exception message is human-readable explanation of why it's
+            # not a valid (or deliverable) email address.
+            flash("You Must use a valid email address")
     return render_template("create.html")
 
 
@@ -88,7 +112,7 @@ def update_progress():
     db.session.add(user_move)
     db.session.commit()
 
-    return redirect(url_for('social'))
+    return redirect(url_for('book'))
 
 
 @app.route('/update_exist', methods=['POST'])
@@ -106,10 +130,11 @@ def update_exist():
 
         db.session.commit()
 
-    return redirect(url_for('social'))
+    return redirect(url_for('book'))
 
 
 @app.route('/add_combo', methods=['POST'])
+@login_required
 def add_combo():
     combo_title = request.form.get('combo-title')
     combo_description = request.form.get('combo-description')
@@ -136,16 +161,18 @@ def add_combo():
     db.session.add(new_combo)
     db.session.commit()
 
-    return redirect(url_for('social'))
+    return redirect(url_for('book'))
 
 
 @app.route('/activity')
+@login_required
 def activity():
     other_users_posts = Post.query.filter(Post.author != current_user).all()
     return render_template('activity.html', posts=other_users_posts)
 
 
 @app.route('/create_post', methods=['POST'])
+@login_required
 def create_post():
     if request.method == 'POST':
         post_content = request.form['postContent']
