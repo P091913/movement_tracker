@@ -78,31 +78,32 @@
             padding-right: 2.5px; /* Adjust this value to change the horizontal gap */
             padding-left: 2.5px;
         }
-
         .custom-card .card-body {
-        display: none; /* Hide the card body */
-    }
-    .custom-card .card-body.show-button {
-        display: block; /* Show the card body when it has the 'show-button' class */
-        text-align: center; /* Center-align the button text */
-    }
-    /* Custom styles for edit form */
-    .edit-form {
-        display: none;
-        margin-top: 10px;
-    }
-    .edit-form .form-control {
-        width: 50%; /* Adjust the width of the text box */
-        display: inline-block; /* Display the text box inline with the button */
-        margin-right: 10px; /* Adjust the spacing between the text box and the button */
-    }
-    .edit-form .btn {
-        vertical-align: top; /* Align the button with the top of the text box */
-    }
-    .combo-modal .modal-content {
-        color: #000 !important; /* Set text color to black */
-    }
-</style
+            display: none; /* Hide the card body */
+        }
+        .custom-card .card-body.show-button {
+            display: block; /* Show the card body when it has the 'show-button' class */
+            text-align: center; /* Center-align the button text */
+        }
+        /* Custom styles for edit form */
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+        }
+        .edit-form .form-control {
+            width: 50%; /* Adjust the width of the text box */
+            display: inline-block; /* Display the text box inline with the button */
+            margin-right: 10px; /* Adjust the spacing between the text box and the button */
+        }
+        .edit-form .btn {
+            vertical-align: top; /* Align the button with the top of the text box */
+        }
+        .combo-modal .modal-content {
+            color: #000 !important; /* Set text color to black */
+        }
+        .add-skill-dropdown {
+            margin-left: auto;
+        }
     </style>
     {% endblock %}
 </head>
@@ -113,106 +114,111 @@
 {% block social %}
 <section class="tm-section-pad-top tm-parallax-2 section-dark">
     <div class="container my-4 rounded border white-border">
-    <h2 class="text-center">My Combos</h2>
-    <div class="d-flex justify-content-between mb-4">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addComboModal">Add Combo</button>
-    </div>
-    <div class="row">
-        {% for combo in current_user.combos %}
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
-    <div class="card shadow-sm custom-card">
-        <!-- Hidden card body -->
-        <div class="card-body">
-            <!-- Button to trigger modal -->
-            <button type="button" class="btn btn-link combo-title btn-lg" data-toggle="modal" data-target="#comboModal{{ combo.id }}">
-                {{ combo.title }}
-            </button>
-        </div>
-        <!-- Visible card body with centered button text -->
-        <div class="card-body show-button">
-            <!-- Button to trigger modal -->
-            <button type="button" class="btn btn-link combo-title btn-lg" data-toggle="modal" data-target="#comboModal{{ combo.id }}">
-                {{ combo.title }}
-            </button>
-        </div>
-    </div>
-</div>
-        <!-- Modal -->
-        <div class="modal fade combo-modal" id="comboModal{{ combo.id }}" tabindex="-1" role="dialog" aria-labelledby="comboModalLabel{{ combo.id }}" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="comboModalLabel{{ combo.id }}">Combo Details</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+        <h2 class="text-center">My Combos</h2>
+        <div class="row">
+            {% for combo in current_user.combos %}
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card shadow-sm custom-card">
+                    <!-- Hidden card body -->
+                    <div class="card-body">
+                        <!-- Button to trigger modal -->
+                        <button type="button" class="btn btn-link combo-title btn-lg" data-toggle="modal" data-target="#comboModal{{ combo.id }}">
+                            {{ combo.title }}
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <h5 class="card-title">{{ combo.title }}</h5>
-                        <p class="card-text">{{ combo.description }}</p>
-                        <ul class="list-group mb-3">
-                            {% for move in combo.moves %}
-                            <li class="list-group-item">{{ move.move_name }}</li>
-                            {% endfor %}
-                        </ul>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                            </div>
-                            <div>
-                                <small class="text-muted">Created: {{ combo.date_created.strftime('%Y-%m-%d') }}</small>
-                                <br>
-                                <small class="text-muted">Creator: {{ current_user.username }}</small>
+                    <!-- Visible card body with centered button text -->
+                    <div class="card-body show-button">
+                        <!-- Button to trigger modal -->
+                        <button type="button" class="btn btn-link combo-title btn-lg" data-toggle="modal" data-target="#comboModal{{ combo.id }}">
+                            {{ combo.title }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade combo-modal" id="comboModal{{ combo.id }}" tabindex="-1" role="dialog" aria-labelledby="comboModalLabel{{ combo.id }}" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="comboModalLabel{{ combo.id }}">Combo Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h5 class="card-title">{{ combo.title }}</h5>
+                            <p class="card-text">{{ combo.description }}</p>
+                            <ul class="list-group mb-3">
+                                {% for move in combo.moves %}
+                                <li class="list-group-item">{{ move.move_name }}</li>
+                                {% endfor %}
+                            </ul>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    <button type="button" class="btn btn-danger" onclick="removeCombo({{ combo.id }})">Remove Combo</button>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Created: {{ combo.date_created.strftime('%Y-%m-%d') }}</small>
+                                    <br>
+                                    <small class="text-muted">Creator: {{ current_user.username }}</small>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+        <div class="d-flex justify-content-end mb-4">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addComboModal">Add Combo</button>
+        </div>
     </div>
-</div>
+</section>
 
-    <div class="modal fade" id="addComboModal" tabindex="-1" role="dialog" aria-labelledby="addComboModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addComboModalLabel">Add Combo</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="/add_combo" method="POST">
-                        <div class="form-group">
-                            <label for="combo-title">Combo Title</label>
-                            <input type="text" class="form-control" id="combo-title" name="combo-title" placeholder="Enter combo title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="combo-description">Combo Description</label>
-                            <textarea class="form-control" id="combo-description" name="combo-description" rows="3" placeholder="Enter combo description" required></textarea>
-                        </div>
-                        <div class="form-group" id="trick-dropdowns">
-                            <select class="form-control" name="trick-1" required>
-                                <option value="" disabled selected>Select a trick</option>
-                                {% for move in moves %}
-                                <option value="{{ move.move_name }}">{{ move.move_name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <button type="button" class="btn btn-secondary" onclick="addTrickDropdown()">Add More Tricks</button>
-                        <button type="submit" class="btn btn-success">Save Combo</button>
-                    </form>
-                </div>
+<div class="modal fade" id="addComboModal" tabindex="-1" role="dialog" aria-labelledby="addComboModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addComboModalLabel">Add Combo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/add_combo" method="POST">
+                    <div class="form-group">
+                        <label for="combo-title">Combo Title</label>
+                        <input type="text" class="form-control" id="combo-title" name="combo-title" placeholder="Enter combo title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="combo-description">Combo Description</label>
+                        <textarea class="form-control" id="combo-description" name="combo-description" rows="3" placeholder="Enter combo description" required></textarea>
+                    </div>
+                    <div class="form-group" id="trick-dropdowns">
+                        <select class="form-control" name="trick-1" required>
+                            <option value="" disabled selected>Select a trick</option>
+                            {% for move in moves %}
+                            <option value="{{ move.move_name }}">{{ move.move_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="addTrickDropdown()">Add More Tricks</button>
+                    <button type="submit" class="btn btn-success">Save Combo</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="row">
+<div class="row">
     <div class="col-sm-12 col-md-12">
         <section id="learning" class="section section-dark">
             <div class="container my-4 rounded border white-border">
-                <h2 class="text-center">Skill Journey</h2>
+                <h2 class="text-center">My Skills</h2>
+                <div class="d-flex justify-content-end mb-4">
+                    <button class="btn btn-primary add-skill-dropdown" data-toggle="modal" data-target="#addSkillModal">Add Skill</button>
+                </div>
                 <div class="scrolling-container">
                     <div class="row">
                         {% for user_move in user_moves %}
@@ -230,16 +236,25 @@
                                                 aria-valuemax="100">{{ user_move.status }}
                                             </div>
                                         </div>
-                                        <button class="btn btn-primary"
-                                            onclick="toggleEditForm('{{ user_move.move_name }}')">Edit
-                                        </button>
-                                        <div class="edit-form" id="edit-form-{{ user_move.move_name }}" style="display: none;">
-                                            <input type="number" class="form-control"
-                                                id="input-{{ user_move.move_name }}" placeholder="Enter new percentage">
-                                            <button class="btn btn-success"
-                                                onclick="updateProgress('{{ user_move.move_name }}', '{{ user_move.move_id }}')">
-                                                Update
-                                            </button>
+                                        <div class="row">
+                                            <div class="col">
+                                                <button class="btn btn-primary"
+                                                    onclick="toggleEditForm('{{ user_move.move_name }}')">Edit
+                                                </button>
+                                            </div>
+                                            <div class="col">
+                                                <div class="edit-form" id="edit-form-{{ user_move.move_name }}" style="display: none;">
+                                                    <input type="number" class="form-control"
+                                                        id="input-{{ user_move.move_name }}" placeholder="Enter new percentage">
+                                                    <br>
+                                                    <button class="btn btn-success"
+                                                        onclick="updateProgress('{{ user_move.move_name }}', '{{ user_move.move_id }}')">
+                                                        Update
+                                                    </button>
+                                                    <br>
+                                                    <button class="btn btn-danger" onclick="removeSkill('{{ user_move.move_id }}')">Remove Skill</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -252,20 +267,51 @@
         </section>
     </div>
 </div>
-<footer class="text-center small tm-footer">
-        <p class="mb-0">
-            Copyright &copy; 2024 Floor Underground
 
-            . <a rel="nofollow" href="https://www.tooplate.com" title="HTML templates">TOOPLATE</a></p>
-    </footer>
-</section>
-
+<div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/add_skill" method="POST">
+                    <div class="form-group">
+                        <label for="new_skill">Select Skill</label>
+                        <select class="form-control" id="new_skill" name="new_skill" required>
+                            <option value="" disabled selected>Select a skill</option>
+                            {% for move in moves %}
+                            <option value="{{ move.move_name }}">{{ move.move_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                    <li>
+                        {{ message }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endwith %}
 {% endblock %}
 
-
 {% block scripts %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-
     let dropdownCounter = 1;
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -281,6 +327,32 @@
             });
         });
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const skillHeaders = document.querySelectorAll(".card-header");
+    skillHeaders.forEach(function(header) {
+        header.addEventListener("click", function(event) {
+            event.stopPropagation(); // Stop event propagation
+            const skillCardBody = this.nextElementSibling;
+            const isCollapsed = skillCardBody.classList.contains("show");
+            if (isCollapsed) {
+                skillCardBody.classList.remove("show");
+            } else {
+                // Hide all other open skill cards
+                const openSkillCards = document.querySelectorAll(".card-body.show");
+                openSkillCards.forEach(function(card) {
+                    card.classList.remove("show");
+                });
+                // Show the clicked skill card using Bootstrap's collapse function
+                $(skillCardBody).collapse('show');
+            }
+        });
+    });
+});
+
+
+
+
 
     function addTrickDropdown() {
         dropdownCounter++;
@@ -322,7 +394,37 @@
             input.classList.add('is-invalid');
         }
     }
+    function removeCombo(comboId) {
+    if (confirm("Are you sure you want to remove this combo?")) {
+        // Send an AJAX request to remove the combo
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/remove_combo", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Reload the page or update UI as needed
+                location.reload();
+            }
+        };
+        xhr.send("combo_id=" + comboId);
+    }
+}
 
+    function removeSkill(moveId) {
+    if (confirm("Are you sure you want to remove this skill?")) {
+        // Send an AJAX request to remove the skill
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/remove_skill", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Reload the page or update UI as needed
+                location.reload();
+            }
+        };
+        xhr.send("move_id=" + moveId);
+    }
+}
 </script>
 {% endblock %}
 
