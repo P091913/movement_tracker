@@ -123,12 +123,16 @@ def update_exist():
     percentage = data.get('percentage')
     id = data.get('move_id')
 
-    user_move = UserMoves.query.filter_by(move_id=id, user_id=current_user.id).first()
+    try:
+        user_move = UserMoves.query.filter_by(move_id=id, user_id=current_user.id).first()
 
-    if user_move:
-        user_move.status = percentage
+        if user_move:
+            user_move.status = percentage
 
-        db.session.commit()
+            db.session.commit()
+    except Exception:
+        flash('Percentage needs a number', 'error')
+        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
 
     return redirect(url_for('book'))
 
@@ -162,6 +166,86 @@ def add_combo():
     db.session.commit()
 
     return redirect(url_for('book'))
+
+
+@app.route('/remove_combo', methods=['POST'])
+@login_required
+def remove_combo():
+    combo_id = request.form.get('combo_id')
+
+    # Retrieve the combo from the database
+    combo = Combo.query.get(combo_id)
+
+    #if not combo:
+    #    flash('Combo not found!', 'error')
+    #    return redirect(url_for('your_view_function'))  # Adjust the redirect to your appropriate view function
+
+    # Delete the combo from the database
+    db.session.delete(combo)
+    db.session.commit()
+
+    flash('Combo removed successfully!', 'success')
+    return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+
+
+@app.route('/add_skill', methods=['POST'])
+@login_required
+def add_skill():
+    skill_name = request.form.get('new_skill')
+
+    if not skill_name:
+        flash('No skill selected!', 'error')
+        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+
+    # Find the move in the database
+    move = Moves.query.filter_by(move_name=skill_name).with_entities(Moves.move_id).first()
+
+    # Check if the skill already exists in the user's skills
+    print(current_user.id)
+    print(move)
+    existing_skill = UserMoves.query.filter_by(user_id=current_user.id, move_id=move[0]).first()
+    if existing_skill:
+        flash('You already have this skill!', 'error')
+        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+
+    # Add the skill to the user's acquired skills
+    new_user_move = UserMoves(user_id=current_user.id, move_id=move[0], status=0)
+    db.session.add(new_user_move)
+    db.session.commit()
+
+    flash('Skill added successfully!', 'success')
+    return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+
+
+@app.route('/remove_skill', methods=['POST'])
+@login_required
+def remove_skill():
+    move_id = request.form.get('move_id')
+
+    # Retrieve the skill from the database
+    skill = Moves.query.get(move_id)
+
+    if not skill:
+        flash('Skill not found!', 'error')
+        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+
+    try:
+        # Delete the skill from the userMoves table
+        UserMoves.query.filter_by(move_id=move_id).delete()
+
+        # Commit changes to the database
+        db.session.commit()
+
+        # Delete the skill from the Moves table
+        db.session.delete(skill)
+        db.session.commit()
+
+        flash('Skill removed successfully!', 'success')
+    except Exception:
+        db.session.rollback()
+        flash('An error occurred while removing the skill. Please try again later.', 'error')
+
+    return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
 
 
 @app.route('/activity')
