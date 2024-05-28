@@ -35,7 +35,7 @@ def login():
             return redirect(url_for('social'))
         else:
             flash("Invalid Username and Password")
-    return redirect(url_for("index"))
+    return render_template("login.html")
 
 
 @app.route('/logout')
@@ -53,8 +53,7 @@ def social():
     user_moves = db.session.query(Moves.move_id, Moves.move_name, UserMoves.status). \
         join(Moves, UserMoves.move_id == Moves.move_id). \
         filter(UserMoves.user_id == current_user.id).all()
-    return render_template("social.html", moves=moves,
-                           user_moves=user_moves)
+    return render_template("social.html", moves=moves, user_moves=user_moves)
 
 
 @app.route("/create", methods=['POST', 'GET'])
@@ -189,5 +188,4 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    #app.run(host='192.168.86.23', port=5000, debug=True, threaded=False)
     app.run()
