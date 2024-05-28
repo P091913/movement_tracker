@@ -2,155 +2,162 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floor Underground</title>
+
+    <!-- Add your CSS file path -->
 </head>
 <body>
 
 {% extends 'layout.html' %}
 
-{% block content %}
- <!-- Hero section -->
-    {% block extr_info %}
+<!-- Hero section -->
+{% block extr_info %}
 <div class="text-center tm-hero-text-container">
     <div class="tm-hero-text-container-inner">
         <h2 class="tm-hero-title">Floor Underground</h2>
         <p class="tm-hero-subtitle">
-          Tricking. Parkour. Free Running.
-          <br>Collaborate, Plan Gatherings & Sessions, Create your own training Book.
+            Tricking. Parkour. Free Running.
+            <br>Collaborate, Plan Gatherings & Sessions, Create your own training Book.
         </p>
     </div>
 </div>
 
 <div class="tm-next tm-intro-next">
-    <a href="#ourpurpose" class="text-center tm-down-arrow-link">
-      <i class="fas fa-2x fa-arrow-down tm-down-arrow"></i>
+    <a href="#ourpurpose" class="text-center tm-down-arrow-link" aria-label="Scroll to our purpose section">
+        <i class="fas fa-2x fa-arrow-down tm-down-arrow"></i>
     </a>
 </div>
-    {% endblock %}
+{% endblock %}
 
-    <section id="ourpurpose" class="tm-section-pad-top">
+{% block content %}
 
-      <div class="container">
+<section id="ourpurpose" class="tm-section-pad-top">
 
-            <div class="row tm-content-box"><!-- first row -->
-                <div class="col-lg-12 col-xl-12">
-                    <div class="tm-intro-text-container">
-                        <h2 class="tm-text-primary mb-4 tm-section-title">Our Purpose</h2>
-                        <p class="mb-4 tm-intro-text">
-                          This community doesn't have a dedicated place to call their own, this website strives to become a home
-                          for all movement, no matter what it is you do, do it freely and train safely.</p>
-                    </div>
+    <div class="container">
+
+        <div class="row tm-content-box"><!-- first row -->
+            <div class="col-lg-12 col-xl-12">
+                <div class="tm-intro-text-container">
+                    <h2 class="tm-text-primary mb-4 tm-section-title">Our Purpose</h2>
+                    <p class="mb-4 tm-intro-text">
+                        This community doesn't have a dedicated place to call their own. This website strives to become a home
+                        for all movement. No matter what it is you do, do it freely and train safely.
+                    </p>
                 </div>
+            </div>
+        </div><!-- first row -->
 
-            </div><!-- first row -->
+        <div class="row tm-content-box"><!-- second row -->
+            <!-- <div class="col-lg-1">
+                <i class="fa-sharp fa-thin fa-users text-center tm-icon"></i>
+            </div> -->
+            <div class="col-lg-5">
+                <div class="tm-intro-text-container">
+                    <h2 class="tm-text-primary mb-4">Find Friends</h2>
+                    <p class="mb-4 tm-intro-text">
+                        It can be difficult to find like-minded people when it comes to these niche sports. Create an account and join in on the action!
+                    </p>
+                </div>
+            </div>
 
-            <div class="row tm-content-box"><!-- second row -->
-        		<div class="col-lg-1">
-                    <i class="far fa-3x fa-chart-bar text-center tm-icon"></i>
+            <!--<div class="col-lg-1">
+                <i class="far fa-3x fa-comment-alt text-center tm-icon"></i>
+            </div> -->
+            <div class="col-lg-5">
+                <div class="tm-intro-text-container">
+                    <h2 class="tm-text-primary mb-4">Community</h2>
+                    <p class="mb-4 tm-intro-text">
+                        This is not just a website to access or a soon-to-be app. It's about building a community for all of us to come together.
+                    </p>
                 </div>
-                <div class="col-lg-5">
-                    <div class="tm-intro-text-container">
-                        <h2 class="tm-text-primary mb-4">Find Friends</h2>
-                        <p class="mb-4 tm-intro-text">
-                          It can be difficult to find like-minded people when it comes to these niche sports. Create an account and join in on the action!</p>
-                    </div>
-                </div>
+            </div>
+        </div><!-- second row -->
 
-                <div class="col-lg-1">
-                    <i class="far fa-3x fa-comment-alt text-center tm-icon"></i>
+        <div class="row tm-content-box"><!-- third row -->
+           <!-- <div class="col-lg-1">
+                <i class="fa-solid fa-book text-center tm-icon"></i>
+            </div> -->
+            <div class="col-lg-5">
+                <div class="tm-intro-text-container">
+                    <h2 class="tm-text-primary mb-4">Create your own Training Book</h2>
+                    <p class="mb-4 tm-intro-text">
+                        Community on a website like this only gets you so far. Create training plans, sessions & combos using our continually updated list and share those combos with others!
+                    </p>
                 </div>
-                <div class="col-lg-5">
-                    <div class="tm-intro-text-container">
-                        <h2 class="tm-text-primary mb-4">Community</h2>
-                        <p class="mb-4 tm-intro-text">
-                          As stated above, this is not just a website to access or a soon to be app, it's about building a community for all of us to come together.</p>
-                    </div>
-                </div>
+            </div>
 
-            </div><!-- second row -->
-
-            <div class="row tm-content-box"><!-- third row -->
-        		<div class="col-lg-1">
-                    <i class="fas fa-3x fa-fingerprint text-center tm-icon"></i>
-                </div>
-                <div class="col-lg-5">
-                    <div class="tm-intro-text-container">
-                        <h2 class="tm-text-primary mb-4">Create your own Training Book</h2>
-                        <p class="mb-4 tm-intro-text">
-                         Community on a website like this only gets you so far, create training plans, sessions & combos using our continually updated list and share those combos with others!</p>
-
-                    </div>
-                </div>
-
-                <div class="col-lg-1">
-                    <i class="fas fa-3x fa-users text-center tm-icon"></i>
-                </div>
-                <div class="col-lg-5">
-                    <div class="tm-intro-text-container">
-                      <h2 class="tm-text-primary mb-4">Pricing</h2>
-                        <p class="mb-4 tm-intro-text">
+            <!-- <div class="col-lg-1">
+                <i class="fa-solid fa-dollar-sign text-center tm-icon"></i>
+            </div> -->
+            <div class="col-lg-5">
+                <div class="tm-intro-text-container">
+                    <h2 class="tm-text-primary mb-4">Pricing</h2>
+                    <p class="mb-4 tm-intro-text">
                         That's the best part, this will be completely free! There is no subscription service. I'm a newcomer to the community and
-                        have met many that just accepted me and many others like me who just want to learn, this is my way of giving back.</p>
-                    </div>
+                        have met many that just accepted me and many others like me who just want to learn. This is my way of giving back.
+                    </p>
                 </div>
+            </div>
+        </div><!-- third row -->
 
-            </div><!-- third row -->
+    </div>
 
-        </div>
+</section>
 
-    </section>
+<!-- Contact -->
+<section id="contact" class="tm-section-pad-top tm-parallax-2">
 
-
-    <!-- Contact -->
-    <section id="contact" class="tm-section-pad-top tm-parallax-2">
-
-      <div class="container tm-container-contact">
+    <div class="container tm-container-contact">
 
         <div class="row">
 
             <div class="text-center col-12">
                 <h2 class="tm-section-title mb-4">Contact</h2>
                 <p class="mb-5">
-                  Work in progress, this will be a contact form that will send my dev account direct messages for me to view.
+                    Work in progress, this will be a contact form that will send my dev account direct messages for me to view.
                 </p><br>
             </div>
 
             <div class="col-sm-12 col-md-6">
-              <form action="" method="get">
-                <input id="name" name="name" type="text" placeholder="Your Name" class="tm-input" required />
-                <input id="email" name="email" type="email" placeholder="Your Email" class="tm-input" required />
-                <textarea id="message" name="message" rows="8" placeholder="Message" class="tm-input" required></textarea>
-                <button type="submit" class="btn tm-btn-submit">Submit</button>
-              </form>
+                <form action="" method="get">
+                    <label for="name" class="sr-only">Your Name</label>
+                    <input id="name" name="name" type="text" placeholder="Your Name" class="tm-input" required />
+
+                    <label for="email" class="sr-only">Your Email</label>
+                    <input id="email" name="email" type="email" placeholder="Your Email" class="tm-input" required />
+
+                    <label for="message" class="sr-only">Message</label>
+                    <textarea id="message" name="message" rows="8" placeholder="Message" class="tm-input" required></textarea>
+
+                    <button type="submit" class="btn tm-btn-submit">Submit</button>
+                </form>
             </div>
 
             <div class="col-sm-12 col-md-6">
 
                 <div class="contact-item">
-                  <a rel="nofollow" href="mailto:jarrettplate@outlook.com" class="item-link">
-                      <i class="far fa-2x fa-envelope mr-4"></i>
-                      <span class="mb-0">Problem? Email Me</span>
-                  </a>
+                    <a rel="nofollow" href="mailto:jarrettplate@outlook.com" class="item-link">
+                        <i class="far fa-2x fa-envelope mr-4"></i>
+                        <span class="mb-0">Problem? Email Me</span>
+                    </a>
                 </div>
-
 
                 <div class="contact-item">&nbsp;</div>
 
             </div>
 
-
         </div><!-- row ending -->
 
-      </div>
+    </div>
+<footer class="text-center small tm-footer">
+        <p class="mb-0">
+            Copyright &copy; 2024 Floor Underground
 
-      	<footer class="text-center small tm-footer">
-          <p class="mb-0">
-          Copyright &copy; 2024 Floor Underground
+            . <a rel="nofollow" href="https://www.tooplate.com" title="HTML templates">TOOPLATE</a></p>
+    </footer>
 
-          . <a rel="nofollow" href="https://www.tooplate.com" title="HTML templates">TOOPLATE</a></p>
-        </footer>
-
-    </section>
+</section>
 {% endblock %}
 
 </body>
