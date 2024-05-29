@@ -188,6 +188,21 @@ def remove_combo():
     return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
 
 
+@app.route('/update_combo', methods=['POST'])
+def update_combo():
+    data = request.get_json()
+    combo_id = data['combo_id']
+    title = data['title']
+    description = data['description']
+
+    # Find the combo by ID and update its title and description
+    combo = Combo.query.get(combo_id)
+    combo.title = title
+    combo.description = description
+    db.session.commit()
+
+    return jsonify({"success": True})
+
 @app.route('/add_skill', methods=['POST'])
 @login_required
 def add_skill():
