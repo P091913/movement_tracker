@@ -237,31 +237,25 @@ def add_skill():
 def remove_skill():
     move_id = request.form.get('move_id')
 
-    # Retrieve the skill from the database
-    skill = Moves.query.get(move_id)
+    # Retrieve the user's skill entry from the database
+    user_skill = UserMoves.query.filter_by(move_id=move_id, user_id=current_user.id).first()
 
-    if not skill:
+    if not user_skill:
         flash('Skill not found!', 'error')
         return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
 
     try:
         # Delete the skill from the userMoves table
-        UserMoves.query.filter_by(move_id=move_id).delete()
-
-        # Commit changes to the database
-        db.session.commit()
-
-        # Delete the skill from the Moves table
-        db.session.delete(skill)
+        db.session.delete(user_skill)
         db.session.commit()
 
         flash('Skill removed successfully!', 'success')
-    except Exception:
+    except Exception as e:
+        flash('An error occurred while removing the skill.', 'error')
         db.session.rollback()
-        flash('An error occurred while removing the skill. Please try again later.', 'error')
+        print(str(e))  # Print the error for debugging purposes
 
     return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
-
 
 @app.route('/activity')
 @login_required
