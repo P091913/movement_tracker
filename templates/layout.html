@@ -7,12 +7,12 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <link href="styles.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-5.5/css/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-5.5/css/all.min.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='slick/slick.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='slick/slick-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='magnific-popup/magnific-popup.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tooplate-infinite-loop.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tooplate-infinite-loop.css') }}"/>
     <style>
         .link-button {
             background: none;
@@ -24,12 +24,13 @@
             text-decoration: none;
             display: inline;
         }
+
         .link-button:focus {
             outline: none;
         }
     </style>
     {% block styles %}
-    <!-- Additional styles can go here -->
+        <!-- Additional styles can go here -->
     {% endblock %}
 </head>
 <body>
@@ -38,52 +39,69 @@
 <section id="infinite" class="text-white tm-font-big tm-parallax">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-md tm-navbar" id="tmNav">
-    <div class="container">
-        <div class="tm-next">
-            <a href="#infinite" class="navbar-brand">Floor Underground</a>
+        <div class="container">
+            <div class="tm-next">
+                <a href="#infinite" class="navbar-brand">Floor Underground</a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars navbar-toggler-icon"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link tm-nav-link" href="{{ url_for('book') }}">Training Book</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link tm-nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link tm-nav-link" href="{{ url_for('index') }}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link tm-nav-link" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
+    </nav>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fas fa-bars navbar-toggler-icon"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto">
-                {% if current_user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link tm-nav-link" href="{{ url_for('book') }}">Training Book</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link tm-nav-link" href="{{ url_for('logout') }}">Logout</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link tm-nav-link" href="{{ url_for('index') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link tm-nav-link" href="{{ url_for('login') }}">Login</a>
-                </li>
-                {% endif %}
-            </ul>
+    <section class="tm-section-pad-top tm-parallax-2 section-dark">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+
+
+                    {% block extr_info %}
+                    {% endblock %}
+
+                    {% block login %}
+                    {% endblock %}
+
+                    {% block create %}
+                    {% endblock %}
+
+                    {% block social %}
+                    {% endblock %}
+                </div>
+            </div>
         </div>
-    </div>
-</nav>
-
-
-    {% block extr_info %}
-    {% endblock %}
-
-    {% block login %}
-    {% endblock %}
-
-    {% block create %}
-    {% endblock %}
-
-    {% block social %}
-    {% endblock %}
+    </section>
 </section>
+
+<footer class="text-center small tm-footer">
+    <p class="mb-0">
+        Copyright &copy; 2024 Floor Underground
+        . <a rel="nofollow" href="https://www.tooplate.com" title="HTML templates">TOOPLATE</a></p>
+</footer>
 
 {% block content %}
 {% endblock %}
+
 
 
 
@@ -95,82 +113,82 @@
 <script src="magnific-popup/jquery.magnific-popup.min.js"></script>
 <script src="js/easing.min.js"></script>
 <script>
-    function getOffSet(){
+    function getOffSet() {
         var _offset = 450;
         var windowHeight = window.innerHeight;
 
-        if(windowHeight > 500) {
+        if (windowHeight > 500) {
             _offset = 400;
         }
-        if(windowHeight > 680) {
+        if (windowHeight > 680) {
             _offset = 300
         }
-        if(windowHeight > 830) {
+        if (windowHeight > 830) {
             _offset = 210;
         }
 
         return _offset;
     }
 
-    function setParallaxPosition($doc, multiplier, $object){
+    function setParallaxPosition($doc, multiplier, $object) {
         var offset = getOffSet();
         var from_top = $doc.scrollTop(),
-            bg_css = 'center ' +(multiplier * from_top - offset) + 'px';
-        $object.css({"background-position" : bg_css });
+            bg_css = 'center ' + (multiplier * from_top - offset) + 'px';
+        $object.css({"background-position": bg_css});
     }
 
     // Parallax function
     // Adapted based on https://codepen.io/roborich/pen/wpAsm
-    var background_image_parallax = function($object, multiplier, forceSet){
+    var background_image_parallax = function ($object, multiplier, forceSet) {
         multiplier = typeof multiplier !== 'undefined' ? multiplier : 0.5;
         multiplier = 1 - multiplier;
         var $doc = $(document);
         // $object.css({"background-attatchment" : "fixed"});
 
-        if(forceSet) {
+        if (forceSet) {
             setParallaxPosition($doc, multiplier, $object);
         } else {
-            $(window).scroll(function(){
+            $(window).scroll(function () {
                 setParallaxPosition($doc, multiplier, $object);
             });
         }
     };
 
-    var background_image_parallax_2 = function($object, multiplier){
+    var background_image_parallax_2 = function ($object, multiplier) {
         multiplier = typeof multiplier !== 'undefined' ? multiplier : 0.5;
         multiplier = 1 - multiplier;
         var $doc = $(document);
-        $object.css({"background-attachment" : "fixed"});
+        $object.css({"background-attachment": "fixed"});
 
-        $(window).scroll(function(){
-            if($(window).width() > 768) {
+        $(window).scroll(function () {
+            if ($(window).width() > 768) {
                 var firstTop = $object.offset().top,
                     pos = $(window).scrollTop(),
                     yPos = Math.round((multiplier * (firstTop - pos)) - 186);
 
                 var bg_css = 'center ' + yPos + 'px';
 
-                $object.css({"background-position" : bg_css });
+                $object.css({"background-position": bg_css});
             } else {
-                $object.css({"background-position" : "center" });
+                $object.css({"background-position": "center"});
             }
         });
     };
 
-    $(function(){
+    $(function () {
         // Hero Section - Background Parallax
         background_image_parallax($(".tm-parallax"), 0.30, false);
         background_image_parallax_2($("#contact"), 0.80);
         background_image_parallax_2($("#testimonials"), 0.80);
 
         // Handle window resize
-        window.addEventListener('resize', function(){
+        window.addEventListener('resize', function () {
             background_image_parallax($(".tm-parallax"), 0.30, true);
         }, true);
 
         // Detect window scroll and update navbar
-        $(window).scroll(function(e){
-            if($(document).scrollTop() > 120) {
+        $(window).scroll(function (e) {
+            if ($(document).scrollTop() > 120) {
                 $('.tm-navbar').addClass("scroll");
             } else {
                 $('.tm-navbar').removeClass("scroll");
@@ -178,7 +196,7 @@
         });
 
         // Close mobile menu after click
-        $('#tmNav a').on('click', function(){
+        $('#tmNav a').on('click', function () {
             $('.navbar-collapse').removeClass('show');
         })
 
@@ -190,14 +208,14 @@
 
         // Add smooth scrolling to all links
         // https://www.w3schools.com/howto/howto_css_smooth_scroll.asp
-        $("a").on('click', function(event) {
+        $("a").on('click', function (event) {
             if (this.hash !== "") {
                 event.preventDefault();
                 var hash = this.hash;
 
                 $('html, body').animate({
                     scrollTop: $(hash).offset().top
-                }, 600, 'easeInOutExpo', function(){
+                }, 600, 'easeInOutExpo', function () {
                     window.location.hash = hash;
                 });
             } // End if
@@ -207,7 +225,7 @@
         $('.tm-gallery').magnificPopup({
             delegate: 'a',
             type: 'image',
-            gallery: { enabled: true }
+            gallery: {enabled: true}
         });
 
         $('.tm-testimonials-carousel').slick({
@@ -279,7 +297,7 @@
     });
 </script>
 {% block scripts %}
-<!-- Scripts can be added here -->
+    <!-- Scripts can be added here -->
 {% endblock %}
 
 </body>
