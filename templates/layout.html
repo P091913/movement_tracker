@@ -6,7 +6,6 @@
     <title>Floor Underground</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-    <link href="styles.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-5.5/css/all.min.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='slick/slick.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='slick/slick-theme.css') }}">
@@ -75,7 +74,6 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
 
-
                     {% block extr_info %}
                     {% endblock %}
 
@@ -91,13 +89,12 @@
             </div>
         </div>
     </section>
-</section>
-
 <footer class="text-center small tm-footer">
     <p class="mb-0">
         Copyright &copy; 2024 Floor Underground
         . <a rel="nofollow" href="https://www.tooplate.com" title="HTML templates">TOOPLATE</a></p>
 </footer>
+</section>
 
 {% block content %}
 {% endblock %}
