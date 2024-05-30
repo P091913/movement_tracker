@@ -7,217 +7,217 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     {% block styles %}
         <style>
-    body {
-        background-color: #121212;
-        color: #e0e0e0;
-    }
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+            }
 
-    .section-dark {
-        background-color: #000;
-        /* Dark grey background */
-        color: #fff;
-        /* White text */
-    }
+            .section-dark {
+                background-color: #000;
+                /* Dark grey background */
+                color: #fff;
+                /* White text */
+            }
 
-    .achievement-card {
-        position: relative;
-        text-align: center;
-        color: #0b0000;
-        /* Dark text color */
-    }
+            .achievement-card {
+                position: relative;
+                text-align: center;
+                color: #0b0000;
+                /* Dark text color */
+            }
 
-    .achievement-image {
-        width: 100%;
-        height: 200px;
-        /* Fixed height */
-        object-fit: cover;
-    }
+            .achievement-image {
+                width: 100%;
+                height: 200px;
+                /* Fixed height */
+                object-fit: cover;
+            }
 
-    .overlay-text {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        background: rgba(0, 0, 0, 0.5);
-        padding: 5px;
-        /* Adjusted padding */
-        font-size: 0.8rem;
-        /* Adjusted font size */
-    }
+            .overlay-text {
+                position: absolute;
+                bottom: 10px;
+                left: 10px;
+                background: rgba(0, 0, 0, 0.5);
+                padding: 5px;
+                /* Adjusted padding */
+                font-size: 0.8rem;
+                /* Adjusted font size */
+            }
 
-    .skill-card {
-        margin-bottom: 20px;
-    }
+            .skill-card {
+                margin-bottom: 20px;
+            }
 
-    .skill-card .card-header {
-        background-color: #007bff;
-        color: #090000;
-        /* Dark text color */
-    }
+            .skill-card .card-header {
+                background-color: #2c2c2c;
+                color: #fbfafa;
+                /* Dark text color */
+            }
 
-    .progress {
-        height: 20px;
-    }
+            .progress {
+                height: 20px;
+            }
 
-    .progress-bar {
-        background-color: #28a745;
-    }
+            .progress-bar {
+                background-color: #28a745;
+            }
 
-    .edit-form {
-        display: none;
-        margin-top: 10px;
-    }
+            .edit-form {
+                display: none;
+                margin-top: 10px;
+            }
 
-    .scrolling-container {
-        overflow-x: auto;
-        white-space: nowrap;
-    }
+            .scrolling-container {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
 
-    .card {
-        /* Removed fixed width */
-        margin-right: 20px;
-        /* Adjust the spacing between cards as needed */
-    }
+            .card {
+                /* Removed fixed width */
+                margin-right: 20px;
+                /* Adjust the spacing between cards as needed */
+            }
 
-    .card:last-child {
-        margin-right: 0;
-        /* Remove margin from the last card to avoid extra space */
-    }
+            .card:last-child {
+                margin-right: 0;
+                /* Remove margin from the last card to avoid extra space */
+            }
 
-    /* Custom styles for combo list group items */
-    .combo-list-group .list-group-item {
-        color: black;
-        /* Set text color to black */
-    }
+            /* Custom styles for combo list group items */
+            .combo-list-group .list-group-item {
+                color: black;
+                /* Set text color to black */
+            }
 
-    #infinite {
-        background-repeat: repeat;
-        background-size: auto;
-        /* This will ensure the image repeats instead of scaling */
-    }
+            #infinite {
+                background-repeat: repeat;
+                background-size: auto;
+                /* This will ensure the image repeats instead of scaling */
+            }
 
-    .white-border {
-        border-color: #fff !important;
-    }
+            .white-border {
+                border-color: #fff !important;
+            }
 
-    .custom-card-margin {
-        margin-bottom: 5px;
-        /* Adjust this value to change the vertical gap */
-        padding-right: 2.5px;
-        /* Adjust this value to change the horizontal gap */
-        padding-left: 2.5px;
-    }
+            .custom-card-margin {
+                margin-bottom: 5px;
+                /* Adjust this value to change the vertical gap */
+                padding-right: 2.5px;
+                /* Adjust this value to change the horizontal gap */
+                padding-left: 2.5px;
+            }
 
-    .custom-card .card-body {
-        display: none;
-        /* Hide the card body */
-    }
+            .custom-card .card-body {
+                display: none;
+                /* Hide the card body */
+            }
 
-    .custom-card .card-body.show-button {
-        display: block;
-        /* Show the card body when it has the 'show-button' class */
-        text-align: center;
-        /* Center-align the button text */
-    }
+            .custom-card .card-body.show-button {
+                display: block;
+                /* Show the card body when it has the 'show-button' class */
+                text-align: center;
+                /* Center-align the button text */
+            }
 
-    /* Custom styles for edit form */
-    .edit-form {
-        display: none;
-        margin-top: 10px;
-    }
+            /* Custom styles for edit form */
+            .edit-form {
+                display: none;
+                margin-top: 10px;
+            }
 
-    .edit-form .form-control {
-        width: 50%;
-        /* Adjust the width of the text box */
-        display: inline-block;
-        /* Display the text box inline with the button */
-        margin-right: 10px;
-        /* Adjust the spacing between the text box and the button */
-    }
+            .edit-form .form-control {
+                width: 50%;
+                /* Adjust the width of the text box */
+                display: inline-block;
+                /* Display the text box inline with the button */
+                margin-right: 10px;
+                /* Adjust the spacing between the text box and the button */
+            }
 
-    .edit-form .btn {
-        vertical-align: top;
-        /* Align the button with the top of the text box */
-    }
+            .edit-form .btn {
+                vertical-align: top;
+                /* Align the button with the top of the text box */
+            }
 
-    .combo-modal .modal-content {
-        color: #000 !important;
-        /* Set text color to black */
-    }
+            .combo-modal .modal-content {
+                color: #000 !important;
+                /* Set text color to black */
+            }
 
-    .add-skill-dropdown {
-        margin-left: auto;
-    }
+            .add-skill-dropdown {
+                margin-left: auto;
+            }
 
-    .section-heading {
-        font-size: 24px;
-        margin-bottom: 20px;
-        color: #b0b0b0;
-        /* Muted color (light grey) */
-    }
+            .section-heading {
+                font-size: 24px;
+                margin-bottom: 20px;
+                color: #b0b0b0;
+                /* Muted color (light grey) */
+            }
 
-    .card {
-        background-color: #1e1e1e;
-        border: none;
-    }
+            .card {
+                background-color: #1e1e1e;
+                border: none;
+            }
 
-    .card-body {
-        background-color: #1e1e1e;
-    }
+            .card-body {
+                background-color: #1e1e1e;
+            }
 
-    .list-group-item {
-        background-color: #2c2c2c;
-        border: none;
-        color: #e0e0e0;
-        /* Removed fixed width and height */
-        text-align: center;
-        /* Center text */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 10px;
-        /* Add some space between items vertically */
-    }
+            .list-group-item {
+                background-color: #2c2c2c;
+                border: none;
+                color: #e0e0e0;
+                /* Removed fixed width and height */
+                text-align: center;
+                /* Center text */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 10px;
+                /* Add some space between items vertically */
+            }
 
-    .list-group-item a {
-        color: #e0e0e0;
-        text-decoration: none;
-        /* Remove underline from links */
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+            .list-group-item a {
+                color: #e0e0e0;
+                text-decoration: none;
+                /* Remove underline from links */
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
-    .scrollable-container {
-        overflow-x: auto;
-        white-space: nowrap;
-        width: 100%; /* Ensure the container fills the screen width */
-        -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
-        scrollbar-width: none; /* Hide scrollbar in Firefox */
-    }
+            .scrollable-container {
+                overflow-x: auto;
+                white-space: nowrap;
+                width: 100%; /* Ensure the container fills the screen width */
+                -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+                scrollbar-width: none; /* Hide scrollbar in Firefox */
+            }
 
-    .scrollable-container::-webkit-scrollbar {
-        display: none; /* Hide scrollbar in Chrome, Safari, and Opera */
-    }
+            .scrollable-container::-webkit-scrollbar {
+                display: none; /* Hide scrollbar in Chrome, Safari, and Opera */
+            }
 
-    .list-group {
-        display: inline-block;
-        margin-right: 10px;
-        /* Add spacing between lists */
-    }
+            .list-group {
+                display: inline-block;
+                margin-right: 10px;
+                /* Add spacing between lists */
+            }
 
-    .list-group-item {
-        display: block;
-        width: 100%;
-        /* Ensure each item takes full width of its container */
-    }
+            .list-group-item {
+                display: block;
+                width: 100%;
+                /* Ensure each item takes full width of its container */
+            }
 
-    .card + .card {
-        margin-top: 30px;
-        /* Add spacing between the two cards */
-    }
-</style>
+            .card + .card {
+                margin-top: 30px;
+                /* Add spacing between the two cards */
+            }
+        </style>
 
     {% endblock %}
 </head>
@@ -225,297 +225,288 @@
 {% extends 'layout.html' %}
 
 {% block social %}
-    <section class="tm-section-pad-top tm-parallax-2 section-dark">
-        <div class="container mt-5">
-            <div class="row"> <!-- Added row class here -->
-                <div class="col-md-6">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="section-heading">Combos</h2>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addComboModal">
-                            Add Combo
-                        </button>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-heading">Combos</h2>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addComboModal">
+            Add Combo
+        </button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="scrollable-container" style="max-height: 200px;">
+                {% for i in range(0, current_user.combos|length, 2) %}
+                    <div class="list-group">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <a href="#" data-toggle="modal"
+                                   data-target="#comboModal{{ current_user.combos[i].id }}">
+                                    {{ current_user.combos[i].title }}
+                                </a>
+                            </li>
+                            {% if i + 1 < current_user.combos|length %}
+                                <li class="list-group-item">
+                                    <a href="#" data-toggle="modal"
+                                       data-target="#comboModal{{ current_user.combos[i + 1].id }}">
+                                        {{ current_user.combos[i + 1].title }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="scrollable-container" style="max-height: 200px;">
-                                {% for i in range(0, current_user.combos|length, 2) %}
-                                    <div class="list-group">
-                                        <ul class="list-group">
-                                            <li class="list-group-item">
-                                                <a href="#" data-toggle="modal"
-                                                   data-target="#comboModal{{ current_user.combos[i].id }}">
-                                                    {{ current_user.combos[i].title }}
-                                                </a>
-                                            </li>
-                                            {% if i + 1 < current_user.combos|length %}
-                                                <li class="list-group-item">
-                                                    <a href="#" data-toggle="modal"
-                                                       data-target="#comboModal{{ current_user.combos[i + 1].id }}">
-                                                        {{ current_user.combos[i + 1].title }}
-                                                    </a>
-                                                </li>
-                                            {% endif %}
-                                        </ul>
-                                    </div>
-                                    <!-- Modals -->
-                                    <div class="modal fade combo-modal" id="comboModal{{ current_user.combos[i].id }}"
-                                         tabindex="-1"
-                                         role="dialog" aria-labelledby="comboModalLabel{{ current_user.combos[i].id }}"
-                                         aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title"
-                                                        id="comboModalLabel{{ current_user.combos[i].id }}">Combo
-                                                        Details
-                                                    </h5>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <h5 class="card-title">{{ current_user.combos[i].title }}</h5>
-                                                    <p class="card-text">{{ current_user.combos[i].description }}</p>
-                                                    <ul class="list-group mb-3">
-                                                        {% for move in current_user.combos[i].moves %}
-                                                            <li class="list-group-item">{{ move.move_name }}</li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <div class="btn-group">
-                                                            <button type="button"
-                                                                    class="btn btn-sm btn-outline-secondary">
-                                                                Edit
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger"
-                                                                    onclick="removeCombo({{ current_user.combos[i].id }}">
-                                                                Remove Combo
-                                                            </button>
-                                                        </div>
-                                                        <div>
-                                                            <small class="text-muted">Created: {{ current_user.combos[i].date_created.strftime('%Y-%m-%d') }}</small>
-                                                            <br>
-                                                            <small class="text-muted">Creator: {{ current_user.username }}</small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                    <!-- Modals -->
+                    <div class="modal fade combo-modal" id="comboModal{{ current_user.combos[i].id }}"
+                         tabindex="-1"
+                         role="dialog" aria-labelledby="comboModalLabel{{ current_user.combos[i].id }}"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"
+                                        id="comboModalLabel{{ current_user.combos[i].id }}">Combo
+                                        Details
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <h5 class="card-title">{{ current_user.combos[i].title }}</h5>
+                                    <p class="card-text">{{ current_user.combos[i].description }}</p>
+                                    <ul class="list-group mb-3">
+                                        {% for move in current_user.combos[i].moves %}
+                                            <li class="list-group-item">{{ move.move_name }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">
+                                                Edit
+                                            </button>
+                                            <button type="button" class="btn btn-danger"
+                                                    onclick="removeCombo({{ current_user.combos[i].id }}">
+                                                Remove Combo
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Created: {{ current_user.combos[i].date_created.strftime('%Y-%m-%d') }}</small>
+                                            <br>
+                                            <small class="text-muted">Creator: {{ current_user.username }}</small>
                                         </div>
                                     </div>
-                                    {% if i + 1 < current_user.combos|length %}
-                                        <div class="modal fade combo-modal"
-                                             id="comboModal{{ current_user.combos[i + 1].id }}"
-                                             tabindex="-1"
-                                             role="dialog"
-                                             aria-labelledby="comboModalLabel{{ current_user.combos[i + 1].id }}"
-                                             aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title"
-                                                            id="comboModalLabel{{ current_user.combos[i + 1].id }}">
-                                                            Combo Details
-                                                        </h5>
-                                                        <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <h5 class="card-title">{{ current_user.combos[i + 1].title }}</h5>
-                                                        <p class="card-text">{{ current_user.combos[i + 1].description }}</p>
-                                                        <ul class="list-group mb-3">
-                                                            {% for move in current_user.combos[i + 1].moves %}
-                                                                <li class="list-group-item">{{ move.move_name }}</li>
-                                                            {% endfor %}
-                                                        </ul>
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div class="btn-group">
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-outline-secondary">Edit
-                                                                </button>
-                                                                <button type="button" class="btn btn-danger"
-                                                                        onclick="removeCombo({{ current_user.combos[i + 1].id }})">
-                                                                    Remove Combo
-                                                                </button>
-                                                            </div>
-                                                            <div>
-                                                                <small class="text-muted">Created: {{ current_user.combos[i + 1].date_created.strftime('%Y-%m-%d') }}</small>
-                                                                <br>
-                                                                <small class="text-muted">Creator: {{ current_user.username }}</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
+                                </div>
                             </div>
                         </div>
-
-                        <div class="modal fade" id="addComboModal" tabindex="-1" role="dialog"
-                             aria-labelledby="addComboModalLabel"
+                    </div>
+                    {% if i + 1 < current_user.combos|length %}
+                        <div class="modal fade combo-modal"
+                             id="comboModal{{ current_user.combos[i + 1].id }}"
+                             tabindex="-1"
+                             role="dialog"
+                             aria-labelledby="comboModalLabel{{ current_user.combos[i + 1].id }}"
                              aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addComboModalLabel">Add Combo</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <h5 class="modal-title"
+                                            id="comboModalLabel{{ current_user.combos[i + 1].id }}">
+                                            Combo Details
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/add_combo" method="POST">
-                                            <div class="form-group">
-                                                <label for="combo-title">Combo Title</label>
-                                                <input type="text" class="form-control" id="combo-title"
-                                                       name="combo-title"
-                                                       placeholder="Enter combo title" required>
+                                        <h5 class="card-title">{{ current_user.combos[i + 1].title }}</h5>
+                                        <p class="card-text">{{ current_user.combos[i + 1].description }}</p>
+                                        <ul class="list-group mb-3">
+                                            {% for move in current_user.combos[i + 1].moves %}
+                                                <li class="list-group-item">{{ move.move_name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary">Edit
+                                                </button>
+                                                <button type="button" class="btn btn-danger"
+                                                        onclick="removeCombo({{ current_user.combos[i + 1].id }})">
+                                                    Remove Combo
+                                                </button>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="combo-description">Combo Description</label>
-                                                <textarea class="form-control" id="combo-description"
-                                                          name="combo-description" rows="3"
-                                                          placeholder="Enter combo description" required></textarea>
+                                            <div>
+                                                <small class="text-muted">Created: {{ current_user.combos[i + 1].date_created.strftime('%Y-%m-%d') }}</small>
+                                                <br>
+                                                <small class="text-muted">Creator: {{ current_user.username }}</small>
                                             </div>
-                                            <div class="form-group" id="trick-dropdowns">
-                                                <select class="form-control" name="trick-1" required>
-                                                    <option value="" disabled selected>Select a trick</option>
-                                                    {% for move in moves %}
-                                                        <option value="{{ move.move_name }}">{{ move.move_name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </div>
-                                            <button type="button" class="btn btn-secondary"
-                                                    onclick="addTrickDropdown()">Add
-                                                More Tricks
-                                            </button>
-                                            <button type="submit" class="btn btn-success">Save Combo</button>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
 
-                    <br>
-                    <br>
-
-
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="section-heading">Skill Progress</h2>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSkillModal">
-                            Add
-                            Skill
+        <div class="modal fade" id="addComboModal" tabindex="-1" role="dialog"
+             aria-labelledby="addComboModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addComboModalLabel">Add Combo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="scrolling-container" style="overflow-x: auto; white-space: nowrap;">
-                                <div class="row no-gutters">
-                                    {% for user_move in user_moves %}
-                                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                                            <div class="card skill-card">
-                                                <div class="card-header" data-toggle="collapse"
-                                                     data-target="#move-{{ user_move.move_id }}">
-                                                    {{ user_move.move_name }}
-                                                </div>
-                                                <div id="move-{{ user_move.move_id }}" class="collapse">
-                                                    <div class="card-body">
-                                                        <div class="progress mb-2">
-                                                            <div class="progress-bar" id="progress-html-css"
-                                                                 role="progressbar"
-                                                                 style="width: {{ user_move.status }}%;"
-                                                                 aria-valuenow="{{ user_move.status }}"
-                                                                 aria-valuemin="0"
-                                                                 aria-valuemax="100">{{ user_move.status }}</div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <button class="btn btn-primary"
-                                                                        onclick="toggleEditForm('{{ user_move.move_name }}')">
-                                                                    Edit
-                                                                </button>
-                                                            </div>
-                                                            <div class="col">
-                                                                <div class="edit-form"
-                                                                     id="edit-form-{{ user_move.move_name }}"
-                                                                     style="display: none;">
-                                                                    <input type="number" class="form-control"
-                                                                           id="input-{{ user_move.move_name }}"
-                                                                           placeholder="Enter new percentage">
-                                                                    <br>
-                                                                    <button class="btn btn-success"
-                                                                            onclick="updateProgress('{{ user_move.move_name }}', '{{ user_move.move_id }}')">
-                                                                        Update
-                                                                    </button>
-                                                                    <br>
-                                                                    <button class="btn btn-danger"
-                                                                            onclick="removeSkill('{{ user_move.move_id }}')">
-                                                                        Remove Skill
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% if loop.index % 2 == 0 %}
-                                            </div>
-                                            <div class="row no-gutters">
-                                        {% endif %}
-                                    {% endfor %}
-                                    </div>
+                    <div class="modal-body">
+                        <form action="/add_combo" method="POST">
+                            <div class="form-group">
+                                <label for="combo-title">Combo Title</label>
+                                <input type="text" class="form-control" id="combo-title"
+                                       name="combo-title"
+                                       placeholder="Enter combo title" required>
                             </div>
-                        </div>
+                            <div class="form-group">
+                                <label for="combo-description">Combo Description</label>
+                                <textarea class="form-control" id="combo-description"
+                                          name="combo-description" rows="3"
+                                          placeholder="Enter combo description" required></textarea>
+                            </div>
+                            <div class="form-group" id="trick-dropdowns">
+                                <select class="form-control" name="trick-1" required>
+                                    <option value="" disabled selected>Select a trick</option>
+                                    {% for move in moves %}
+                                        <option value="{{ move.move_name }}">{{ move.move_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="addTrickDropdown()">Add
+                                More Tricks
+                            </button>
+                            <button type="submit" class="btn btn-success">Save Combo</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
+    <br>
+    <br>
 
-            <div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillModalLabel"
-                 aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="/add_skill" method="POST">
-                                <div class="form-group">
-                                    <label for="new_skill">Select Skill</label>
-                                    <select class="form-control" id="new_skill" name="new_skill" required>
-                                        <option value="" disabled selected>Select a skill</option>
-                                        {% for move in moves %}
-                                            <option value="{{ move.move_name }}">{{ move.move_name }}</option>
-                                        {% endfor %}
-                                    </select>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-heading">Skill Progress</h2>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSkillModal">
+            Add
+            Skill
+        </button>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="scrollable-container" style="max-height: 200px;">
+                <div class="row no-gutters">
+                    {% for user_move in user_moves %}
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="card skill-card">
+                                <div class="card-header" data-toggle="collapse"
+                                     data-target="#move-{{ user_move.move_id }}">
+                                    {{ user_move.move_name }}
                                 </div>
-                                <button type="submit" class="btn btn-success">Add</button>
-                            </form>
+                                <div id="move-{{ user_move.move_id }}" class="collapse">
+                                    <div class="card-body">
+                                        <div class="progress mb-2">
+                                            <div class="progress-bar" id="progress-html-css"
+                                                 role="progressbar"
+                                                 style="width: {{ user_move.status }}%;"
+                                                 aria-valuenow="{{ user_move.status }}"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100">{{ user_move.status }}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <button class="btn btn-primary"
+                                                        onclick="toggleEditForm('{{ user_move.move_name }}')">
+                                                    Edit
+                                                </button>
+                                            </div>
+                                            <div class="col">
+                                                <div class="edit-form"
+                                                     id="edit-form-{{ user_move.move_name }}"
+                                                     style="display: none;">
+                                                    <input type="number" class="form-control"
+                                                           id="input-{{ user_move.move_name }}"
+                                                           placeholder="Enter new percentage">
+                                                    <br>
+                                                    <button class="btn btn-success"
+                                                            onclick="updateProgress('{{ user_move.move_name }}', '{{ user_move.move_id }}')">
+                                                        Update
+                                                    </button>
+                                                    <br>
+                                                    <button class="btn btn-danger"
+                                                            onclick="removeSkill('{{ user_move.move_id }}')">
+                                                        Remove Skill
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        {% if loop.index % 2 == 0 %}
+                            </div>
+                            <div class="row no-gutters">
+                        {% endif %}
+                    {% endfor %}
                     </div>
-                </div>
             </div>
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <ul>
-                        {% for message in messages %}
-                            <li>
-                                {{ message }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endwith %}
-    </section>
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+    <div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillModalLabel"
+         aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form action="/add_skill" method="POST">
+            <div class="form-group">
+                <label for="new_skill">Select Skill</label>
+                <select class="form-control" id="new_skill" name="new_skill" required>
+                    <option value="" disabled selected>Select a skill</option>
+                    {% for move in moves %}
+                        <option value="{{ move.move_name }}">{{ move.move_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Add</button>
+        </form>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 {% endblock %}
 
 {% block scripts %}
