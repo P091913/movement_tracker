@@ -194,12 +194,12 @@
                 overflow-x: auto;
                 white-space: nowrap;
                 width: 100%; /* Ensure the container fills the screen width */
-                -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
-                scrollbar-width: none; /* Hide scrollbar in Firefox */
+                /*-ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+                /*scrollbar-width: none; /* Hide scrollbar in Firefox */
             }
 
             .scrollable-container::-webkit-scrollbar {
-                display: none; /* Hide scrollbar in Chrome, Safari, and Opera */
+                /*<!-- display: none; /* Hide scrollbar in Chrome, Safari, and Opera */ -->
             }
 
             .list-group {
@@ -238,7 +238,7 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <div class="scrollable-container" style="max-height: 200px;">
+            <div class="scrollable-container" style="max-height: 200px; overflow-x: auto; white-space: nowrap;">
                 {% for i in range(0, current_user.combos|length, 2) %}
                     <div class="list-group">
                         <ul class="list-group">
@@ -406,111 +406,92 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="section-heading">Skill Progress</h2>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSkillModal">
-            Add
-            Skill
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#progressModal">
+        Add Progress
         </button>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="scrollable-container" style="max-height: 200px;">
-                <div class="row no-gutters">
-                    {% for user_move in user_moves %}
-                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                            <div class="card skill-card">
-                                <div class="card-header" data-toggle="collapse"
-                                     data-target="#move-{{ user_move.move_id }}">
-                                    {{ user_move.move_name }}
-                                </div>
-                                <div id="move-{{ user_move.move_id }}" class="collapse">
-                                    <div class="card-body">
-                                        <div class="progress mb-2">
-                                            <div class="progress-bar" id="progress-html-css"
-                                                 role="progressbar"
-                                                 style="width: {{ user_move.status }}%;"
-                                                 aria-valuenow="{{ user_move.status }}"
-                                                 aria-valuemin="0"
-                                                 aria-valuemax="100">{{ user_move.status }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <button class="btn btn-primary"
-                                                        onclick="toggleEditForm('{{ user_move.move_name }}')">
-                                                    Edit
-                                                </button>
-                                            </div>
-                                            <div class="col">
-                                                <div class="edit-form"
-                                                     id="edit-form-{{ user_move.move_name }}"
-                                                     style="display: none;">
-                                                    <input type="number" class="form-control"
-                                                           id="input-{{ user_move.move_name }}"
-                                                           placeholder="Enter new percentage">
-                                                    <br>
-                                                    <button class="btn btn-success"
-                                                            onclick="updateProgress('{{ user_move.move_name }}', '{{ user_move.move_id }}')">
-                                                        Update
-                                                    </button>
-                                                    <br>
-                                                    <button class="btn btn-danger"
-                                                            onclick="removeSkill('{{ user_move.move_id }}')">
-                                                        Remove Skill
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% if loop.index % 2 == 0 %}
-                            </div>
-                            <div class="row no-gutters">
-                        {% endif %}
-                    {% endfor %}
-                    </div>
-            </div>
+
+    <!-- Progress Tracking Collapsible Sections -->
+    <div id="accordion">
+      <!-- Example Skill Section -->
+      <div class="card-accord">
+        <div class="card-header-accord" id="headingBackflip">
+          <h5 class="mb-0">
+            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseBackflip" aria-expanded="true" aria-controls="collapseBackflip">
+              Backflip
+            </button>
+          </h5>
         </div>
-    </div>
-    </div>
-    </div>
+        <div id="collapseBackflip" class="collapse show" aria-labelledby="headingBackflip" data-parent="#accordion">
+          <div class="card-body-accord">
+            <table class="table table-striped">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Attempts</th>
+                  <th scope="col">Successes</th>
+                  <th scope="col">Notes</th>
+                </tr>
+              </thead>
+              <tbody id="table-body-backflip">
+                <!-- Example Row -->
+                <tr style="color: white">
+                  <td>2024-05-30</td>
+                  <td>10</td>
+                  <td>7</td>
+                  <td>Improve height on jump</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Add more skill sections as needed -->
     </div>
 
+    <!-- Modal for Adding New Entry -->
+    <div class="modal fade" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="progressModalLabel">Add New Entry</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="progress-form">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="date">Date</label>
+                  <input type="date" class="form-control" id="date" required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="skill">Skill</label>
+                  <input type="text" class="form-control" id="skill" placeholder="Skill" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="attempts">Attempts</label>
+                  <input type="number" class="form-control" id="attempts" placeholder="Attempts" required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="successes">Successes</label>
+                  <input type="number" class="form-control" id="successes" placeholder="Successes" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="notes">Notes</label>
+                <input type="text" class="form-control" id="notes" placeholder="Notes">
+              </div>
+              <button type="submit" class="btn btn-primary">Add Entry</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <div class="modal fade" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillModalLabel"
-         aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title card-title" id="addSkillModalLabel">Add Skill</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <form action="/add_skill" method="POST">
-            <div class="form-group">
-                <select class="form-control" id="new_skill" name="new_skill" required>
-                    <option value="" disabled selected>Select a skill</option>
-                    {% for move in moves %}
-                        <option value="{{ move.move_name }}">{{ move.move_name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <button type="submit" class="btn btn-success">Add</button>
-        </form>
-    </div>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>
-                        {{ message }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
 {% endblock %}
 
 {% block scripts %}
@@ -552,6 +533,70 @@
                 });
             });
         });
+
+        document.getElementById('progress-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Get form values
+      const date = document.getElementById('date').value;
+      const skill = document.getElementById('skill').value;
+      const attempts = document.getElementById('attempts').value;
+      const successes = document.getElementById('successes').value;
+      const notes = document.getElementById('notes').value;
+
+      // Create new table row
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>${date}</td>
+        <td>${attempts}</td>
+        <td>${successes}</td>
+        <td>${notes}</td>
+      `;
+
+      // Find or create skill section
+      let skillTableBody = document.getElementById(`table-body-${skill.toLowerCase()}`);
+      if (!skillTableBody) {
+        // Create new skill section
+        const newSkillSection = document.createElement('div');
+        newSkillSection.classList.add('card');
+        newSkillSection.innerHTML = `
+          <div class="card-header" id="heading${skill}">
+            <h5 class="mb-0">
+              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse${skill}" aria-expanded="false" aria-controls="collapse${skill}">
+                ${skill}
+              </button>
+            </h5>
+          </div>
+          <div id="collapse${skill}" class="collapse" aria-labelledby="heading${skill}" data-parent="#accordion">
+            <div class="card-body">
+              <table class="table table-striped">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Attempts</th>
+                    <th scope="col">Successes</th>
+                    <th scope="col">Notes</th>
+                  </tr>
+                </thead>
+                <tbody id="table-body-${skill.toLowerCase()}">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+        document.getElementById('accordion').appendChild(newSkillSection);
+        skillTableBody = document.getElementById(`table-body-${skill.toLowerCase()}`);
+      }
+
+      // Append new row to the appropriate skill table body
+      skillTableBody.appendChild(newRow);
+
+      // Clear form
+      document.getElementById('progress-form').reset();
+
+      // Close modal
+      $('#progressModal').modal('hide');
+    });
 
 
         function addTrickDropdown() {
@@ -626,6 +671,8 @@
                 xhr.send("move_id=" + moveId);
             }
         }
+
+
     </script>
 {% endblock %}
 

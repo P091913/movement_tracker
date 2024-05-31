@@ -74,8 +74,6 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
 
-                    {% block extr_info %}
-                    {% endblock %}
 
                     {% block login %}
                     {% endblock %}
@@ -86,19 +84,16 @@
                     {% block social %}
                     {% endblock %}
                 </div>
+                {% block extr_info %}
+                {% endblock %}
             </div>
         </div>
     </section>
-<footer class="text-center small tm-footer">
-    <p class="mb-0">
-        Copyright &copy; 2024 Floor Underground
-        . <a rel="nofollow" href="https://www.tooplate.com" title="HTML templates">TOOPLATE</a></p>
-</footer>
 </section>
+
 
 {% block content %}
 {% endblock %}
-
 
 
 
