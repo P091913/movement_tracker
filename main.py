@@ -7,8 +7,8 @@ from email_validator import validate_email, EmailNotValidError
 
 app = Flask(__name__)
 app.secret_key = "dfdf23hh34"
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
+#app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
 db.init_app(app)
 
 login_manager = LoginManager()
@@ -50,11 +50,118 @@ def logout():
 @login_required
 # @relog_required
 def book():
+    user = current_user
+    session_details = user.user_session_details
+    combos = user.combos
     moves = Moves.query.all()
     user_moves = db.session.query(Moves.move_id, Moves.move_name, UserMoves.status). \
         join(Moves, UserMoves.move_id == Moves.move_id). \
         filter(UserMoves.user_id == current_user.id).all()
-    return render_template("book.html", moves=moves, user_moves=user_moves)
+
+    # Fetch all previous session details for the current user, ordered by date
+    previous_sessions = db.session.query(SessionDetails). \
+        filter_by(user_id=current_user.id). \
+        order_by(SessionDetails.date.desc()).all()
+
+    # Group sessions by date
+    from collections import defaultdict
+    sessions_by_date = defaultdict(list)
+    for session in previous_sessions:
+        sessions_by_date[session.date.date()].append(session)
+
+    combos_by_date = defaultdict(list)
+    for combo in combos:
+        for combo_progress in combo.combo_progress_details:
+            # Query the Combo table to get the combo name based on the combo_id
+            combo_name = db.session.query(Combo.title).filter(Combo.id == combo_progress.combo_id).scalar()
+            # Add the combo name to the ComboProgress object
+            combo_progress.combo_name = combo_name
+            # Append the ComboProgress object to the list corresponding to the date
+            combos_by_date[combo_progress.date.date()].append(combo_progress)
+
+
+
+    return render_template("book.html", moves=moves, user_moves=user_moves,
+                           sessions_by_date=sessions_by_date, combos_by_date=combos_by_date)
+
+
+@app.route('/add_custom_trick', methods=['POST'])
+def add_custom_trick():
+    data = request.json
+    trick_name = data.get('trickName')
+
+    # Create and store the custom trick in the database
+    custom_trick = CustomTrick(trick_name=trick_name, user_id=current_user.id)
+    db.session.add(custom_trick)
+    db.session.commit()
+
+    return jsonify({'message': 'Custom trick added successfully'})
+
+
+@app.route('/fetch_custom_tricks')
+def fetch_custom_tricks():
+    # Fetch custom tricks for the current user
+    custom_tricks = CustomTrick.query.filter_by(user_id=current_user.id).all()
+
+    # Serialize custom tricks to JSON format
+    custom_tricks_json = [{
+        'id': trick.id,
+        'name': trick.trick_name
+    } for trick in custom_tricks]
+
+    return jsonify(custom_tricks_json)
+
+@app.route('/fetch_official_tricks')
+def fetch_official_tricks():
+    # Fetch all official tricks from the Moves table
+    official_tricks = Moves.query.all()
+
+    # Serialize the official tricks to JSON format
+    serialized_tricks = [{'id': trick.move_id, 'name': trick.move_name} for trick in official_tricks]
+
+    # Return the serialized tricks as JSON response
+    return jsonify(serialized_tricks)
+
+
+@app.route('/add_progress_entry', methods=['POST'])
+@login_required
+def add_progress_entry():
+    data = request.json
+    # Here, you can access the form data using the keys of the JSON object
+    date = data.get('date')
+    trick = data.get('trick')
+    trick_id = data.get('trick_id')
+    attempts = data.get('attempts')
+    successes = data.get('successes')
+    notes = data.get('notes')
+    print(data)
+
+    new_entry = SessionDetails(date=date, trick_name=trick, attempts=attempts,
+                               successful_landings=successes, notes=notes, user_id=current_user.id,
+                               move_id=trick_id)
+    db.session.add(new_entry)
+    db.session.commit()
+
+    # Redirect to the appropriate page after adding the entry
+    return jsonify(success=True, redirect_url=url_for('book'))
+
+
+@app.route('/add_combo_progress', methods=['POST'])
+@login_required
+def add_combo_progress():
+    data = request.json
+    date = data.get('date')
+    combo_id = data.get('combo')
+    attempts = data.get('attempts')
+    successes = data.get('successes')
+    notes = data.get('notes')
+
+    new_combo_progress = ComboProgress(date=date, combo_id=combo_id, attempts=attempts,
+                                       successes=successes, notes=notes, user_id=current_user.id)
+    db.session.add(new_combo_progress)
+    db.session.commit()
+
+    return jsonify({'success': True})
 
 
 @app.route("/create", methods=['POST', 'GET'])

@@ -10,6 +10,30 @@ friends = db.Table('friends',
                    db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
                    )
 
+class ComboProgress(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    attempts = db.Column(db.Integer, nullable=False)
+    successes = db.Column(db.Integer, nullable=False)
+    notes = db.Column(db.Text, nullable=True)
+
+    # Foreign key referencing the User table
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='user_combo_progress')
+
+    # Foreign key referencing the Combo table
+    combo_id = db.Column(db.Integer, db.ForeignKey('combo.id'), nullable=False)
+    combo = db.relationship('Combo', backref='combo_progress_details')
+
+class CustomTrick(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    trick_name = db.Column(db.String(100), nullable=False)
+    # Add more fields as needed
+
+    # Foreign key referencing the User table
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='custom_tricks')
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,6 +66,24 @@ class UserMoves(db.Model):
 
     user = db.relationship('User', back_populates='user_moves')  # Fix the back_populates value
     move = db.relationship('Moves', back_populates='move_users')  # Fix the back_populates value
+
+
+class SessionDetails(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    trick_name = db.Column(db.String(100), nullable=False)
+    attempts = db.Column(db.Integer, nullable=False)
+    successful_landings = db.Column(db.Integer, nullable=False)
+    notes = db.Column(db.Text, nullable=True)
+
+    # Foreign key referencing the User table
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref='user_session_details')
+
+    # Foreign key referencing the Moves table
+    move_id = db.Column(db.Integer, db.ForeignKey('moves.move_id'), nullable=False)
+    move = db.relationship('Moves', backref='move_session_details')
+
 
 
 class Combo(db.Model):

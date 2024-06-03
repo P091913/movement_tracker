@@ -199,7 +199,8 @@
             }
 
             .scrollable-container::-webkit-scrollbar {
-                /*<!-- display: none; /* Hide scrollbar in Chrome, Safari, and Opera */ -->
+                /*<!-- display: none; /* Hide scrollbar in Chrome, Safari, and Opera */
+            -->
             }
 
             .list-group {
@@ -230,176 +231,18 @@
 {% extends 'layout.html' %}
 
 {% block social %}
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCustomTrickModal">
+    Add Custom Trick
+</button>
+    {% include 'Modals/custom_trick.html' %}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="section-heading">Combos</h2>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addComboModal">
             Add Combo
         </button>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="scrollable-container" style="max-height: 200px; overflow-x: auto; white-space: nowrap;">
-                {% for i in range(0, current_user.combos|length, 2) %}
-                    <div class="list-group">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <a href="#" data-toggle="modal"
-                                   data-target="#comboModal{{ current_user.combos[i].id }}">
-                                    {{ current_user.combos[i].title }}
-                                </a>
-                            </li>
-                            {% if i + 1 < current_user.combos|length %}
-                                <li class="list-group-item">
-                                    <a href="#" data-toggle="modal"
-                                       data-target="#comboModal{{ current_user.combos[i + 1].id }}">
-                                        {{ current_user.combos[i + 1].title }}
-                                    </a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                    <!-- Modals -->
-                    <div class="modal fade combo-modal" id="comboModal{{ current_user.combos[i].id }}"
-                         tabindex="-1"
-                         role="dialog" aria-labelledby="comboModalLabel{{ current_user.combos[i].id }}"
-                         aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title"
-                                        id="comboModalLabel{{ current_user.combos[i].id }}">Combo
-                                        Details
-                                    </h5>
-                                    <button type="button" class="close" data-dismiss="modal"
-                                            aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <h5 class="card-title">{{ current_user.combos[i].title }}</h5>
-                                    <p class="card-text">{{ current_user.combos[i].description }}</p>
-                                    <ul class="list-group mb-3">
-                                        {% for move in current_user.combos[i].moves %}
-                                            <li class="list-group-item">{{ move.move_name }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="btn-group">
-                                            <button type="button"
-                                                    class="btn btn-sm btn-outline-secondary">
-                                                Edit
-                                            </button>
-                                            <button type="button" class="btn btn-danger"
-                                                    onclick="removeCombo({{ current_user.combos[i].id }}">
-                                                Remove Combo
-                                            </button>
-                                        </div>
-                                        <div>
-                                            <small class="text-muted">Created: {{ current_user.combos[i].date_created.strftime('%Y-%m-%d') }}</small>
-                                            <br>
-                                            <small class="text-muted">Creator: {{ current_user.username }}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% if i + 1 < current_user.combos|length %}
-                        <div class="modal fade combo-modal"
-                             id="comboModal{{ current_user.combos[i + 1].id }}"
-                             tabindex="-1"
-                             role="dialog"
-                             aria-labelledby="comboModalLabel{{ current_user.combos[i + 1].id }}"
-                             aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title"
-                                            id="comboModalLabel{{ current_user.combos[i + 1].id }}">
-                                            Combo Details
-                                        </h5>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h5 class="card-title">{{ current_user.combos[i + 1].title }}</h5>
-                                        <p class="card-text">{{ current_user.combos[i + 1].description }}</p>
-                                        <ul class="list-group mb-3">
-                                            {% for move in current_user.combos[i + 1].moves %}
-                                                <li class="list-group-item">{{ move.move_name }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="btn-group">
-                                                <button type="button"
-                                                        class="btn btn-sm btn-outline-secondary">Edit
-                                                </button>
-                                                <button type="button" class="btn btn-danger"
-                                                        onclick="removeCombo({{ current_user.combos[i + 1].id }})">
-                                                    Remove Combo
-                                                </button>
-                                            </div>
-                                            <div>
-                                                <small class="text-muted">Created: {{ current_user.combos[i + 1].date_created.strftime('%Y-%m-%d') }}</small>
-                                                <br>
-                                                <small class="text-muted">Creator: {{ current_user.username }}</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
 
-        <div class="modal fade" id="addComboModal" tabindex="-1" role="dialog"
-             aria-labelledby="addComboModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title card-title" id="addComboModalLabel">Add Combo</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="/add_combo" method="POST">
-                            <div class="form-group">
-                                <label class="card-title" for="combo-title">Combo Title</label>
-                                <input type="text" class="form-control" id="combo-title"
-                                       name="combo-title"
-                                       placeholder="Enter combo title" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="card-title" for="combo-description">Combo Description</label>
-                                <textarea class="form-control" id="combo-description"
-                                          name="combo-description" rows="3"
-                                          placeholder="Enter combo description" required></textarea>
-                            </div>
-                            <div class="form-group" id="trick-dropdowns">
-                                <select class="form-control" name="trick-1" required>
-                                    <option value="" disabled selected>Select a trick</option>
-                                    {% for move in moves %}
-                                        <option value="{{ move.move_name }}">{{ move.move_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="addTrickDropdown()">Add
-                                More Tricks
-                            </button>
-                            <button type="submit" class="btn btn-success">Save Combo</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'Modals/combo.html' %}
 
     <br>
     <br>
@@ -407,229 +250,190 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="section-heading">Skill Progress</h2>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#progressModal">
-        Add Progress
+            Add Progress
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#comboProgressModal">
+            Add Combo
         </button>
     </div>
 
-    <!-- Progress Tracking Collapsible Sections -->
-    <div id="accordion">
-      <!-- Example Skill Section -->
-      <div class="card-accord">
-        <div class="card-header-accord" id="headingBackflip">
-          <h5 class="mb-0">
-            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseBackflip" aria-expanded="true" aria-controls="collapseBackflip">
-              Backflip
-            </button>
-          </h5>
-        </div>
-        <div id="collapseBackflip" class="collapse show" aria-labelledby="headingBackflip" data-parent="#accordion">
-          <div class="card-body-accord">
-            <table class="table table-striped">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="col">Date</th>
-                  <th scope="col">Attempts</th>
-                  <th scope="col">Successes</th>
-                  <th scope="col">Notes</th>
-                </tr>
-              </thead>
-              <tbody id="table-body-backflip">
-                <!-- Example Row -->
-                <tr style="color: white">
-                  <td>2024-05-30</td>
-                  <td>10</td>
-                  <td>7</td>
-                  <td>Improve height on jump</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <!-- Add more skill sections as needed -->
-    </div>
-
-    <!-- Modal for Adding New Entry -->
-    <div class="modal fade" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="progressModalLabel">Add New Entry</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="progress-form">
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="date">Date</label>
-                  <input type="date" class="form-control" id="date" required>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="skill">Skill</label>
-                  <input type="text" class="form-control" id="skill" placeholder="Skill" required>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="attempts">Attempts</label>
-                  <input type="number" class="form-control" id="attempts" placeholder="Attempts" required>
-                </div>
-                <div class="form-group col-md-6">
-                  <label for="successes">Successes</label>
-                  <input type="number" class="form-control" id="successes" placeholder="Successes" required>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="notes">Notes</label>
-                <input type="text" class="form-control" id="notes" placeholder="Notes">
-              </div>
-              <button type="submit" class="btn btn-primary">Add Entry</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    {% include 'Modals/session_prog.html' %}
 {% endblock %}
 
 {% block scripts %}
     <script>
-        let dropdownCounter = 1;
-
         document.addEventListener("DOMContentLoaded", function () {
+            // Function to toggle display of combo titles
+            const toggleComboTitle = function () {
+                const details = this.nextElementSibling;
+                details.style.display = details.style.display === "none" ? "block" : "none";
+            };
+
+            // Add event listeners to combo titles
             const comboTitles = document.querySelectorAll(".combo-title");
             comboTitles.forEach(function (title) {
-                title.addEventListener("click", function () {
-                    const details = this.nextElementSibling;
-                    if (details.style.display === "none") {
-                        details.style.display = "block";
-                    } else {
-                        details.style.display = "none";
-                    }
-                });
+                title.addEventListener("click", toggleComboTitle);
             });
-        });
 
-        document.addEventListener("DOMContentLoaded", function () {
+            // Function to toggle display of skill headers
+            const toggleSkillHeader = function (event) {
+                event.stopPropagation(); // Stop event propagation
+                const skillCardBody = this.nextElementSibling;
+                const isCollapsed = skillCardBody.classList.contains("show");
+                const openSkillCards = document.querySelectorAll(".card-body.show");
+                openSkillCards.forEach(function (card) {
+                    card.classList.remove("show");
+                });
+                $(skillCardBody).collapse(isCollapsed ? 'hide' : 'show');
+            };
+
+            // Add event listeners to skill headers
             const skillHeaders = document.querySelectorAll(".card-header");
             skillHeaders.forEach(function (header) {
-                header.addEventListener("click", function (event) {
-                    event.stopPropagation(); // Stop event propagation
-                    const skillCardBody = this.nextElementSibling;
-                    const isCollapsed = skillCardBody.classList.contains("show");
-                    if (isCollapsed) {
-                        skillCardBody.classList.remove("show");
-                    } else {
-                        // Hide all other open skill cards
-                        const openSkillCards = document.querySelectorAll(".card-body.show");
-                        openSkillCards.forEach(function (card) {
-                            card.classList.remove("show");
-                        });
-                        // Show the clicked skill card using Bootstrap's collapse function
-                        $(skillCardBody).collapse('show');
-                    }
-                });
+                header.addEventListener("click", toggleSkillHeader);
             });
-        });
 
-        document.getElementById('progress-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      // Get form values
-      const date = document.getElementById('date').value;
-      const skill = document.getElementById('skill').value;
-      const attempts = document.getElementById('attempts').value;
-      const successes = document.getElementById('successes').value;
-      const notes = document.getElementById('notes').value;
-
-      // Create new table row
-      const newRow = document.createElement('tr');
-      newRow.innerHTML = `
-        <td>${date}</td>
-        <td>${attempts}</td>
-        <td>${successes}</td>
-        <td>${notes}</td>
-      `;
-
-      // Find or create skill section
-      let skillTableBody = document.getElementById(`table-body-${skill.toLowerCase()}`);
-      if (!skillTableBody) {
-        // Create new skill section
-        const newSkillSection = document.createElement('div');
-        newSkillSection.classList.add('card');
-        newSkillSection.innerHTML = `
-          <div class="card-header" id="heading${skill}">
-            <h5 class="mb-0">
-              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse${skill}" aria-expanded="false" aria-controls="collapse${skill}">
-                ${skill}
-              </button>
-            </h5>
-          </div>
-          <div id="collapse${skill}" class="collapse" aria-labelledby="heading${skill}" data-parent="#accordion">
-            <div class="card-body">
-              <table class="table table-striped">
-                <thead class="thead-dark">
-                  <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Attempts</th>
-                    <th scope="col">Successes</th>
-                    <th scope="col">Notes</th>
-                  </tr>
-                </thead>
-                <tbody id="table-body-${skill.toLowerCase()}">
-                </tbody>
-              </table>
-            </div>
-          </div>
-        `;
-        document.getElementById('accordion').appendChild(newSkillSection);
-        skillTableBody = document.getElementById(`table-body-${skill.toLowerCase()}`);
-      }
-
-      // Append new row to the appropriate skill table body
-      skillTableBody.appendChild(newRow);
-
-      // Clear form
-      document.getElementById('progress-form').reset();
-
-      // Close modal
-      $('#progressModal').modal('hide');
-    });
+            // Function to handle progress form submission
+            const handleProgressFormSubmit = function (event) {
+                event.preventDefault(); // Prevent default form submission behavior
+                const progressForm = document.getElementById('progress-form');
+                const formData = new FormData(progressForm);
+                const jsonData = {};
+                for (const [key, value] of formData.entries()) {
+                    jsonData[key] = value;
+                }
+                // get the selected trick_id from the dropdwon menu
+                const trickSelect = document.getElementById('trick');
+                const selectedOption = trickSelect.options[trickSelect.selectedIndex];
+                const moveId = selectedOption.getAttribute('data-move-id');
 
 
-        function addTrickDropdown() {
-            dropdownCounter++;
-            const newDropdown = document.createElement('select');
-            newDropdown.setAttribute('class', 'form-control');
-            newDropdown.setAttribute('name', 'trick-' + dropdownCounter);
+                jsonData['trick_id'] = moveId;
 
-            // Clone the options from the first dropdown
-            const options = document.querySelector('#trick-dropdowns select:first-child').innerHTML;
-            newDropdown.innerHTML = options;
+                fetch('/add_progress_entry', {
+                    method: 'POST',
+                    body: JSON.stringify(jsonData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+                    .then(data => {
+                        console.log(data); // Handle response data if needed
+                        $('#progressModal').modal('hide'); // Optionally close modal after successful submission
+                        location.reload(); // Hard refresh the page
+                    })
+                    .catch(error => console.error('Error:', error)); // Handle errors if needed
+            };
 
-            document.getElementById('trick-dropdowns').appendChild(newDropdown);
+            // Add event listener to progress form
+            const progressForm = document.getElementById('progress-form');
+            progressForm.addEventListener('submit', handleProgressFormSubmit);
+
+            const handleComboProgressFormSubmit = function (event) {
+        event.preventDefault(); // Prevent default form submission behavior
+        const comboProgressForm = document.getElementById('combo-progress-form');
+        const formData = new FormData(comboProgressForm);
+        const jsonData = {};
+        for (const [key, value] of formData.entries()) {
+            jsonData[key] = value;
         }
 
+        fetch('/add_combo_progress', {
+            method: 'POST',
+            body: JSON.stringify(jsonData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+            .then(data => {
+                console.log(data); // Handle response data if needed
+                $('#comboProgressModal').modal('hide'); // Optionally close modal after successful submission
+                location.reload(); // Refresh the page to show the new combo progress
+            })
+            .catch(error => console.error('Error:', error)); // Handle errors if needed
+    };
+
+    // Add event listener to combo progress form
+    const comboProgressForm = document.getElementById('combo-progress-form');
+    comboProgressForm.addEventListener('submit', handleComboProgressFormSubmit);
+
+    const handleCustomTrickFormSubmit = function (event) {
+    event.preventDefault(); // Prevent default form submission behavior
+    const customTrickForm = document.getElementById('customTrickForm');
+    const formData = new FormData(customTrickForm);
+    const jsonData = {};
+    for (const [key, value] of formData.entries()) {
+        jsonData[key] = value;
+    }
+    // You may need to include the user ID in the form data
+    // jsonData['userId'] = getUserId(); // Example function to get user ID
+
+    fetch('/add_custom_trick', {
+        method: 'POST',
+        body: JSON.stringify(jsonData),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+    .then(data => {
+        console.log(data); // Handle response data if needed
+        $('#addCustomTrickModal').modal('hide'); // Close modal after successful submission
+    })
+    .catch(error => console.error('Error:', error)); // Handle errors if needed
+};
+
+// Add event listener to custom trick form
+const customTrickForm = document.getElementById('customTrickForm');
+customTrickForm.addEventListener('submit', handleCustomTrickFormSubmit);
+        });
+
+        // Function to add new trick dropdown
+function addTrickDropdown(isCustom = false) {
+    const dropdownCounter = document.getElementById('trick-dropdowns').childElementCount + 1;
+    const newDropdown = document.createElement('select');
+    newDropdown.className = 'form-control';
+    newDropdown.name = 'trick-' + dropdownCounter;
+
+    // Fetch either custom tricks or official tricks based on isCustom flag
+    fetch(isCustom ? '/fetch_custom_tricks' : '/fetch_official_tricks')
+        .then(response => response.json())
+        .then(data => {
+            // Populate dropdown options with fetched tricks
+            data.forEach(trick => {
+                const option = document.createElement('option');
+                option.value = trick.id;
+                option.textContent = trick.name;
+                newDropdown.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching tricks:', error);
+        });
+
+    document.getElementById('trick-dropdowns').appendChild(newDropdown);
+}
+
+
+        // Function to toggle display of edit form
         function toggleEditForm(skill) {
-            var form = document.getElementById(`edit-form-${skill}`);
+            const form = document.getElementById(`edit-form-${skill}`);
             form.style.display = form.style.display === 'none' || form.style.display === '' ? 'inline-block' : 'none';
         }
 
+        // Function to update progress
         function updateProgress(skill, moveId) {
-            var input = document.getElementById(`input-${skill}`);
-            var value = input.value;
-
+            const input = document.getElementById(`input-${skill}`);
+            const value = input.value;
             if (value >= 0 && value <= 100) {
-                // Make an AJAX request to Flask backend
-                var xhr = new XMLHttpRequest();
+                const xhr = new XMLHttpRequest();
                 xhr.open("POST", "/update_exist", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         console.log(xhr.responseText);
-                        // Optionally, perform any client-side updates
                         toggleEditForm(skill); // Hide the form after updating
                         location.reload();
                     }
@@ -640,15 +444,14 @@
             }
         }
 
+        // Function to remove a combo
         function removeCombo(comboId) {
             if (confirm("Are you sure you want to remove this combo?")) {
-                // Send an AJAX request to remove the combo
-                var xhr = new XMLHttpRequest();
+                const xhr = new XMLHttpRequest();
                 xhr.open("POST", "/remove_combo", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {
-                        // Reload the page or update UI as needed
                         location.reload();
                     }
                 };
@@ -656,15 +459,14 @@
             }
         }
 
+        // Function to remove a skill
         function removeSkill(moveId) {
             if (confirm("Are you sure you want to remove this skill?")) {
-                // Send an AJAX request to remove the skill
-                var xhr = new XMLHttpRequest();
+                const xhr = new XMLHttpRequest();
                 xhr.open("POST", "/remove_skill", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {
-                        // Reload the page or update UI as needed
                         location.reload();
                     }
                 };
@@ -672,8 +474,13 @@
             }
         }
 
-
+        // Function to toggle dropdown
+        function toggleDropdown(date) {
+            const dropdown = document.getElementById(date);
+            dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+        }
     </script>
+
 {% endblock %}
 
 </body>
