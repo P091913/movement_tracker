@@ -1,0 +1,111 @@
+{% for date in combined_dates %}
+    <h5 class="mb-0">
+        <button class="btn btn-link" href="javascript:void(0);" onclick="toggleDropdown('{{ date }}')" aria-expanded="true">
+            Date: {{ date }}
+        </button>
+    </h5>
+    <!-- Progress Tracking Collapsible Sections -->
+    <div id="{{ date }}" style="display: none;">
+        <!-- Example Skill Section -->
+        <div class="card-accord">
+            <div class="card-header-accord" id="headingBackflip">
+            </div>
+            <div class="card-body-accord">
+                <table class="table table-striped">
+                    {% if date in sessions_by_date and sessions_by_date[date] %}
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Movement</th>
+                            <th scope="col">Attempts</th>
+                            <th scope="col">Successes</th>
+                            <th scope="col">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sess_det in sessions_by_date[date] %}
+                        <!-- Example Row -->
+                        <tr style="color: white">
+                            <td>{{ sess_det.trick_name }}</td>
+                            <td>{{ sess_det.attempts }}</td>
+                            <td>{{ sess_det.successful_landings }}</td>
+                            <td>{{ sess_det.notes }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% endif %}
+
+                    {% if date in combos_by_date and combos_by_date[date] %}
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Combo</th>
+                            <th scope="col">Attempts</th>
+                            <th scope="col">Successes</th>
+                            <th scope="col">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for combo in combos_by_date[date] %}
+                        <!-- Example Row -->
+                        <tr style="color: white">
+                            <td>{{ combo.combo_name }}</td>
+                            <td>{{ combo.attempts }}</td>
+                            <td>{{ combo.successes }}</td>
+                            <td>{{ combo.notes }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+
+
+    <!-- Modal for Adding New Entry -->
+    <div class="modal fade" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title card-title" id="progressModalLabel">Add New Entry</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="progress-form">
+                    <div class="form-group">
+                        <label class="card-title" for="date">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="form-group" id="trick-dropdowns">
+                        <label class="card-title" for="trick">Trick</label>
+                        <select class="form-control" id="trick" name="trick" required>
+                            <option value="" disabled selected>Select a trick</option>
+                            {% for move in moves %}
+                            <option value="{{ move.move_name }}" data-move-id="{{ move.move_id }}">{{ move.move_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label class="card-title" for="attempts">Attempts</label>
+                            <input type="number" class="form-control" id="attempts" name="attempts" placeholder="Attempts" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="card-title" for="successes">Successes</label>
+                            <input type="number" class="form-control" id="successes" name="successes" placeholder="Successes" required>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="card-title" for="notes">Notes</label>
+                        <input type="text" class="form-control" id="notes" name="notes" placeholder="Notes">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Entry</button>
+                </form>
+          </div>
+        </div>
+      </div>
+    </div>

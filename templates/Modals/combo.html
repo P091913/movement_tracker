@@ -1,0 +1,223 @@
+<div class="card">
+    <div class="card-body">
+        <div class="scrollable-container" style="max-height: 200px; overflow-x: auto; white-space: nowrap;">
+            {% for i in range(0, current_user.combos|length, 2) %}
+                <div class="list-group">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <a href="#" data-toggle="modal" data-target="#comboModal{{ current_user.combos[i].id }}">
+                                {{ current_user.combos[i].title }}
+                            </a>
+                        </li>
+                        {% if i + 1 < current_user.combos|length %}
+                            <li class="list-group-item">
+                                <a href="#" data-toggle="modal"
+                                   data-target="#comboModal{{ current_user.combos[i + 1].id }}">
+                                    {{ current_user.combos[i + 1].title }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!-- Modals -->
+                <div class="modal fade combo-modal" id="comboModal{{ current_user.combos[i].id }}" tabindex="-1"
+                     role="dialog" aria-labelledby="comboModalLabel{{ current_user.combos[i].id }}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="comboModalLabel{{ current_user.combos[i].id }}">Combo
+                                    Details
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <h5 class="card-title">{{ current_user.combos[i].title }}</h5>
+                                <p class="card-text">{{ current_user.combos[i].description }}</p>
+                                <ul class="list-group mb-3">
+                                    {% for trick in current_user.combos[i].combo_tricks %}
+                                        <li class="list-group-item">
+                                            {% if trick.trick_type == 'official' %}
+                                                {{ trick.move.move_name }}
+                                            {% else %}
+                                                {{ trick.custom_trick.trick_name }}
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="removeCombo({{ current_user.combos[i].id }})">
+                                            Remove Combo
+                                        </button>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="showAddToPlannerModal('{{ current_user.combos[i].id }}', '{{ current_user.combos[i].title }}')">
+                                            Add to Session Planner
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">Created: {{ current_user.combos[i].date_created.strftime('%Y-%m-%d') }}</small>
+                                        <br>
+                                        <small class="text-muted">Creator: {{ current_user.username }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if i + 1 < current_user.combos|length %}
+                    <div class="modal fade combo-modal" id="comboModal{{ current_user.combos[i + 1].id }}" tabindex="-1"
+                         role="dialog" aria-labelledby="comboModalLabel{{ current_user.combos[i + 1].id }}"
+                         aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="comboModalLabel{{ current_user.combos[i + 1].id }}">
+                                        Combo
+                                        Details
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <h5 class="card-title">{{ current_user.combos[i + 1].title }}</h5>
+                                    <p class="card-text">{{ current_user.combos[i + 1].description }}</p>
+                                    <ul class="list-group mb-3">
+                                        {% for trick in current_user.combos[i + 1].combo_tricks %}
+                                            <li class="list-group-item">
+                                                {% if trick.trick_type == 'official' %}
+                                                    {{ trick.move.move_name }}
+                                                {% else %}
+                                                    {{ trick.custom_trick.trick_name }}
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            <button type="button" class="btn btn-danger"
+                                                    onclick="removeCombo({{ current_user.combos[i + 1].id }})">
+                                                Remove Combo
+                                            </button>
+                                            <button type="button" class="btn btn-primary"
+                                                    onclick="showAddToPlannerModal('{{ current_user.combos[i + 1].id }}', '{{ current_user.combos[i + 1].title }}')">
+                                                Add to Session Planner
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Created: {{ current_user.combos[i + 1].date_created.strftime('%Y-%m-%d') }}</small>
+                                            <br>
+                                            <small class="text-muted">Creator: {{ current_user.username }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="addComboModal" tabindex="-1" role="dialog"
+         aria-labelledby="addComboModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title card-title" id="addComboModalLabel">Add Combo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="combo-form" action="{{ url_for('custom_add_combo') }}" method="POST">
+                        <div class="form-group">
+                            <label class="card-title" for="combo-title">Combo Title</label>
+                            <input type="text" class="form-control" id="combo-title" name="combo-title"
+                                   placeholder="Enter combo title" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="card-title" for="combo-description">Combo Description</label>
+                            <textarea class="form-control" id="combo-description" name="combo-description" rows="3"
+                                      placeholder="Enter combo description" required></textarea>
+                        </div>
+                        <div class="form-group" id="trick-dropdowns">
+                            <select class="form-control" name="tricks[]" required>
+                                <option value="" disabled selected>Select a trick</option>
+                                <!-- Options for official tricks -->
+                                {% for move in moves %}
+                                    <option value="official-{{ move.move_id }}">{{ move.move_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Button for adding more tricks -->
+                        <button type="button" class="btn btn-secondary" onclick="addTrickDropdown()">Add More Tricks
+                        </button>
+                        <!-- Button for adding a custom trick -->
+                        <button type="button" class="btn btn-secondary" onclick="addTrickDropdown(true)">Add Custom
+                            Trick
+                        </button>
+                        <button type="submit" class="btn btn-success">Save Combo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- combo progress modal -->
+    <div class="modal fade" id="comboProgressModal" tabindex="-1" role="dialog"
+         aria-labelledby="comboProgressModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title card-title" id="comboProgressModalLabel">Add Combo Progress</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="combo-progress-form">
+                        <div class="form-group">
+                            <label class="card-title" for="combo-date">Date</label>
+                            <input type="date" class="form-control" id="combo-date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="card-title" for="combo">Combo</label>
+                            <select class="form-control" id="combo" name="combo" required>
+                                <option value="" disabled selected>Select a combo</option>
+                                {% for combo in current_user.combos %}
+                                    <option value="{{ combo.id }}">{{ combo.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label class="card-title" for="combo-attempts">Attempts</label>
+                                <input type="number" class="form-control" id="combo-attempts" name="attempts"
+                                       placeholder="Attempts" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="card-title" for="combo-successes">Successes</label>
+                                <input type="number" class="form-control" id="combo-successes" name="successes"
+                                       placeholder="Successes" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="card-title" for="combo-notes">Notes</label>
+                            <input type="text" class="form-control" id="combo-notes" name="notes" placeholder="Notes">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Combo Progress</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

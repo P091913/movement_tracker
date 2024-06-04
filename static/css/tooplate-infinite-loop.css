@@ -195,6 +195,10 @@ blockquote {
   margin-top: -90px;
 }
 
+.tm-hero-text-container-inner-top-pad {
+  margin-top: 175px;
+}
+
 .tm-hero-title {
   font-size: 3.5rem;
   text-shadow: 2px 2px 2px #333;

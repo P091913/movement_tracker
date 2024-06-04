@@ -50,11 +50,127 @@ def logout():
 @login_required
 # @relog_required
 def book():
+    user = current_user
+    session_details = user.user_session_details
+    combos = user.combos
     moves = Moves.query.all()
     user_moves = db.session.query(Moves.move_id, Moves.move_name, UserMoves.status). \
         join(Moves, UserMoves.move_id == Moves.move_id). \
         filter(UserMoves.user_id == current_user.id).all()
-    return render_template("book.html", moves=moves, user_moves=user_moves)
+
+    # Fetch all previous session details for the current user, ordered by date
+    previous_sessions = db.session.query(SessionDetails). \
+        filter_by(user_id=current_user.id). \
+        order_by(SessionDetails.date.desc()).all()
+
+    # Group sessions by date
+    from collections import defaultdict
+    sessions_by_date = defaultdict(list)
+    for session in previous_sessions:
+        sessions_by_date[session.date.date()].append(session)
+
+    combos_by_date = defaultdict(list)
+    for combo in combos:
+        for combo_progress in combo.combo_progress_details:
+            # Query the Combo table to get the combo name based on the combo_id
+            combo_name = db.session.query(Combo.title).filter(Combo.id == combo_progress.combo_id).scalar()
+            # Add the combo name to the ComboProgress object
+            combo_progress.combo_name = combo_name
+            # Append the ComboProgress object to the list corresponding to the date
+            combos_by_date[combo_progress.date.date()].append(combo_progress)
+
+    combined_dates = set(sessions_by_date.keys()).union(set(combos_by_date.keys()))
+
+    custom_moves = CustomTrick.query.filter(CustomTrick.user_id == current_user.id).all()
+
+
+    return render_template("book.html", moves=moves, user_moves=user_moves,
+                           sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
+                           custom_moves=custom_moves, combined_dates=combined_dates)
+
+
+@app.route('/add_custom_trick', methods=['POST'])
+def add_custom_trick():
+    data = request.json
+    trick_name = data.get('trickName')
+
+    existing_trick = CustomTrick.query.filter_by(user_id=current_user.id, trick_name=trick_name).first()
+    if existing_trick:
+        return jsonify({'error': 'Trick already exists for this user'})
+    else:
+        # Create and store the custom trick in the database
+        custom_trick = CustomTrick(trick_name=trick_name, user_id=current_user.id)
+        #combo_trick = ComboTricks(combo_id=combo_id, trick_id=trick_id, trick_type=trick_type, position=position)
+        db.session.add(custom_trick)
+        db.session.commit()
+        return jsonify({'message': 'Custom trick added successfully'})
+
+
+@app.route('/fetch_custom_tricks')
+def fetch_custom_tricks():
+    # Fetch custom tricks for the current user
+    custom_tricks = CustomTrick.query.filter_by(user_id=current_user.id).all()
+
+    # Serialize custom tricks to JSON format
+    custom_tricks_json = [{
+        'id': trick.id,
+        'name': trick.trick_name
+    } for trick in custom_tricks]
+
+    return jsonify(custom_tricks_json)
+
+
+@app.route('/fetch_official_tricks')
+def fetch_official_tricks():
+    # Fetch all official tricks from the Moves table
+    official_tricks = Moves.query.all()
+
+    # Serialize the official tricks to JSON format
+    serialized_tricks = [{'id': trick.move_id, 'name': trick.move_name} for trick in official_tricks]
+
+    # Return the serialized tricks as JSON response
+    return jsonify(serialized_tricks)
+
+
+@app.route('/add_progress_entry', methods=['POST'])
+@login_required
+def add_progress_entry():
+    data = request.json
+    # Here, you can access the form data using the keys of the JSON object
+    date = data.get('date')
+    trick = data.get('trick')
+    trick_id = data.get('trick_id')
+    attempts = data.get('attempts')
+    successes = data.get('successes')
+    notes = data.get('notes')
+    print(data)
+
+    new_entry = SessionDetails(date=date, trick_name=trick, attempts=attempts,
+                               successful_landings=successes, notes=notes, user_id=current_user.id,
+                               move_id=trick_id)
+    db.session.add(new_entry)
+    db.session.commit()
+
+    # Redirect to the appropriate page after adding the entry
+    return jsonify(success=True, redirect_url=url_for('book'))
+
+
+@app.route('/add_combo_progress', methods=['POST'])
+@login_required
+def add_combo_progress():
+    data = request.json
+    date = data.get('date')
+    combo_id = data.get('combo')
+    attempts = data.get('attempts')
+    successes = data.get('successes')
+    notes = data.get('notes')
+
+    new_combo_progress = ComboProgress(date=date, combo_id=combo_id, attempts=attempts,
+                                       successes=successes, notes=notes, user_id=current_user.id)
+    db.session.add(new_combo_progress)
+    db.session.commit()
+
+    return jsonify({'success': True})
 
 
 @app.route("/create", methods=['POST', 'GET'])
@@ -143,29 +259,90 @@ def add_combo():
     combo_title = request.form.get('combo-title')
     combo_description = request.form.get('combo-description')
 
-    # Get all selected tricks from form data
-    selected_tricks = []
-    for key, value in request.form.items():
-        if key.startswith('trick-') and value:  # Check if the key starts with 'trick-' and has a non-empty value
-            selected_tricks.append(value)
-
     # Create a new Combo object
-    new_combo = Combo(title=combo_title, description=combo_description)
+    new_combo = Combo(title=combo_title, description=combo_description, user_id=current_user.id)
 
-    # Retrieve the Move objects corresponding to the selected move names
-    selected_moves = Moves.query.filter(Moves.move_name.in_(selected_tricks)).all()
-
-    # Add the selected moves to the new combo
-    new_combo.moves.extend(selected_moves)
-
-    # Set the user_id attribute of the new combo to the ID of the logged-in user
-    new_combo.user_id = current_user.id
-
-    # Add the new combo to the database session and commit
+    # Add the new combo to the database session and commit to get the combo ID
     db.session.add(new_combo)
     db.session.commit()
 
+    return jsonify({'combo_id': new_combo.id})
+
+
+@app.route('/add_combo_tricks', methods=['POST'])
+@login_required
+def add_combo_tricks():
+    combo_id = request.form.get('combo_id')
+
+    # Get all selected tricks from form data
+    selected_tricks = request.form.getlist('tricks[]')
+
+    # Add the selected tricks to the ComboTricks table in the order they were selected
+    for position, trick in enumerate(selected_tricks, start=1):
+        trick_parts = trick.split('-')
+        if len(trick_parts) != 2:
+            print("Error: Trick does not contain expected format:", trick)
+            continue
+        trick_type, trick_id = trick_parts
+        print("Trick Type:", trick_type)
+        print("Trick ID:", trick_id)
+        trick_id = int(trick_id)
+
+        # Create a new ComboTricks object
+        combo_trick = ComboTricks(combo_id=combo_id, trick_id=trick_id, trick_type=trick_type, position=position)
+
+        # Add the combo trick to the database session
+        db.session.add(combo_trick)
+
+    # Commit all changes to the database
+    db.session.commit()
+
     return redirect(url_for('book'))
+
+
+@app.route('/custom_add_combo', methods=['POST'])
+def custom_add_combo():
+    combo_title = request.form['combo-title']
+    combo_description = request.form['combo-description']
+    selected_tricks = request.form.getlist('tricks[]')
+    print(combo_title, combo_description, selected_tricks)
+
+    # Create a new Combo object
+    new_combo = Combo(title=combo_title, description=combo_description, user_id=current_user.id)
+
+    # Add the new combo to the database session and commit to get the combo ID
+    db.session.add(new_combo)
+    db.session.commit()
+
+    for position, trick in enumerate(selected_tricks, start=1):
+        trick_parts = trick.split('-')
+        if len(trick_parts) != 2:
+            print("Error: Trick does not contain expected format:", trick)
+            continue
+        trick_type, trick_id = trick_parts
+        print("Trick Type:", trick_type)
+        print("Trick ID:", trick_id)
+        trick_id = int(trick_id)
+
+        # Create a new ComboTricks object
+        if trick_type == 'custom':
+            combo_trick = ComboTricks(combo_id=new_combo.id, trick_id=trick_id, trick_type=trick_type, position=position,
+                                        custom_trick_id=trick_id)
+        else:
+            combo_trick = ComboTricks(combo_id=new_combo.id, trick_id=trick_id, trick_type=trick_type,
+                                      position=position,
+                                      move_id=trick_id)
+
+        # Add the combo trick to the database session
+        db.session.add(combo_trick)
+
+    # Commit all changes to the database
+    db.session.commit()
+
+    return redirect(url_for('book'))
+
+    #return "Success"  # You can return a response as needed
+
 
 
 @app.route('/remove_combo', methods=['POST'])
@@ -176,9 +353,23 @@ def remove_combo():
     # Retrieve the combo from the database
     combo = Combo.query.get(combo_id)
 
-    #if not combo:
-    #    flash('Combo not found!', 'error')
-    #    return redirect(url_for('your_view_function'))  # Adjust the redirect to your appropriate view function
+    if not combo:
+        flash('Combo not found!', 'error')
+        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+
+    # Check if the current user is allowed to delete this combo
+    if combo.user_id != current_user.id:
+        flash('You do not have permission to delete this combo.', 'error')
+        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+
+    # Manually delete related records in combo_tricks
+    ComboTricks.query.filter_by(combo_id=combo_id).delete()
+    # Manually delete related records in combo_moves and combo_custom_tricks if necessary
+    db.session.execute(combo_moves.delete().where(combo_moves.c.combo_id == combo_id))
+    db.session.execute(combo_custom_tricks.delete().where(combo_custom_tricks.c.combo_id == combo_id))
+
+    # Delete related combo progress records
+    ComboProgress.query.filter_by(combo_id=combo_id).delete()
 
     # Delete the combo from the database
     db.session.delete(combo)
