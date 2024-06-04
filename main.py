@@ -90,12 +90,16 @@ def add_custom_trick():
     data = request.json
     trick_name = data.get('trickName')
 
-    # Create and store the custom trick in the database
-    custom_trick = CustomTrick(trick_name=trick_name, user_id=current_user.id)
-    db.session.add(custom_trick)
-    db.session.commit()
+    existing_trick = CustomTrick.query.filter_by(user_id=current_user.id, trick_name=trick_name).first()
 
-    return jsonify({'message': 'Custom trick added successfully'})
+    if existing_trick:
+        return jsonify({'error': 'Trick already exists for this user'})
+    else:
+        # Create and store the custom trick in the database
+        custom_trick = CustomTrick(trick_name=trick_name, user_id=current_user.id)
+        db.session.add(custom_trick)
+        db.session.commit()
+        return jsonify({'message': 'Custom trick added successfully'})
 
 
 @app.route('/fetch_custom_tricks')
@@ -110,6 +114,7 @@ def fetch_custom_tricks():
     } for trick in custom_tricks]
 
     return jsonify(custom_tricks_json)
+
 
 @app.route('/fetch_official_tricks')
 def fetch_official_tricks():
@@ -251,28 +256,39 @@ def add_combo():
     combo_description = request.form.get('combo-description')
 
     # Get all selected tricks from form data
-    selected_tricks = []
-    for key, value in request.form.items():
-        if key.startswith('trick-') and value:  # Check if the key starts with 'trick-' and has a non-empty value
-            selected_tricks.append(value)
+    selected_tricks = request.form.getlist('tricks[]')
 
     # Create a new Combo object
-    new_combo = Combo(title=combo_title, description=combo_description)
+    new_combo = Combo(title=combo_title, description=combo_description, user_id=current_user.id)
 
-    # Retrieve the Move objects corresponding to the selected move names
-    selected_moves = Moves.query.filter(Moves.move_name.in_(selected_tricks)).all()
+    # Separate official tricks and custom tricks
+    official_trick_ids = []
+    custom_trick_ids = []
+    for trick in selected_tricks:
+        trick_type, trick_id = trick.split('-')
+        if trick_type == 'official':
+            official_trick_ids.append(int(trick_id))
+        elif trick_type == 'custom':
+            custom_trick_ids.append(int(trick_id))
 
-    # Add the selected moves to the new combo
+    # Retrieve the Move objects corresponding to the selected official trick IDs
+    selected_moves = Moves.query.filter(Moves.move_id.in_(official_trick_ids)).all()
+
+    # Retrieve the CustomTrick objects corresponding to the selected custom trick IDs
+    selected_custom_moves = CustomTrick.query.filter(CustomTrick.id.in_(custom_trick_ids)).all()
+
+    # Add the selected official and custom moves to the new combo
     new_combo.moves.extend(selected_moves)
-
-    # Set the user_id attribute of the new combo to the ID of the logged-in user
-    new_combo.user_id = current_user.id
+    new_combo.custom_moves.extend(selected_custom_moves)
 
     # Add the new combo to the database session and commit
     db.session.add(new_combo)
     db.session.commit()
 
     return redirect(url_for('book'))
+
+
+
 
 
 @app.route('/remove_combo', methods=['POST'])

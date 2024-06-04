@@ -390,31 +390,40 @@ const customTrickForm = document.getElementById('customTrickForm');
 customTrickForm.addEventListener('submit', handleCustomTrickFormSubmit);
         });
 
-        // Function to add new trick dropdown
 function addTrickDropdown(isCustom = false) {
     const dropdownCounter = document.getElementById('trick-dropdowns').childElementCount + 1;
     const newDropdown = document.createElement('select');
     newDropdown.className = 'form-control';
-    newDropdown.name = 'trick-' + dropdownCounter;
+    // Modify the name attribute to accept multiple values
+    newDropdown.name = 'tricks[]';
 
     // Fetch either custom tricks or official tricks based on isCustom flag
     fetch(isCustom ? '/fetch_custom_tricks' : '/fetch_official_tricks')
         .then(response => response.json())
         .then(data => {
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            defaultOption.textContent = 'Select a trick';
+            newDropdown.appendChild(defaultOption);
+
             // Populate dropdown options with fetched tricks
             data.forEach(trick => {
                 const option = document.createElement('option');
-                option.value = trick.id;
+                option.value = isCustom ? `custom-${trick.id}` : `official-${trick.id}`;
                 option.textContent = trick.name;
                 newDropdown.appendChild(option);
             });
+
+            // Ensure the dropdown is appended after fetching the tricks
+            document.getElementById('trick-dropdowns').appendChild(newDropdown);
         })
         .catch(error => {
             console.error('Error fetching tricks:', error);
         });
-
-    document.getElementById('trick-dropdowns').appendChild(newDropdown);
 }
+
 
 
         // Function to toggle display of edit form

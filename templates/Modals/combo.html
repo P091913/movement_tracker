@@ -44,6 +44,9 @@
                                         {% for move in current_user.combos[i].moves %}
                                             <li class="list-group-item">{{ move.move_name }}</li>
                                         {% endfor %}
+                                    {% for custom_move in current_user.combos[i].custom_moves %}
+        <li class="list-group-item">{{ custom_move.trick_name }}</li>
+    {% endfor %}
                                     </ul>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
@@ -138,34 +141,30 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/add_combo" method="POST">
-                            <div class="form-group">
-                                <label class="card-title" for="combo-title">Combo Title</label>
-                                <input type="text" class="form-control" id="combo-title"
-                                       name="combo-title"
-                                       placeholder="Enter combo title" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="card-title" for="combo-description">Combo Description</label>
-                                <textarea class="form-control" id="combo-description"
-                                          name="combo-description" rows="3"
-                                          placeholder="Enter combo description" required></textarea>
-                            </div>
-                            <div class="form-group" id="trick-dropdowns">
-                                <select class="form-control" name="trick-1" required>
-                                    <option value="" disabled selected>Select a trick</option>
-                                    {% for move in moves %}
-                                        <option value="{{ move.move_name }}">{{ move.move_name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="addTrickDropdown()">Add
-                                More Tricks
-                            </button>
-                            <button type="button" class="btn btn-secondary" onclick="addTrickDropdown(true)">Add Custom Trick</button>
-                            <button type="submit" class="btn btn-success">Save Combo</button>
-                        </form>
+                       <form action="/add_combo" method="POST">
+    <div class="form-group">
+        <label class="card-title" for="combo-title">Combo Title</label>
+        <input type="text" class="form-control" id="combo-title" name="combo-title" placeholder="Enter combo title" required>
+    </div>
+    <div class="form-group">
+        <label class="card-title" for="combo-description">Combo Description</label>
+        <textarea class="form-control" id="combo-description" name="combo-description" rows="3" placeholder="Enter combo description" required></textarea>
+    </div>
+    <div class="form-group" id="trick-dropdowns">
+        <!-- Ensure the select element can accept multiple values -->
+        <select class="form-control" name="tricks[]" required>
+            <option value="" disabled selected>Select a trick</option>
+            <!-- Options for official tricks -->
+            {% for move in moves %}
+                <option value="official-{{ move.move_id }}">{{ move.move_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="button" class="btn btn-secondary" onclick="addTrickDropdown()">Add More Tricks</button>
+    <button type="button" class="btn btn-secondary" onclick="addTrickDropdown(true)">Add Custom Trick</button>
+    <button type="submit" class="btn btn-success">Save Combo</button>
+</form>
+
                     </div>
                 </div>
             </div>
