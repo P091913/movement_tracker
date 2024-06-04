@@ -178,7 +178,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="comboProgressModalLabel">Add Combo Progress</h5>
+                    <h5 class="modal-title card-title" id="comboProgressModalLabel">Add Combo Progress</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -186,11 +186,11 @@
                 <div class="modal-body">
                     <form id="combo-progress-form">
                         <div class="form-group">
-                            <label for="combo-date">Date</label>
+                            <label class="card-title" for="combo-date">Date</label>
                             <input type="date" class="form-control" id="combo-date" name="date" required>
                         </div>
                         <div class="form-group">
-                            <label for="combo">Combo</label>
+                            <label class="card-title" for="combo">Combo</label>
                             <select class="form-control" id="combo" name="combo" required>
                                 <option value="" disabled selected>Select a combo</option>
                                 {% for combo in current_user.combos %}
@@ -200,18 +200,18 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="combo-attempts">Attempts</label>
+                                <label class="card-title" for="combo-attempts">Attempts</label>
                                 <input type="number" class="form-control" id="combo-attempts" name="attempts"
                                        placeholder="Attempts" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="combo-successes">Successes</label>
+                                <label class="card-title" for="combo-successes">Successes</label>
                                 <input type="number" class="form-control" id="combo-successes" name="successes"
                                        placeholder="Successes" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="combo-notes">Notes</label>
+                            <label class="card-title" for="combo-notes">Notes</label>
                             <input type="text" class="form-control" id="combo-notes" name="notes" placeholder="Notes">
                         </div>
                         <button type="submit" class="btn btn-primary">Add Combo Progress</button>
