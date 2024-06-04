@@ -1,4 +1,4 @@
-{% for date, sessions in sessions_by_date.items() %}
+{% for date in combined_dates %}
     <h5 class="mb-0">
         <button class="btn btn-link" href="javascript:void(0);" onclick="toggleDropdown('{{ date }}')" aria-expanded="true">
             Date: {{ date }}
@@ -12,6 +12,7 @@
             </div>
             <div class="card-body-accord">
                 <table class="table table-striped">
+                    {% if date in sessions_by_date and sessions_by_date[date] %}
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col">Movement</th>
@@ -21,7 +22,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for sess_det in sessions %}
+                        {% for sess_det in sessions_by_date[date] %}
                         <!-- Example Row -->
                         <tr style="color: white">
                             <td>{{ sess_det.trick_name }}</td>
@@ -31,6 +32,9 @@
                         </tr>
                         {% endfor %}
                     </tbody>
+                    {% endif %}
+
+                    {% if date in combos_by_date and combos_by_date[date] %}
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col">Combo</th>
@@ -50,18 +54,21 @@
                         </tr>
                         {% endfor %}
                     </tbody>
+                    {% endif %}
                 </table>
             </div>
         </div>
     </div>
 {% endfor %}
 
+
+
     <!-- Modal for Adding New Entry -->
     <div class="modal fade" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="progressModalLabel">Add New Entry</h5>
+            <h5 class="modal-title card-title" id="progressModalLabel">Add New Entry</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -69,11 +76,11 @@
           <div class="modal-body">
             <form id="progress-form">
                     <div class="form-group">
-                        <label for="date">Date</label>
+                        <label class="card-title" for="date">Date</label>
                         <input type="date" class="form-control" id="date" name="date" required>
                     </div>
                     <div class="form-group" id="trick-dropdowns">
-                        <label for="trick">Trick</label>
+                        <label class="card-title" for="trick">Trick</label>
                         <select class="form-control" id="trick" name="trick" required>
                             <option value="" disabled selected>Select a trick</option>
                             {% for move in moves %}
@@ -83,17 +90,17 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="attempts">Attempts</label>
+                            <label class="card-title" for="attempts">Attempts</label>
                             <input type="number" class="form-control" id="attempts" name="attempts" placeholder="Attempts" required>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="successes">Successes</label>
+                            <label class="card-title" for="successes">Successes</label>
                             <input type="number" class="form-control" id="successes" name="successes" placeholder="Successes" required>
                         </div>
 
                     </div>
                     <div class="form-group">
-                        <label for="notes">Notes</label>
+                        <label class="card-title" for="notes">Notes</label>
                         <input type="text" class="form-control" id="notes" name="notes" placeholder="Notes">
                     </div>
                     <button type="submit" class="btn btn-primary">Add Entry</button>
