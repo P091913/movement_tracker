@@ -1,124 +1,43 @@
-{% for date in combined_dates %}
-    <h5 class="mb-0">
-        <button class="btn btn-link" href="javascript:void(0);" onclick="toggleDropdown('{{ date }}')" aria-expanded="true">
-            Date: {{ date }}
-        </button>
-    </h5>
-    <!-- Progress Tracking Collapsible Sections -->
-    <div id="{{ date }}" style="display: none;">
-        <!-- Example Skill Section -->
-        <div class="card-accord">
-            <div class="card-header-accord" id="headingBackflip">
-            </div>
-            <div class="card-body-accord">
-                <!-- Trick Sessions Heading -->
-                <h6>Session Skills</h6>
-                <!-- Trick Sessions Accordion -->
-                <div class="accordion" id="trickAccordion{{ date }}">
-                    {% if date in sessions_by_date and sessions_by_date[date] %}
-                        {% for sess_det in sessions_by_date[date] %}
-                            <div class="card" style="margin-bottom: 2px;">
-                                <div class="card-header" id="heading{{ sess_det.trick_name }}">
-                                    <h2 class="mb-0" style="margin-bottom: 0;">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ sess_det.trick_name }}{{ date }}" aria-expanded="true" aria-controls="collapse{{ sess_det.trick_name }}{{ date }}">
-                                            {{ sess_det.trick_name }}
-                                        </button>
-                                    </h2>
-                                </div>
-                                <div id="collapse{{ sess_det.trick_name }}{{ date }}" class="collapse" aria-labelledby="heading{{ sess_det.trick_name }}" data-parent="#trickAccordion{{ date }}" style="padding-top: 5px; padding-bottom: 5px;">
-                                    <div class="card-body" style="background-color: #2e2d2d; color: white;">
-                                        <p>Attempts: {{ sess_det.attempts }}</p>
-                                        <p>Successes: {{ sess_det.successful_landings }}</p>
-                                        <p>Notes: {{ sess_det.notes }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>No trick sessions for this date.</p>
-                    {% endif %}
-                </div>
-
-                <br>
-                <br>
-                <!-- Combo Sessions Heading -->
-                <h6>Session Combos</h6>
-                <!-- Combo Sessions Accordion -->
-                <div class="accordion" id="comboAccordion{{ date }}">
-                    {% if date in combos_by_date and combos_by_date[date] %}
-                        {% for combo in combos_by_date[date] %}
-                            <div class="card" style="margin-bottom: 2px;">
-                                <div class="card-header" id="heading{{ combo.combo_name }}">
-                                    <h2 class="mb-0" style="margin-bottom: 0;"> <!-- Adjust margin-bottom as needed -->
-        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ combo.combo_name }}{{ date }}" aria-expanded="true" aria-controls="collapse{{ combo.combo_name }}{{ date }}">
-            {{ combo.combo_name }}
-        </button>
-    </h2>
-                                </div>
-                                <div id="collapse{{ combo.combo_name }}{{ date }}" class="collapse" aria-labelledby="heading{{ combo.combo_name }}" data-parent="#comboAccordion{{ date }}" style="padding-top: 5px; padding-bottom: 5px;">
-                                    <div class="card-body" style="background-color: #2e2d2d; color: white;">
-                                        <p>Attempts: {{ combo.attempts }}</p>
-                                        <p>Successes: {{ combo.successes }}</p>
-                                        <p>Notes: {{ combo.notes }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>No combo sessions for this date.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-{% endfor %}
-
-
-
-
-    <!-- Modal for Adding New Entry -->
-    <div class="modal fade" id="progressModal" tabindex="-1" role="dialog" aria-labelledby="progressModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+<!-- Modal for Adding New Entry -->
+<div class="modal fade" id="progressModal" tabindex="-1" aria-labelledby="progressModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title card-title" id="progressModalLabel">Add New Entry</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="progress-form">
-                    <div class="form-group">
-                        <label class="card-title" for="date">Date</label>
+            <div class="modal-header">
+                <h5 class="modal-title card-title text-dark" id="progressModalLabel">Add Trick Progress</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="progress-form">
+                    <div class="mb-3">
+                        <label class="card-title text-dark" for="date">Date</label>
                         <input type="date" class="form-control" id="date" name="date" required>
                     </div>
-                    <div class="form-group" id="trick-dropdowns">
-                        <label class="card-title" for="trick">Trick</label>
+                    <div class="mb-3" id="trick-dropdowns">
+                        <label class="card-title text-dark" for="trick">Trick</label>
                         <select class="form-control" id="trick" name="trick" required>
                             <option value="" disabled selected>Select a trick</option>
                             {% for move in moves %}
-                            <option value="{{ move.move_name }}" data-move-id="{{ move.move_id }}">{{ move.move_name }}</option>
+                                <option value="{{ move.move_name }}" data-move-id="{{ move.move_id }}">{{ move.move_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label class="card-title" for="attempts">Attempts</label>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="card-title text-dark" for="attempts">Attempts</label>
                             <input type="number" class="form-control" id="attempts" name="attempts" placeholder="Attempts" required>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="card-title" for="successes">Successes</label>
+                        <div class="col-md-6">
+                            <label class="card-title text-dark" for="successes">Successes</label>
                             <input type="number" class="form-control" id="successes" name="successes" placeholder="Successes" required>
                         </div>
-
                     </div>
-                    <div class="form-group">
-                        <label class="card-title" for="notes">Notes</label>
+                    <div class="mb-3">
+                        <label class="card-title text-dark" for="notes">Notes</label>
                         <input type="text" class="form-control" id="notes" name="notes" placeholder="Notes">
                     </div>
                     <button type="submit" class="btn btn-primary">Add Entry</button>
                 </form>
-          </div>
+            </div>
         </div>
-      </div>
     </div>
+</div>

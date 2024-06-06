@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Training Book</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu,
+        .dropdown-menu-session {
+            position: absolute;
+            top: 100%;
+            left: -50px; /* Adjust the value to align the dropdown */
+            display: none;
+            z-index: 1000;
+            float: left;
+            min-width: 10rem;
+            padding: .5rem 0;
+            margin: .125rem 0 0;
+            font-size: 1rem;
+            color: #212529;
+            text-align: left;
+            list-style: none;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, .15);
+            border-radius: .25rem;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .175);
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem; /* Adjust padding as needed */
+        }
+
+        .dropdown-menu.show,
+        .dropdown-menu-session.show {
+            display: block;
+            right: 0;
+            left: auto;
+        }
+
+        .navbar-toggler-sub-menu {
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+
+    </style>
+</head>
+<body id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand fs-5 fs-md-4 fs-lg-3 fs-xl-2" href="#page-top">Floor Underground | Training Book</a>
+        <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#portfolio">Training
+                    Book</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{ url_for('logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Portfolio Section-->
+<section class="page-section portfolio" id="portfolio">
+    <div class="container">
+        <!-- Portfolio Section Heading-->
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Trick Portfolio</h2>
+        <!-- Icon Divider-->
+        <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fa fa-book"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+
+        {% include 'Modals/custom_trick.html' %}
+        {% include 'Modals/add_new_combo.html' %}
+        {% include 'Modals/add_combo_to_progress.html' %}
+
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <div class="dropdown d-inline-block">
+                    <button class="navbar-toggler-sub-menu dropdown-toggle shadow p-3 mb-5 rounded" type="button"
+                            id="dropdownMenuButton"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-plus"></i>
+                    </button>
+
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <!-- Dropdown menu content -->
+                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomTrickModal">Add
+                            Custom Trick</a>
+                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#addComboModal">Add
+                            Combo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container overflow-auto">
+            <div class="row justify-content-center">
+                <!-- Portfolio Items -->
+                {% for i in range(0, current_user.combos|length) %}
+                    <div class="col-sm-6 col-md-4 col-lg-3 mb-5 mb-sm-2">
+                        <div class="portfolio-item mx-auto shadow p-3 mb-5 bg-white rounded" data-bs-toggle="modal"
+                             data-bs-target="#comboModal{{ current_user.combos[i].id }}">
+                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                <div class="portfolio-item-caption-content text-center text-white"><i
+                                        class="fa fa-eye"></i></div>
+                            </div>
+                            <h1 class="text-center">{{ current_user.combos[i].title }}</h1>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- About Section-->
+<section class="page-section bg-primary text-white mb-0" id="about">
+    <div class="container">
+        <!-- About Section Heading-->
+        <h2 class="page-section-heading text-center text-uppercase text-white">Session Progress</h2>
+        <!-- Icon Divider-->
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fa fa-columns"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+
+        {% include 'Modals/session_prog.html' %}
+
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <div class="dropdown d-inline-block">
+                    <button class="navbar-toggler-sub-menu dropdown-toggle shadow p-3 mb-5 rounded" type="button"
+                            id="dropdownMenuSessionButton"
+                            aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="dropdown-menu-session dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                        <!-- Dropdown menu content -->
+                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#progressModal">
+                            Add Trick Progress</a>
+                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#comboProgressModal">
+                            Add Combo Progress</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- About Section Content-->
+        <div class="row">
+    {% for date in combined_dates %}
+        <h5 class="mb-0">
+            <button class="btn btn-link" href="javascript:void(0);" onclick="toggleDropdown('{{ date }}')"
+                    aria-expanded="true" style="color: white;">
+                Date: {{ date }}
+            </button>
+        </h5>
+        <!-- Progress Tracking Collapsible Sections -->
+        <div id="{{ date }}" style="display: none;">
+            <!-- Example Skill Section -->
+            <div class="card-accord">
+                <div class="card-header-accord" id="headingBackflip">
+                </div>
+                <div class="card-body-accord">
+                    <!-- Trick Sessions Heading -->
+                    <h6>Session Skills</h6>
+                    <!-- Trick Sessions Accordion -->
+                    <div class="accordion" id="trickAccordion{{ date }}">
+                        {% if date in sessions_by_date and sessions_by_date[date] %}
+                            {% for sess_det in sessions_by_date[date] %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ sess_det.trick_name }}">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ sess_det.trick_name }}{{ date }}"
+                                                aria-expanded="false"
+                                                aria-controls="collapse{{ sess_det.trick_name }}{{ date }}">
+                                            {{ sess_det.trick_name }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ sess_det.trick_name }}{{ date }}" class="accordion-collapse collapse"
+                                         aria-labelledby="heading{{ sess_det.trick_name }}"
+                                         data-bs-parent="#trickAccordion{{ date }}">
+                                        <div class="accordion-body" style="background-color: #2e2d2d; color: white;">
+                                            <p>Attempts: {{ sess_det.attempts }}</p>
+                                            <p>Successes: {{ sess_det.successful_landings }}</p>
+                                            <p>Notes: {{ sess_det.notes }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        {% endif %}
+                    </div>
+
+                    <br><br>
+
+                    <!-- Combo Sessions Heading -->
+                    <h6>Session Combos</h6>
+                    <!-- Combo Sessions Accordion -->
+                    <div class="accordion" id="comboAccordion{{ date }}">
+                        {% if date in combos_by_date and combos_by_date[date] %}
+                            {% for combo in combos_by_date[date] %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ combo.combo_name }}">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ combo.combo_name }}{{ date }}"
+                                                aria-expanded="false"
+                                                aria-controls="collapse{{ combo.combo_name }}{{ date }}">
+                                            {{ combo.combo_name }}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse{{ combo.combo_name }}{{ date }}" class="accordion-collapse collapse"
+                                         aria-labelledby="heading{{ combo.combo_name }}"
+                                         data-bs-parent="#comboAccordion{{ date }}">
+                                        <div class="accordion-body" style="background-color: #2e2d2d; color: white;">
+                                            <p>Attempts: {{ combo.attempts }}</p>
+                                            <p>Successes: {{ combo.successes }}</p>
+                                            <p>Notes: {{ combo.notes }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+    </div>
+</section>
+<!-- Contact Section-->
+
+<!-- Footer-->
+
+<!-- Copyright Section-->
+<div class="copyright py-4 text-center text-white">
+    <div class="container"><small>Copyright &copy; Floor Underground 2024</small></div>
+</div>
+<!-- Portfolio Modal 1-->
+{% for i in range(0, current_user.combos|length) %}
+    <div class="portfolio-modal modal fade" id="comboModal{{ current_user.combos[i].id }}" tabindex="-1"
+         aria-labelledby="comboModalLabel{{ current_user.combos[i].id }}" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center pb-5">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">{{ current_user.combos[i].title }}</h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+                                    <!-- <div class="divider-custom-icon"><i class="fas fa-star"></i></div> -->
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image-->
+                                <!-- Portfolio Modal - Text-->
+                                <p class="card-text">{{ current_user.combos[i].description }}</p>
+                                <ul class="list-group mb-4">
+                                    {% for trick in current_user.combos[i].combo_tricks %}
+                                        <li class="list-group-item">
+                                            {% if trick.trick_type == 'official' %}
+                                                {{ trick.move.move_name }}
+                                            {% else %}
+                                                {{ trick.custom_trick.trick_name }}
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="removeCombo({{ current_user.combos[i].id }})">
+                                            Remove Combo
+                                        </button>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="showAddToPlannerModal('{{ current_user.combos[i].id }}', '{{ current_user.combos[i].title }}')">
+                                            Add to Session Planner
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">Created: {{ current_user.combos[i].date_created.strftime('%Y-%m-%d') }}</small>
+                                        <br>
+                                        <small class="text-muted">Creator: {{ current_user.username }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<!-- Bootstrap core JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+<script>
+    //****** this is for the navMenu button above combos
+    document.addEventListener('DOMContentLoaded', function () {
+        var dropdownToggle = document.getElementById('dropdownMenuButton');
+        var dropdownMenu = document.querySelector('.dropdown-menu');
+
+        dropdownToggle.addEventListener('click', function () {
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Hide dropdown when clicking outside
+        window.addEventListener('click', function (e) {
+            if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    });
+    //***** end code related to navMenu button above combos
+
+
+    //****** begin logic for session dropdown button
+    document.addEventListener('DOMContentLoaded', function () {
+        var dropdownToggleSession = document.getElementById('dropdownMenuSessionButton');
+        var dropdownMenuSession = document.querySelector('.dropdown-menu-session');
+
+        // Close dropdown by default
+        dropdownMenuSession.classList.remove('show');
+
+        dropdownToggleSession.addEventListener('click', function () {
+            dropdownMenuSession.classList.toggle('show');
+        });
+
+        // Hide dropdown when clicking outside
+        window.addEventListener('click', function (e) {
+            if (!dropdownToggleSession.contains(e.target) && !dropdownMenuSession.contains(e.target)) {
+                dropdownMenuSession.classList.remove('show');
+            }
+        });
+    });
+    // ******* end code for session dropdown button
+
+
+    //****** Begin code for date dropdown related stuff and session progress tracking
+    // Function to toggle dropdown
+    function toggleDropdown(date) {
+    const element = document.getElementById(date);
+    if (element.style.display === 'none' || element.style.display === '') {
+        element.style.display = 'block';
+    } else {
+        element.style.display = 'none';
+    }
+}
+
+    // Function to handle progress form submission
+    const handleProgressFormSubmit = function (event) {
+        event.preventDefault(); // Prevent default form submission behavior
+        const progressForm = document.getElementById('progress-form');
+        const formData = new FormData(progressForm);
+        const jsonData = {};
+        for (const [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+        // get the selected trick_id from the dropdwon menu
+        const trickSelect = document.getElementById('trick');
+        const selectedOption = trickSelect.options[trickSelect.selectedIndex];
+        const moveId = selectedOption.getAttribute('data-move-id');
+
+
+        jsonData['trick_id'] = moveId;
+
+        fetch('/add_progress_entry', {
+            method: 'POST',
+            body: JSON.stringify(jsonData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+            .then(data => {
+                console.log(data); // Handle response data if needed
+                $('#progressModal').modal('hide'); // Optionally close modal after successful submission
+                location.reload(); // Hard refresh the page
+            })
+            .catch(error => console.error('Error:', error)); // Handle errors if needed
+    };
+
+    // Add event listener to progress form
+    const progressForm = document.getElementById('progress-form');
+    progressForm.addEventListener('submit', handleProgressFormSubmit);
+
+    const handleComboProgressFormSubmit = function (event) {
+        event.preventDefault(); // Prevent default form submission behavior
+        const comboProgressForm = document.getElementById('combo-progress-form');
+        const formData = new FormData(comboProgressForm);
+        const jsonData = {};
+        for (const [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+
+        fetch('/add_combo_progress', {
+            method: 'POST',
+            body: JSON.stringify(jsonData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+            .then(data => {
+                console.log(data); // Handle response data if needed
+                $('#comboProgressModal').modal('hide'); // Optionally close modal after successful submission
+                location.reload(); // Refresh the page to show the new combo progress
+            })
+            .catch(error => console.error('Error:', error)); // Handle errors if needed
+    };
+
+    // Add event listener to combo progress form
+    const comboProgressForm = document.getElementById('combo-progress-form');
+    comboProgressForm.addEventListener('submit', handleComboProgressFormSubmit);
+
+    //***** ENd code seciton related to session progress tracking
+
+
+
+
+    //*****custom trick form stuff
+    document.addEventListener('DOMContentLoaded', function () {
+    const handleCustomTrickFormSubmit = function (event) {
+    event.preventDefault(); // Prevent default form submission behavior
+    const customTrickForm = document.getElementById('customTrickForm');
+    const formData = new FormData(customTrickForm);
+    const jsonData = {};
+    for (const [key, value] of formData.entries()) {
+        jsonData[key] = value;
+    }
+    // You may need to include the user ID in the form data
+    // jsonData['userId'] = getUserId(); // Example function to get user ID
+
+    fetch('/add_custom_trick', {
+        method: 'POST',
+        body: JSON.stringify(jsonData),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+    .then(data => {
+        console.log(data); // Handle response data if needed
+        const modalElement = document.getElementById('addCustomTrickModal');
+        const modal = bootstrap.Modal.getInstance(modalElement); // Get the Bootstrap modal instance
+        modal.hide(); // Hide the modal
+        location.reload();
+    })
+    .catch(error => console.error('Error:', error)); // Handle errors if needed
+};
+
+// Add event listener to custom trick form
+const customTrickForm = document.getElementById('customTrickForm');
+customTrickForm.addEventListener('submit', handleCustomTrickFormSubmit);
+        });
+//*** end custom trick form stuff
+
+
+    // ******* start code to remove combo from user
+    // Function to remove a combo
+        function removeCombo(comboId) {
+            if (confirm("Are you sure you want to remove this combo?")) {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/remove_combo", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        location.reload();
+                    }
+                };
+                xhr.send("combo_id=" + comboId);
+            }
+        }
+    // ***** end code to remove combo from user
+
+
+
+    // ****** add code for tricks dropdown when users want to add more to each combo
+    function addTrickDropdown(isCustom = false, customMoveId = null) {
+    const trickDropdowns = document.getElementById('trick-dropdowns');
+    const select = document.createElement('select');
+    select.classList.add('form-control');
+    select.name = 'tricks[]';
+    select.required = true;
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    defaultOption.textContent = 'Select a trick';
+    select.appendChild(defaultOption);
+
+    if (isCustom) {
+        // options for custom tricks
+        const customTricks = [
+            {% for custom_trick in custom_moves %}
+                { move_id: '{{ custom_trick.id }}', move_name: '{{ custom_trick.trick_name }}'},
+            {% endfor %}
+        ];
+        customTricks.forEach(move => {
+            const option = document.createElement('option');
+            option.value = 'custom-' + move.move_id; // Include the custom move's ID
+            option.textContent = move.move_name;
+            select.appendChild(option);
+        });
+    } else {
+        // Options for official tricks
+        const officialTricks = [
+            {% for move in moves %}
+                { move_id: '{{ move.move_id }}', move_name: '{{ move.move_name }}' },
+            {% endfor %}
+        ];
+        officialTricks.forEach(move => {
+            const option = document.createElement('option');
+            option.value = 'official-' + move.move_id;
+            option.textContent = move.move_name;
+            select.appendChild(option);
+        });
+    }
+
+    trickDropdowns.appendChild(select);
+}
+//****** end add tricks to combos
+
+
+//***** single trick related code for adding trick progress to dates
+// Function to handle progress form submission`
+    document.addEventListener('DOMContentLoaded', function () {
+    const handleProgressFormSubmit = function (event) {
+        event.preventDefault(); // Prevent default form submission behavior
+
+        const progressForm = document.getElementById('progress-form');
+        const formData = new FormData(progressForm);
+        const jsonData = {};
+
+        for (const [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+
+        // Get the selected trick_id from the dropdown menu
+        const trickSelect = document.getElementById('trick');
+        const selectedOption = trickSelect.options[trickSelect.selectedIndex];
+        const moveId = selectedOption.getAttribute('data-move-id');
+
+        jsonData['trick_id'] = moveId;
+
+        fetch('/add_progress_entry', {
+            method: 'POST',
+            body: JSON.stringify(jsonData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+        .then(data => {
+            console.log(data); // Handle response data if needed
+
+            // Hide the modal using Bootstrap 5 method
+            const progressModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('progressModal'));
+            progressModal.hide();
+
+            // Optionally reload the page
+            location.reload(); // Hard refresh the page
+        })
+        .catch(error => console.error('Error:', error)); // Handle errors if needed
+    };
+
+    // Add event listener to progress form
+    const progressForm = document.getElementById('progress-form');
+    progressForm.addEventListener('submit', handleProgressFormSubmit);
+});
+//*********
+</script>
+
+</body>
+</html>

@@ -24,32 +24,9 @@ def load_user(user_id):
 def index():
     return render_template("index.html", page='index')
 
-
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    if request.method == "POST":
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
-            login_user(user)
-            return redirect(url_for('book'))
-        else:
-            flash("Invalid Username and Password")
-    return render_template("login.html")
-
-
-@app.route('/logout')
+@app.route('/training')
 @login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-
-@app.route("/book")
-@login_required
-# @relog_required
-def book():
+def training():
     user = current_user
     session_details = user.user_session_details
     combos = user.combos
@@ -83,10 +60,31 @@ def book():
 
     custom_moves = CustomTrick.query.filter(CustomTrick.user_id == current_user.id).all()
 
-
-    return render_template("book.html", moves=moves, user_moves=user_moves,
+    return render_template("training.html", moves=moves, user_moves=user_moves,
                            sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
-                           custom_moves=custom_moves, combined_dates=combined_dates)
+                           custom_moves=custom_moves, combined_dates=combined_dates
+                           )
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == "POST":
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            login_user(user)
+            return redirect(url_for('training'))
+        else:
+            flash("Invalid Username and Password")
+    return render_template("login.html")
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 @app.route('/add_custom_trick', methods=['POST'])
@@ -152,7 +150,7 @@ def add_progress_entry():
     db.session.commit()
 
     # Redirect to the appropriate page after adding the entry
-    return jsonify(success=True, redirect_url=url_for('book'))
+    return jsonify(success=True, redirect_url=url_for('training'))
 
 
 @app.route('/add_combo_progress', methods=['POST'])
@@ -228,7 +226,7 @@ def update_progress():
     db.session.add(user_move)
     db.session.commit()
 
-    return redirect(url_for('book'))
+    return redirect(url_for('training'))
 
 
 @app.route('/update_exist', methods=['POST'])
@@ -248,9 +246,9 @@ def update_exist():
             db.session.commit()
     except Exception:
         flash('Percentage needs a number', 'error')
-        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+        return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
-    return redirect(url_for('book'))
+    return redirect(url_for('training'))
 
 
 @app.route('/add_combo', methods=['POST'])
@@ -297,7 +295,7 @@ def add_combo_tricks():
     # Commit all changes to the database
     db.session.commit()
 
-    return redirect(url_for('book'))
+    return redirect(url_for('training'))
 
 
 @app.route('/custom_add_combo', methods=['POST'])
@@ -339,7 +337,7 @@ def custom_add_combo():
     # Commit all changes to the database
     db.session.commit()
 
-    return redirect(url_for('book'))
+    return redirect(url_for('training'))
 
     #return "Success"  # You can return a response as needed
 
@@ -355,12 +353,12 @@ def remove_combo():
 
     if not combo:
         flash('Combo not found!', 'error')
-        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+        return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
     # Check if the current user is allowed to delete this combo
     if combo.user_id != current_user.id:
         flash('You do not have permission to delete this combo.', 'error')
-        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+        return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
     # Manually delete related records in combo_tricks
     ComboTricks.query.filter_by(combo_id=combo_id).delete()
@@ -376,7 +374,7 @@ def remove_combo():
     db.session.commit()
 
     flash('Combo removed successfully!', 'success')
-    return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+    return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
 
 @app.route('/update_combo', methods=['POST'])
@@ -401,7 +399,7 @@ def add_skill():
 
     if not skill_name:
         flash('No skill selected!', 'error')
-        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+        return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
     # Find the move in the database
     move = Moves.query.filter_by(move_name=skill_name).with_entities(Moves.move_id).first()
@@ -412,7 +410,7 @@ def add_skill():
     existing_skill = UserMoves.query.filter_by(user_id=current_user.id, move_id=move[0]).first()
     if existing_skill:
         flash('You already have this skill!', 'error')
-        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+        return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
     # Add the skill to the user's acquired skills
     new_user_move = UserMoves(user_id=current_user.id, move_id=move[0], status=0)
@@ -420,7 +418,7 @@ def add_skill():
     db.session.commit()
 
     flash('Skill added successfully!', 'success')
-    return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+    return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
 
 @app.route('/remove_skill', methods=['POST'])
@@ -433,7 +431,7 @@ def remove_skill():
 
     if not user_skill:
         flash('Skill not found!', 'error')
-        return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+        return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
     try:
         # Delete the skill from the userMoves table
@@ -446,7 +444,7 @@ def remove_skill():
         db.session.rollback()
         print(str(e))  # Print the error for debugging purposes
 
-    return redirect(url_for('book'))  # Adjust the redirect to your appropriate view function
+    return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
 @app.route('/activity')
 @login_required
