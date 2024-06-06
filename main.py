@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models import *
 from val_creat import *
 from email_validator import validate_email, EmailNotValidError
+from jinja2 import Environment
 
 app = Flask(__name__)
 app.secret_key = "dfdf23hh34"
@@ -13,6 +14,15 @@ db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+# Define the slugify function
+def slugify(value):
+    return value.lower().replace(' ', '-')
+
+
+# Register the slugify function as a custom Jinja2 filter
+app.jinja_env.filters['slugify'] = slugify
 
 
 @login_manager.user_loader
@@ -59,6 +69,9 @@ def training():
     combined_dates = set(sessions_by_date.keys()).union(set(combos_by_date.keys()))
 
     custom_moves = CustomTrick.query.filter(CustomTrick.user_id == current_user.id).all()
+
+    print(custom_moves)
+    print(combined_dates)
 
     return render_template("training.html", moves=moves, user_moves=user_moves,
                            sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
