@@ -1,0 +1,40 @@
+<div class="modal fade" id="addComboModal" tabindex="-1" aria-labelledby="addComboModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title card-title" id="addComboModalLabel">Add Combo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="combo-form" action="{{ url_for('custom_add_combo') }}" method="POST">
+                    <div class="form-group">
+                        <label class="card-title" for="combo-title">Combo Title</label>
+                        <input type="text" class="form-control" id="combo-title" name="combo-title"
+                               placeholder="Enter combo title" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="card-title" for="combo-description">Combo Description</label>
+                        <textarea class="form-control" id="combo-description" name="combo-description" rows="3"
+                                  placeholder="Enter combo description" required></textarea>
+                    </div>
+                    <div class="form-group" id="trick-dropdowns">
+                        <select class="form-control" name="tricks[]" required>
+                            <option value="" disabled selected>Select a trick</option>
+                            <!-- Options for official tricks -->
+                            {% for move in moves %}
+                                <option value="official-{{ move.move_id }}">{{ move.move_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <!-- Button for adding more tricks -->
+                    <button type="button" class="btn btn-secondary" onclick="addTrickDropdown()">Add More Tricks
+                    </button>
+                    <!-- Button for adding a custom trick -->
+                    <button type="button" class="btn btn-secondary" onclick="addTrickDropdown(true)">Add Custom Trick
+                    </button>
+                    <button type="submit" class="btn btn-success">Save Combo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
