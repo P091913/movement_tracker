@@ -80,6 +80,35 @@ def training():
                            )
 
 
+@app.route('/delete_sess_detail', methods=['POST'])
+def delete_sess_detail():
+    trick_id = request.form['trick_id']
+    session_date = request.form['session_date']
+    print("Dfsdf")
+    trickComboDet = request.form['trickComboDet']
+    print("Dfsdf")
+    session_date = datetime.strptime(session_date, '%Y-%m-%d')
+    print(trickComboDet)
+    if trickComboDet == '1':
+        session_detail = SessionDetails.query.filter_by(id=trick_id, date=session_date).first()
+
+        if session_detail:
+            db.session.delete(session_detail)
+            db.session.commit()
+            return jsonify({'status': 'success'})
+    elif trickComboDet == '2':
+        print("inside")
+        combo_detail = ComboProgress.query.filter_by(id=trick_id, date=session_date).first()
+        print(combo_detail)
+        if combo_detail:
+            db.session.delete(combo_detail)
+            db.session.commit()
+            return jsonify({'status': 'success'})
+    else:
+        return jsonify({'status': 'failure', 'message': 'Session detail not found'}), 404
+
+
+
 @app.route('/get_combo_details')
 @login_required
 def get_combo_details():
@@ -186,20 +215,32 @@ def fetch_official_tricks():
 @login_required
 def add_progress_entry():
     data = request.json
-    # Here, you can access the form data using the keys of the JSON object
-    date = data.get('date')
+    date_str = data.get('date')
+    date = datetime.strptime(date_str, '%Y-%m-%d')  # Adjust date format as necessary
     trick = data.get('trick')
     trick_id = data.get('trick_id')
     attempts = data.get('attempts')
     successes = data.get('successes')
     notes = data.get('notes')
-    #print(data)
 
-    new_entry = SessionDetails(date=date, trick_name=trick, attempts=attempts,
-                               successful_landings=successes, notes=notes, user_id=current_user.id,
-                               move_id=trick_id)
-    db.session.add(new_entry)
-    db.session.commit()
+    # Check if the session detail already exists for the current user
+    existing_entry = SessionDetails.query.filter_by(user_id=current_user.id, move_id=trick_id, date=date).first()
+
+    if existing_entry:
+        attempts_int = int(attempts)
+        successes_int = int(successes)
+        # Update the existing entry with new attempts and successes
+        existing_entry.attempts += attempts_int
+        existing_entry.successful_landings += successes_int
+        existing_entry.notes = notes  # Update notes or append to existing notes if needed
+        db.session.commit()
+    else:
+        # Create a new entry
+        new_entry = SessionDetails(date=date, trick_name=trick, attempts=attempts,
+                                   successful_landings=successes, notes=notes, user_id=current_user.id,
+                                   move_id=trick_id)
+        db.session.add(new_entry)
+        db.session.commit()
 
     # Redirect to the appropriate page after adding the entry
     return jsonify(success=True, redirect_url=url_for('training'))
@@ -209,18 +250,31 @@ def add_progress_entry():
 @login_required
 def add_combo_progress():
     data = request.json
-    date = data.get('date')
+    date_str = data.get('date')
+    date = datetime.strptime(date_str, '%Y-%m-%d')  # Adjust date format as necessary
     combo_id = data.get('combo')
     attempts = data.get('attempts')
     successes = data.get('successes')
     notes = data.get('notes')
 
-    new_combo_progress = ComboProgress(date=date, combo_id=combo_id, attempts=attempts,
-                                       successes=successes, notes=notes, user_id=current_user.id)
-    db.session.add(new_combo_progress)
-    db.session.commit()
+    existing_entry = ComboProgress.query.filter_by(user_id=current_user.id, combo_id=combo_id, date=date).first()
 
-    return jsonify({'success': True})
+    if existing_entry:
+        attempts_int = int(attempts)
+        successes_int = int(successes)
+        # Update the existing entry with new attempts and successes
+        existing_entry.attempts += attempts_int
+        existing_entry.successes += successes_int
+        existing_entry.notes = notes  # Update notes or append to existing notes if needed
+        db.session.commit()
+    else:
+        # Create a new entry
+        new_combo_progress = ComboProgress(date=date, combo_id=combo_id, attempts=attempts,
+                                           successes=successes, notes=notes, user_id=current_user.id)
+        db.session.add(new_combo_progress)
+        db.session.commit()
+
+    return jsonify(success=True, redirect_url=url_for('training'))
 
 
 @app.route("/create", methods=['POST', 'GET'])
