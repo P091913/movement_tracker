@@ -9,8 +9,7 @@ from jinja2 import Environment
 app = Flask(__name__)
 app.secret_key = "dfdf23hh34"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
-app.config[
-    "SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
 db.init_app(app)
 
 login_manager = LoginManager()
@@ -72,8 +71,8 @@ def training():
 
     custom_moves = CustomTrick.query.filter(CustomTrick.user_id == current_user.id).all()
 
-    print(custom_moves)
-    print(combined_dates)
+    #print(custom_moves)
+    #print(combined_dates)
 
     return render_template("training.html", moves=moves, user_moves=user_moves,
                            sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
@@ -194,7 +193,7 @@ def add_progress_entry():
     attempts = data.get('attempts')
     successes = data.get('successes')
     notes = data.get('notes')
-    print(data)
+    #print(data)
 
     new_entry = SessionDetails(date=date, trick_name=trick, attempts=attempts,
                                successful_landings=successes, notes=notes, user_id=current_user.id,
@@ -332,11 +331,11 @@ def add_combo_tricks():
     for position, trick in enumerate(selected_tricks, start=1):
         trick_parts = trick.split('-')
         if len(trick_parts) != 2:
-            print("Error: Trick does not contain expected format:", trick)
+            #print("Error: Trick does not contain expected format:", trick)
             continue
         trick_type, trick_id = trick_parts
-        print("Trick Type:", trick_type)
-        print("Trick ID:", trick_id)
+        #print("Trick Type:", trick_type)
+        #print("Trick ID:", trick_id)
         trick_id = int(trick_id)
 
         # Create a new ComboTricks object
@@ -357,7 +356,7 @@ def custom_add_combo():
     combo_title = request.form['combo-title']
     combo_description = request.form['combo-description']
     selected_tricks = request.form.getlist('tricks[]')
-    print(combo_title, combo_description, selected_tricks)
+    #print(combo_title, combo_description, selected_tricks)
 
     # Create a new Combo object
     new_combo = Combo(title=combo_title, description=combo_description, user_id=current_user.id)
@@ -369,11 +368,11 @@ def custom_add_combo():
     for position, trick in enumerate(selected_tricks, start=1):
         trick_parts = trick.split('-')
         if len(trick_parts) != 2:
-            print("Error: Trick does not contain expected format:", trick)
+            #print("Error: Trick does not contain expected format:", trick)
             continue
         trick_type, trick_id = trick_parts
-        print("Trick Type:", trick_type)
-        print("Trick ID:", trick_id)
+        #print("Trick Type:", trick_type)
+        #print("Trick ID:", trick_id)
         trick_id = int(trick_id)
 
         # Create a new ComboTricks object
@@ -404,8 +403,8 @@ def custom_edit_combo():
     combo_title = request.form['combo-title']
     combo_description = request.form['combo-description']
     selected_tricks = request.form.getlist('tricks[]')
-    print(combo_title, combo_description, selected_tricks)
-    print(f'combo_id: {combo_id}')
+    #print(combo_title, combo_description, selected_tricks)
+    #print(f'combo_id: {combo_id}')
 
     existing_combo = Combo.query.get(combo_id)
 
@@ -418,11 +417,11 @@ def custom_edit_combo():
         for position, trick in enumerate(selected_tricks, start=1):
             trick_parts = trick.split('-')
             if len(trick_parts) != 2:
-                print("Error: Trick does not contain expected format:", trick)
+                #print("Error: Trick does not contain expected format:", trick)
                 continue
             trick_type, trick_id = trick_parts
-            print("Trick Type:", trick_type)
-            print("Trick ID:", trick_id)
+            #print("Trick Type:", trick_type)
+            #print("Trick ID:", trick_id)
             trick_id = int(trick_id)
 
             # Create a new ComboTricks object
@@ -491,8 +490,8 @@ def add_skill():
     move = Moves.query.filter_by(move_name=skill_name).with_entities(Moves.move_id).first()
 
     # Check if the skill already exists in the user's skills
-    print(current_user.id)
-    print(move)
+    #print(current_user.id)
+    #print(move)
     existing_skill = UserMoves.query.filter_by(user_id=current_user.id, move_id=move[0]).first()
     if existing_skill:
         flash('You already have this skill!', 'error')
@@ -528,7 +527,7 @@ def remove_skill():
     except Exception as e:
         flash('An error occurred while removing the skill.', 'error')
         db.session.rollback()
-        print(str(e))  # Print the error for debugging purposes
+        #print(str(e))  # Print the error for debugging purposes
 
     return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
