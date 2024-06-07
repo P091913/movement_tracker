@@ -8,8 +8,8 @@ from jinja2 import Environment
 
 app = Flask(__name__)
 app.secret_key = "dfdf23hh34"
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
+#app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
 db.init_app(app)
 
 login_manager = LoginManager()
@@ -77,6 +77,44 @@ def training():
                            sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
                            custom_moves=custom_moves, combined_dates=combined_dates
                            )
+
+
+@app.route('/get_combo_details')
+@login_required
+def get_combo_details():
+    combo_id = request.args.get('combo_id')
+    combo = Combo.query.get(combo_id)
+    if combo.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    combo_details = {
+        'id': combo.id,
+        'title': combo.title,
+        'description': combo.description,
+        'tricks': [{'id': trick.trick_id, 'name': trick.trick_name} for trick in combo.combo_tricks]
+        # Adjust this to match your data structure
+    }
+    return jsonify(combo_details)
+
+
+@app.route('/save_combo_edit', methods=['POST'])
+@login_required
+def update_combo():
+    combo_id = request.form.get('combo_id')
+    title = request.form.get('combo-title')
+    description = request.form.get('combo-description')
+    tricks = request.form.getlist('tricks[]')
+
+    combo = Combo.query.get(combo_id)
+    if combo.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    combo.title = title
+    combo.description = description
+    # Handle updating tricks here
+
+    db.session.commit()
+    return jsonify({'success': True})
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -390,20 +428,20 @@ def remove_combo():
     return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
 
-@app.route('/update_combo', methods=['POST'])
-def update_combo():
-    data = request.get_json()
-    combo_id = data['combo_id']
-    title = data['title']
-    description = data['description']
+##@app.route('/update_combo', methods=['POST'])
+##def update_combo():
+ ##   data = request.get_json()
+  ##  combo_id = data['combo_id']
+   ## title = data['title']
+   ## description = data['description']
 
     # Find the combo by ID and update its title and description
-    combo = Combo.query.get(combo_id)
-    combo.title = title
-    combo.description = description
-    db.session.commit()
+##    combo = Combo.query.get(combo_id)
+ ##   combo.title = title
+  ##  combo.description = description
+   ## db.session.commit()
 
-    return jsonify({"success": True})
+  #  return jsonify({"success": True})
 
 @app.route('/add_skill', methods=['POST'])
 @login_required

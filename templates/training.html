@@ -78,7 +78,8 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#portfolio">Training
                     Book</a></li>
-                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{ url_for('logout') }}">Logout</a>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                                                     href="{{ url_for('logout') }}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -112,7 +113,8 @@
 
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <!-- Dropdown menu content -->
-                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomTrickModal">Add
+                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal"
+                           data-bs-target="#addCustomTrickModal">Add
                             Custom Trick</a>
                         <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#addComboModal">Add
                             Combo</a>
@@ -166,7 +168,8 @@
                         <!-- Dropdown menu content -->
                         <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#progressModal">
                             Add Trick Progress</a>
-                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#comboProgressModal">
+                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal"
+                           data-bs-target="#comboProgressModal">
                             Add Combo Progress</a>
                     </div>
                 </div>
@@ -176,86 +179,94 @@
 
         <!-- About Section Content-->
         <div class="row">
-    {% for date in combined_dates %}
-        <h5 class="mb-0">
-            <button class="btn btn-link" href="javascript:void(0);" onclick="toggleDropdown('{{ date }}')"
-                    aria-expanded="true" style="color: white;">
-                Date: {{ date }}
-            </button>
-        </h5>
-        <!-- Progress Tracking Collapsible Sections -->
-        <div id="{{ date }}" style="display: none;">
-            <!-- Example Skill Section -->
-            <div class="card-accord">
-                <div class="card-header-accord" id="headingBackflip">
-                </div>
-                <div class="card-body-accord">
-                    <!-- Trick Sessions Heading -->
-                    <h6>Session Skills</h6>
-                    <!-- Trick Sessions Accordion -->
-                    <div class="accordion" id="trickAccordion{{ date }}">
-                        {% if date in sessions_by_date and sessions_by_date[date] %}
-                            {% for sess_det in sessions_by_date[date] %}
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="heading{{ sess_det.trick_name|slugify }}">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#collapse{{ sess_det.trick_name|slugify }}{{ date }}"
-                                                aria-expanded="false"
-                                                aria-controls="collapse{{ sess_det.trick_name|slugify }}{{ date }}">
-                                            {{ sess_det.trick_name }}
-                                        </button>
-                                    </h2>
-                                    <div id="collapse{{ sess_det.trick_name|slugify }}{{ date }}" class="accordion-collapse collapse"
-                                         aria-labelledby="heading{{ sess_det.trick_name|slugify }}"
-                                         data-bs-parent="#trickAccordion{{ date }}">
-                                        <div class="accordion-body" style="background-color: #2e2d2d; color: white;">
-                                            <p>Attempts: {{ sess_det.attempts }}</p>
-                                            <p>Successes: {{ sess_det.successful_landings }}</p>
-                                            <p>Notes: {{ sess_det.notes }}</p>
+            {% for date in combined_dates %}
+                <h5 class="mb-0">
+                    <button class="btn btn-link" href="javascript:void(0);" onclick="toggleDropdown('{{ date }}')"
+                            aria-expanded="true" style="color: white;">
+                        Date: {{ date }}
+                    </button>
+                </h5>
+                <!-- Progress Tracking Collapsible Sections -->
+                <div id="{{ date }}" style="display: none;">
+                    <!-- Example Skill Section -->
+                    <div class="card-accord">
+                        <div class="card-header-accord" id="headingBackflip">
+                        </div>
+                        <div class="card-body-accord">
+                            <!-- Trick Sessions Heading -->
+                            <h6>Session Skills</h6>
+                            <!-- Trick Sessions Accordion -->
+                            <div class="accordion" id="trickAccordion{{ date }}">
+                                {% if date in sessions_by_date and sessions_by_date[date] %}
+                                    {% for sess_det in sessions_by_date[date] %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading{{ sess_det.trick_name|slugify }}">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target="#collapse
+                                                                {{ sess_det.trick_name|slugify }}{{ date }}"
+                                                        aria-expanded="false"
+                                                        aria-controls="collapse
+                                                                {{ sess_det.trick_name|slugify }}{{ date }}">
+                                                    {{ sess_det.trick_name }}
+                                                </button>
+                                            </h2>
+                                            <div id="collapse{{ sess_det.trick_name|slugify }}{{ date }}"
+                                                 class="accordion-collapse collapse"
+                                                 aria-labelledby="heading{{ sess_det.trick_name|slugify }}"
+                                                 data-bs-parent="#trickAccordion{{ date }}">
+                                                <div class="accordion-body"
+                                                     style="background-color: #2e2d2d; color: white;">
+                                                    <p>Attempts: {{ sess_det.attempts }}</p>
+                                                    <p>Successes: {{ sess_det.successful_landings }}</p>
+                                                    <p>Notes: {{ sess_det.notes }}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
+                                    {% endfor %}
 
-                        {% endif %}
-                    </div>
+                                {% endif %}
+                            </div>
 
-                    <br><br>
+                            <br><br>
 
-                    <!-- Combo Sessions Heading -->
-                    <h6>Session Combos</h6>
-                    <!-- Combo Sessions Accordion -->
-                    <div class="accordion" id="comboAccordion{{ date }}">
-                        {% if date in combos_by_date and combos_by_date[date] %}
-                            {% for combo in combos_by_date[date] %}
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="heading{{ combo.combo_name }}">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#collapse{{ combo.combo_name }}{{ date }}"
-                                                aria-expanded="false"
-                                                aria-controls="collapse{{ combo.combo_name }}{{ date }}">
-                                            {{ combo.combo_name }}
-                                        </button>
-                                    </h2>
-                                    <div id="collapse{{ combo.combo_name }}{{ date }}" class="accordion-collapse collapse"
-                                         aria-labelledby="heading{{ combo.combo_name }}"
-                                         data-bs-parent="#comboAccordion{{ date }}">
-                                        <div class="accordion-body" style="background-color: #2e2d2d; color: white;">
-                                            <p>Attempts: {{ combo.attempts }}</p>
-                                            <p>Successes: {{ combo.successes }}</p>
-                                            <p>Notes: {{ combo.notes }}</p>
+                            <!-- Combo Sessions Heading -->
+                            <h6>Session Combos</h6>
+                            <!-- Combo Sessions Accordion -->
+                            <div class="accordion" id="comboAccordion{{ date }}">
+                                {% if date in combos_by_date and combos_by_date[date] %}
+                                    {% for combo in combos_by_date[date] %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading{{ combo.combo_name }}">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target="#collapse{{ combo.combo_name }}{{ date }}"
+                                                        aria-expanded="false"
+                                                        aria-controls="collapse{{ combo.combo_name }}{{ date }}">
+                                                    {{ combo.combo_name }}
+                                                </button>
+                                            </h2>
+                                            <div id="collapse{{ combo.combo_name }}{{ date }}"
+                                                 class="accordion-collapse collapse"
+                                                 aria-labelledby="heading{{ combo.combo_name }}"
+                                                 data-bs-parent="#comboAccordion{{ date }}">
+                                                <div class="accordion-body"
+                                                     style="background-color: #2e2d2d; color: white;">
+                                                    <p>Attempts: {{ combo.attempts }}</p>
+                                                    <p>Successes: {{ combo.successes }}</p>
+                                                    <p>Notes: {{ combo.notes }}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
+                                    {% endfor %}
 
-                        {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
     </div>
 </section>
 <!-- Contact Section-->
@@ -266,11 +277,14 @@
 <div class="copyright py-4 text-center text-white">
     <div class="container"><small>Copyright &copy; Floor Underground 2024</small></div>
 </div>
+
+{% include 'Modals/edit_existing_combo.html' %}
+
 <!-- Portfolio Modal 1-->
 {% for i in range(0, current_user.combos|length) %}
     <div class="portfolio-modal modal fade" id="comboModal{{ current_user.combos[i].id }}" tabindex="-1"
          aria-labelledby="comboModalLabel{{ current_user.combos[i].id }}" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header border-0">
                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -303,7 +317,9 @@
                                 </ul>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                onclick="editCombo({{ current_user.combos[i].id }})">Edit
+                                        </button>
                                         <button type="button" class="btn btn-danger"
                                                 onclick="removeCombo({{ current_user.combos[i].id }})">
                                             Remove Combo
@@ -341,9 +357,9 @@
 <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 <script>
 
-var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+    var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
     var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-      return new bootstrap.Dropdown(dropdownToggleEl)
+        return new bootstrap.Dropdown(dropdownToggleEl)
     })
     //****** this is for the navMenu button above combos
     document.addEventListener('DOMContentLoaded', function () {
@@ -389,13 +405,13 @@ var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-tog
     //****** Begin code for date dropdown related stuff and session progress tracking
     // Function to toggle dropdown
     function toggleDropdown(date) {
-    const element = document.getElementById(date);
-    if (element.style.display === 'none' || element.style.display === '') {
-        element.style.display = 'block';
-    } else {
-        element.style.display = 'none';
+        const element = document.getElementById(date);
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
     }
-}
 
     const handleComboProgressFormSubmit = function (event) {
         event.preventDefault(); // Prevent default form submission behavior
@@ -429,160 +445,235 @@ var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-tog
     //***** ENd code seciton related to session progress tracking
 
 
-
-
     //*****custom trick form stuff
     document.addEventListener('DOMContentLoaded', function () {
-    const handleCustomTrickFormSubmit = function (event) {
-    event.preventDefault(); // Prevent default form submission behavior
-    const customTrickForm = document.getElementById('customTrickForm');
-    const formData = new FormData(customTrickForm);
-    const jsonData = {};
-    for (const [key, value] of formData.entries()) {
-        jsonData[key] = value;
-    }
-    // You may need to include the user ID in the form data
-    // jsonData['userId'] = getUserId(); // Example function to get user ID
+        const handleCustomTrickFormSubmit = function (event) {
+            event.preventDefault(); // Prevent default form submission behavior
+            const customTrickForm = document.getElementById('customTrickForm');
+            const formData = new FormData(customTrickForm);
+            const jsonData = {};
+            for (const [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+            // You may need to include the user ID in the form data
+            // jsonData['userId'] = getUserId(); // Example function to get user ID
 
-    fetch('/add_custom_trick', {
-        method: 'POST',
-        body: JSON.stringify(jsonData),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
-    .then(data => {
-        console.log(data); // Handle response data if needed
-        const modalElement = document.getElementById('addCustomTrickModal');
-        const modal = bootstrap.Modal.getInstance(modalElement); // Get the Bootstrap modal instance
-        modal.hide(); // Hide the modal
-        location.reload();
-    })
-    .catch(error => console.error('Error:', error)); // Handle errors if needed
-};
+            fetch('/add_custom_trick', {
+                method: 'POST',
+                body: JSON.stringify(jsonData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+                .then(data => {
+                    console.log(data); // Handle response data if needed
+                    const modalElement = document.getElementById('addCustomTrickModal');
+                    const modal = bootstrap.Modal.getInstance(modalElement); // Get the Bootstrap modal instance
+                    modal.hide(); // Hide the modal
+                    location.reload();
+                })
+                .catch(error => console.error('Error:', error)); // Handle errors if needed
+        };
 
 // Add event listener to custom trick form
-const customTrickForm = document.getElementById('customTrickForm');
-customTrickForm.addEventListener('submit', handleCustomTrickFormSubmit);
-        });
-//*** end custom trick form stuff
+        const customTrickForm = document.getElementById('customTrickForm');
+        customTrickForm.addEventListener('submit', handleCustomTrickFormSubmit);
+    });
+    //*** end custom trick form stuff
 
 
     // ******* start code to remove combo from user
     // Function to remove a combo
-        function removeCombo(comboId) {
-            if (confirm("Are you sure you want to remove this combo?")) {
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "/remove_combo", true);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        location.reload();
-                    }
-                };
-                xhr.send("combo_id=" + comboId);
-            }
+    function removeCombo(comboId) {
+        if (confirm("Are you sure you want to remove this combo?")) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/remove_combo", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    location.reload();
+                }
+            };
+            xhr.send("combo_id=" + comboId);
         }
+    }
+
     // ***** end code to remove combo from user
 
+
+    //***** code to edit existing combo
+    function editCombo(comboId) {
+        window.alert(comboId);
+        var modal = document.getElementById("editComboModal-" + comboId);
+        var viewComboModal = document.getElementById("comboModal" + comboId);
+        var modalInstance = new bootstrap.Modal(modal);
+        var viewComboInstance = new bootstrap.Modal(viewComboModal);
+
+        // Remove the class 'classNameToRemove' from the element
+        viewComboModal.classList.remove('show');
+
+        // Close the viewComboModal
+        //viewComboInstance.hide();
+        //viewComboInstance.hide();
+
+        // Show the editComboModal
+        modalInstance.show();
+    }
+
+    //******* end of code to edit existing combo
 
 
     // ****** add code for tricks dropdown when users want to add more to each combo
     function addTrickDropdown(isCustom = false, customMoveId = null) {
-    const trickDropdowns = document.getElementById('trick-dropdowns');
-    const select = document.createElement('select');
-    select.classList.add('form-control');
-    select.name = 'tricks[]';
-    select.required = true;
+        const trickDropdowns = document.getElementById('trick-dropdowns');
+        const select = document.createElement('select');
+        select.classList.add('form-control');
+        select.name = 'tricks[]';
+        select.required = true;
 
-    const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.disabled = true;
-    defaultOption.selected = true;
-    defaultOption.textContent = 'Select a trick';
-    select.appendChild(defaultOption);
-
-    if (isCustom) {
-        // options for custom tricks
-        const customTricks = [
-            {% for custom_trick in custom_moves %}
-                { move_id: '{{ custom_trick.id }}', move_name: '{{ custom_trick.trick_name }}'},
-            {% endfor %}
-        ];
-        customTricks.forEach(move => {
-            const option = document.createElement('option');
-            option.value = 'custom-' + move.move_id; // Include the custom move's ID
-            option.textContent = move.move_name;
-            select.appendChild(option);
-        });
-    } else {
-        // Options for official tricks
-        const officialTricks = [
-            {% for move in moves %}
-                { move_id: '{{ move.move_id }}', move_name: '{{ move.move_name }}' },
-            {% endfor %}
-        ];
-        officialTricks.forEach(move => {
-            const option = document.createElement('option');
-            option.value = 'official-' + move.move_id;
-            option.textContent = move.move_name;
-            select.appendChild(option);
-        });
-    }
-
-    trickDropdowns.appendChild(select);
-}
-//****** end add tricks to combos
-
-
-//***** single trick related code for adding trick progress to dates
-// Function to handle progress form submission`
-    document.addEventListener('DOMContentLoaded', function () {
-    const handleProgressFormSubmit = function (event) {
-        event.preventDefault(); // Prevent default form submission behavior
-
-        const progressForm = document.getElementById('progress-form');
-        const formData = new FormData(progressForm);
-        const jsonData = {};
-
-        for (const [key, value] of formData.entries()) {
-            jsonData[key] = value;
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = 'Select a trick';
+        select.appendChild(defaultOption);
+        window.alert(isCustom);
+        if (isCustom) {
+            // options for custom tricks
+            const customTricks = [
+                {% for custom_trick in custom_moves %}
+                    {move_id: '{{ custom_trick.id }}', move_name: '{{ custom_trick.trick_name }}'},
+                {% endfor %}
+            ];
+            window.alert(customTricks)
+            customTricks.forEach(move => {
+                const option = document.createElement('option');
+                option.value = 'custom-' + move.move_id; // Include the custom move's ID
+                option.textContent = move.move_name;
+                window.alert("sdfds")
+                select.appendChild(option);
+            });
+        } else {
+            // Options for official tricks
+            const officialTricks = [
+                {% for move in moves %}
+                    {move_id: '{{ move.move_id }}', move_name: '{{ move.move_name }}'},
+                {% endfor %}
+            ];
+            officialTricks.forEach(move => {
+                const option = document.createElement('option');
+                option.value = 'official-' + move.move_id;
+                option.textContent = move.move_name;
+                select.appendChild(option);
+            });
         }
 
-        // Get the selected trick_id from the dropdown menu
-        const trickSelect = document.getElementById('trick');
-        const selectedOption = trickSelect.options[trickSelect.selectedIndex];
-        const moveId = selectedOption.getAttribute('data-move-id');
+        trickDropdowns.appendChild(select);
+    }
 
-        jsonData['trick_id'] = moveId;
+    //****** end add tricks to combos
 
-        fetch('/add_progress_entry', {
-            method: 'POST',
-            body: JSON.stringify(jsonData),
-            headers: {
-                'Content-Type': 'application/json'
+
+
+    // ****** add code for edit tricks dropdown when users want to add more to each combo
+    function editTrickDropdown(isCustom = false, customMoveId = null) {
+        const trickDropdowns = document.getElementById('edit-trick-dropdowns');
+        const select = document.createElement('select');
+        select.classList.add('form-control');
+        select.name = 'tricks[]';
+        select.required = true;
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = 'Select a trick';
+        select.appendChild(defaultOption);
+        window.alert(isCustom);
+        if (isCustom) {
+            // options for custom tricks
+            const customTricks = [
+                {% for custom_trick in custom_moves %}
+                    {move_id: '{{ custom_trick.id }}', move_name: '{{ custom_trick.trick_name }}'},
+                {% endfor %}
+            ];
+            window.alert(customTricks)
+            customTricks.forEach(move => {
+                const option = document.createElement('option');
+                option.value = 'custom-' + move.move_id; // Include the custom move's ID
+                option.textContent = move.move_name;
+                window.alert("sdfds")
+                select.appendChild(option);
+            });
+        } else {
+            // Options for official tricks
+            const officialTricks = [
+                {% for move in moves %}
+                    {move_id: '{{ move.move_id }}', move_name: '{{ move.move_name }}'},
+                {% endfor %}
+            ];
+            officialTricks.forEach(move => {
+                const option = document.createElement('option');
+                option.value = 'official-' + move.move_id;
+                option.textContent = move.move_name;
+                select.appendChild(option);
+            });
+        }
+
+        trickDropdowns.appendChild(select);
+    }
+
+    //****** end edit tricks to combos
+
+
+    //***** single trick related code for adding trick progress to dates
+    // Function to handle progress form submission`
+    document.addEventListener('DOMContentLoaded', function () {
+        const handleProgressFormSubmit = function (event) {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const progressForm = document.getElementById('progress-form');
+            const formData = new FormData(progressForm);
+            const jsonData = {};
+
+            for (const [key, value] of formData.entries()) {
+                jsonData[key] = value;
             }
-        })
-        .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
-        .then(data => {
-            console.log(data); // Handle response data if needed
 
-            // Hide the modal using Bootstrap 5 method
-            const progressModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('progressModal'));
-            progressModal.hide();
+            // Get the selected trick_id from the dropdown menu
+            const trickSelect = document.getElementById('trick');
+            const selectedOption = trickSelect.options[trickSelect.selectedIndex];
+            const moveId = selectedOption.getAttribute('data-move-id');
 
-            // Optionally reload the page
-            location.reload(); // Hard refresh the page
-        })
-        .catch(error => console.error('Error:', error)); // Handle errors if needed
-    };
+            jsonData['trick_id'] = moveId;
 
-    // Add event listener to progress form
-    const progressForm = document.getElementById('progress-form');
-    progressForm.addEventListener('submit', handleProgressFormSubmit);
-});
-//*********
+            fetch('/add_progress_entry', {
+                method: 'POST',
+                body: JSON.stringify(jsonData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+                .then(data => {
+                    console.log(data); // Handle response data if needed
+
+                    // Hide the modal using Bootstrap 5 method
+                    const progressModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('progressModal'));
+                    progressModal.hide();
+
+                    // Optionally reload the page
+                    location.reload(); // Hard refresh the page
+                })
+                .catch(error => console.error('Error:', error)); // Handle errors if needed
+        };
+
+        // Add event listener to progress form
+        const progressForm = document.getElementById('progress-form');
+        progressForm.addEventListener('submit', handleProgressFormSubmit);
+    });
+    //*********
 </script>
 
 </body>
