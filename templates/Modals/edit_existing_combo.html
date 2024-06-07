@@ -1,39 +1,50 @@
 {% for i in range(0, current_user.combos|length) %}
-<div class="modal fade" id="editComboModal-{{ current_user.combos[i].id }}" tabindex="-1" aria-labelledby="editComboModalLabel-{{ current_user.combos[i].id }}" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title card-title" id="editComboModalLabel">Edit Combo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="edit-combo-form" action="{{ url_for('custom_add_combo') }}" method="POST">
-                    <input type="hidden" id="edit-combo-id" name="combo_id">
-                    <div class="form-group">
-                        <label class="card-title" for="edit-combo-title">Combo Title</label>
-                        <input type="text" class="form-control" id="edit-combo-title" name="combo-title" value="{{ current_user.combos[i].title }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="card-title" for="edit-combo-description">Combo Description</label>
-                        <textarea class="form-control" id="edit-combo-description" name="combo-description" rows="3" required>{{ current_user.combos[i].description }}</textarea>
-                    </div>
-                    <div class="form-group" id="edit-trick-dropdowns">
-                        {% for trick in current_user.combos[i].combo_tricks %}
-                        <select class="form-control" name="tricks[]" required>
-                            {% if trick.trick_type == 'official' %}
-                                <option value="official-{{ trick.move_id }}">{{ trick.move.move_name }}</option>
-                            {% else %}
-                                <option value="custom-{{ trick.custom_trick.id }}">{{ trick.custom_trick.trick_name }}</option>
-                            {% endif %}
-                        </select>
-                        {% endfor %}
-                    </div>
-                    <button type="button" class="btn btn-secondary" onclick="editTrickDropdown()">Add More Tricks</button>
-                    <button type="button" class="btn btn-secondary" onclick="editTrickDropdown(true)">Add Custom Trick</button>
-                    <button type="submit" class="btn btn-success">Save Changes</button>
-                </form>
+    <div class="modal fade" id="editComboModal-{{ current_user.combos[i].id }}" tabindex="-1"
+         aria-labelledby="editComboModalLabel-{{ current_user.combos[i].id }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title card-title" id="editComboModalLabel">Edit Combo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-combo-form" action="{{ url_for('custom_edit_combo') }}" method="POST">
+                        <input type="hidden" id="edit-combo-id" name="combo-id" value="{{ current_user.combos[i].id }}">
+                        <div class="form-group">
+                            <label class="card-title" for="edit-combo-title">Combo Title</label>
+                            <input type="text" class="form-control" id="edit-combo-title" name="combo-title"
+                                   value="{{ current_user.combos[i].title }}" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label class="card-title" for="edit-combo-description">Combo Description</label>
+                            <textarea class="form-control" id="edit-combo-description" name="combo-description" rows="3"
+                                      required>{{ current_user.combos[i].description }}</textarea>
+                        </div>
+                        <div class="form-group" id="edit-trick-dropdowns">
+                            {% for trick in current_user.combos[i].combo_tricks %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <select class="form-control me-3" name="tricks[]" required>
+                                        {% if trick.trick_type == 'official' %}
+                                            <option value="official-{{ trick.move_id }}">{{ trick.move.move_name }}</option>
+                                        {% else %}
+                                            <option value="custom-{{ trick.custom_trick.id }}">{{ trick.custom_trick.trick_name }}</option>
+                                        {% endif %}
+                                    </select>
+                                    <button type="button" class="btn btn-danger btn-remove"
+                                            onclick="removeTrickDropdown(this)">-
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="editTrickDropdown()">Add More Tricks
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="editTrickDropdown(true)">Add Custom
+                            Trick
+                        </button>
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endfor %}

@@ -8,8 +8,9 @@ from jinja2 import Environment
 
 app = Flask(__name__)
 app.secret_key = "dfdf23hh34"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
-#app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
+app.config[
+    "SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
 db.init_app(app)
 
 login_manager = LoginManager()
@@ -33,6 +34,7 @@ def load_user(user_id):
 @app.route('/')
 def index():
     return render_template("index.html", page='index')
+
 
 @app.route('/training')
 @login_required
@@ -149,7 +151,7 @@ def add_custom_trick():
     else:
         # Create and store the custom trick in the database
         custom_trick = CustomTrick(trick_name=trick_name, user_id=current_user.id)
-        #combo_trick = ComboTricks(combo_id=combo_id, trick_id=trick_id, trick_type=trick_type, position=position)
+        # combo_trick = ComboTricks(combo_id=combo_id, trick_id=trick_id, trick_type=trick_type, position=position)
         db.session.add(custom_trick)
         db.session.commit()
         return jsonify({'message': 'Custom trick added successfully'})
@@ -351,6 +353,7 @@ def add_combo_tricks():
 
 @app.route('/custom_add_combo', methods=['POST'])
 def custom_add_combo():
+    combo_id = request.form.get('combo-id')
     combo_title = request.form['combo-title']
     combo_description = request.form['combo-description']
     selected_tricks = request.form.getlist('tricks[]')
@@ -375,8 +378,9 @@ def custom_add_combo():
 
         # Create a new ComboTricks object
         if trick_type == 'custom':
-            combo_trick = ComboTricks(combo_id=new_combo.id, trick_id=trick_id, trick_type=trick_type, position=position,
-                                        custom_trick_id=trick_id)
+            combo_trick = ComboTricks(combo_id=new_combo.id, trick_id=trick_id, trick_type=trick_type,
+                                      position=position,
+                                      custom_trick_id=trick_id)
         else:
             combo_trick = ComboTricks(combo_id=new_combo.id, trick_id=trick_id, trick_type=trick_type,
                                       position=position,
@@ -390,8 +394,54 @@ def custom_add_combo():
 
     return redirect(url_for('training'))
 
-    #return "Success"  # You can return a response as needed
+    # return "Success"  # You can return a response as needed
 
+
+
+@app.route('/custom_edit_combo', methods=['POST'])
+def custom_edit_combo():
+    combo_id = request.form['combo-id']
+    combo_title = request.form['combo-title']
+    combo_description = request.form['combo-description']
+    selected_tricks = request.form.getlist('tricks[]')
+    print(combo_title, combo_description, selected_tricks)
+    print(f'combo_id: {combo_id}')
+
+    existing_combo = Combo.query.get(combo_id)
+
+    if existing_combo:
+        existing_combo.title = combo_title
+        existing_combo.description = combo_description
+
+        ComboTricks.query.filter_by(combo_id=combo_id).delete()
+
+        for position, trick in enumerate(selected_tricks, start=1):
+            trick_parts = trick.split('-')
+            if len(trick_parts) != 2:
+                print("Error: Trick does not contain expected format:", trick)
+                continue
+            trick_type, trick_id = trick_parts
+            print("Trick Type:", trick_type)
+            print("Trick ID:", trick_id)
+            trick_id = int(trick_id)
+
+            # Create a new ComboTricks object
+            if trick_type == 'custom':
+                combo_trick = ComboTricks(combo_id=existing_combo.id, trick_id=trick_id, trick_type=trick_type,
+                                          position=position,
+                                          custom_trick_id=trick_id)
+            else:
+                combo_trick = ComboTricks(combo_id=existing_combo.id, trick_id=trick_id, trick_type=trick_type,
+                                          position=position,
+                                          move_id=trick_id)
+
+            # Add the combo trick to the database session
+            db.session.add(combo_trick)
+
+        # Commit all changes to the database
+        db.session.commit()
+
+        return redirect(url_for('training'))
 
 
 @app.route('/remove_combo', methods=['POST'])
@@ -427,21 +477,6 @@ def remove_combo():
     flash('Combo removed successfully!', 'success')
     return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
 
-
-##@app.route('/update_combo', methods=['POST'])
-##def update_combo():
- ##   data = request.get_json()
-  ##  combo_id = data['combo_id']
-   ## title = data['title']
-   ## description = data['description']
-
-    # Find the combo by ID and update its title and description
-##    combo = Combo.query.get(combo_id)
- ##   combo.title = title
-  ##  combo.description = description
-   ## db.session.commit()
-
-  #  return jsonify({"success": True})
 
 @app.route('/add_skill', methods=['POST'])
 @login_required
@@ -496,6 +531,7 @@ def remove_skill():
         print(str(e))  # Print the error for debugging purposes
 
     return redirect(url_for('training'))  # Adjust the redirect to your appropriate view function
+
 
 @app.route('/activity')
 @login_required

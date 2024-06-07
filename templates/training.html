@@ -504,14 +504,26 @@
 
     //***** code to edit existing combo
     function editCombo(comboId) {
-        window.alert(comboId);
         var modal = document.getElementById("editComboModal-" + comboId);
         var viewComboModal = document.getElementById("comboModal" + comboId);
         var modalInstance = new bootstrap.Modal(modal);
         var viewComboInstance = new bootstrap.Modal(viewComboModal);
 
+        // Set the style.display property to 'none'
+        viewComboModal.style.display = 'none';
+
+        // Remove the role attribute
+        viewComboModal.removeAttribute('role');
+
+        // Set aria-hidden attribute to true
+        viewComboModal.setAttribute('aria-hidden', 'true');
+
+        // Remove aria-modal attribute
+        viewComboModal.removeAttribute('aria-modal');
+
         // Remove the class 'classNameToRemove' from the element
         viewComboModal.classList.remove('show');
+
 
         // Close the viewComboModal
         //viewComboInstance.hide();
@@ -527,8 +539,11 @@
     // ****** add code for tricks dropdown when users want to add more to each combo
     function addTrickDropdown(isCustom = false, customMoveId = null) {
         const trickDropdowns = document.getElementById('trick-dropdowns');
+        const dropdownContainer = document.createElement('div');
+
         const select = document.createElement('select');
         select.classList.add('form-control');
+        select.classList.add('me-3')
         select.name = 'tricks[]';
         select.required = true;
 
@@ -538,20 +553,18 @@
         defaultOption.selected = true;
         defaultOption.textContent = 'Select a trick';
         select.appendChild(defaultOption);
-        window.alert(isCustom);
+
         if (isCustom) {
-            // options for custom tricks
+            // Options for custom tricks
             const customTricks = [
                 {% for custom_trick in custom_moves %}
                     {move_id: '{{ custom_trick.id }}', move_name: '{{ custom_trick.trick_name }}'},
                 {% endfor %}
             ];
-            window.alert(customTricks)
             customTricks.forEach(move => {
                 const option = document.createElement('option');
                 option.value = 'custom-' + move.move_id; // Include the custom move's ID
                 option.textContent = move.move_name;
-                window.alert("sdfds")
                 select.appendChild(option);
             });
         } else {
@@ -569,18 +582,32 @@
             });
         }
 
-        trickDropdowns.appendChild(select);
+        const minusButton = document.createElement('button');
+        minusButton.type = 'button';
+        minusButton.classList.add('btn', 'btn-danger', 'btn-remove');
+        minusButton.textContent = '-';
+        minusButton.addEventListener('click', function () {
+            removeTrickDropdown(this);
+        });
+        dropdownContainer.classList.add('d-flex', 'align-items-center', 'mb-3');
+
+        dropdownContainer.appendChild(select);
+        dropdownContainer.appendChild(minusButton);
+        trickDropdowns.appendChild(dropdownContainer);
     }
 
     //****** end add tricks to combos
 
 
-
     // ****** add code for edit tricks dropdown when users want to add more to each combo
     function editTrickDropdown(isCustom = false, customMoveId = null) {
         const trickDropdowns = document.getElementById('edit-trick-dropdowns');
+        const dropdownContainer = document.createElement('div');
+        //dropdownContainer.classList.add('dropdown-container');
+
         const select = document.createElement('select');
         select.classList.add('form-control');
+        select.classList.add('me-3')
         select.name = 'tricks[]';
         select.required = true;
 
@@ -590,20 +617,18 @@
         defaultOption.selected = true;
         defaultOption.textContent = 'Select a trick';
         select.appendChild(defaultOption);
-        window.alert(isCustom);
+
         if (isCustom) {
-            // options for custom tricks
+            // Options for custom tricks
             const customTricks = [
                 {% for custom_trick in custom_moves %}
                     {move_id: '{{ custom_trick.id }}', move_name: '{{ custom_trick.trick_name }}'},
                 {% endfor %}
             ];
-            window.alert(customTricks)
             customTricks.forEach(move => {
                 const option = document.createElement('option');
                 option.value = 'custom-' + move.move_id; // Include the custom move's ID
                 option.textContent = move.move_name;
-                window.alert("sdfds")
                 select.appendChild(option);
             });
         } else {
@@ -621,8 +646,20 @@
             });
         }
 
-        trickDropdowns.appendChild(select);
+        const minusButton = document.createElement('button');
+        minusButton.type = 'button';
+        minusButton.classList.add('btn', 'btn-danger', 'btn-remove');
+        minusButton.textContent = '-';
+        minusButton.addEventListener('click', function () {
+            removeTrickDropdown(this);
+        });
+        dropdownContainer.classList.add('d-flex', 'align-items-center', 'mb-3');
+
+        dropdownContainer.appendChild(select);
+        dropdownContainer.appendChild(minusButton);
+        trickDropdowns.appendChild(dropdownContainer);
     }
+
 
     //****** end edit tricks to combos
 
@@ -674,6 +711,15 @@
         progressForm.addEventListener('submit', handleProgressFormSubmit);
     });
     //*********
+
+
+    //**** remove dropdown option from add and edit combo fields
+    function removeTrickDropdown(button) {
+        const parentDivContain = button.parentNode;
+        parentDivContain.remove()
+    }
+
+    // ***** end dropdown options removal from edit combo fields
 </script>
 
 </body>
