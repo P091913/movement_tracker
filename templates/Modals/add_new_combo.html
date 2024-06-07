@@ -12,19 +12,12 @@
                         <input type="text" class="form-control" id="combo-title" name="combo-title"
                                placeholder="Enter combo title" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="margin-bottom: 20px;">
                         <label class="card-title" for="combo-description">Combo Description</label>
                         <textarea class="form-control" id="combo-description" name="combo-description" rows="3"
                                   placeholder="Enter combo description" required></textarea>
                     </div>
                     <div class="form-group" id="trick-dropdowns">
-                        <select class="form-control" name="tricks[]" required>
-                            <option value="" disabled selected>Select a trick</option>
-                            <!-- Options for official tricks -->
-                            {% for move in moves %}
-                                <option value="official-{{ move.move_id }}">{{ move.move_name }}</option>
-                            {% endfor %}
-                        </select>
                     </div>
                     <!-- Button for adding more tricks -->
                     <button type="button" class="btn btn-secondary" onclick="addTrickDropdown()">Add More Tricks
