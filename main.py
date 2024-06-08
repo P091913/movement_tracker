@@ -147,6 +147,43 @@ def update_combo():
     return jsonify({'success': True})
 
 
+
+@app.route("/unshare_combo", methods=["POST"])
+def unshare_combo():
+    combo_id = request.form.get("combo_id")
+
+    # Fetch the combo from the database
+    combo = Combo.query.get(combo_id)
+    print(combo.combo_share)
+    if combo:
+        # Delete the combo from the table
+        combo.combo_share = 'N'
+        db.session.commit()
+
+        return jsonify({"message": "Combo successfully removed"}), 200
+    else:
+        return jsonify({"error": "Combo not found"}), 404
+
+
+
+@app.route("/share_combo", methods=["POST"])
+def share_combo():
+    combo_id = request.form.get("combo_id")
+
+    # Fetch the combo from the database
+    combo = Combo.query.get(combo_id)
+    print(combo.combo_share)
+
+    if combo:
+        # Update the share value of the combo to 'Y'
+        combo.combo_share = 'Y'
+        db.session.commit()
+
+        return jsonify({"message": "Combo share updated successfully"}), 200
+    else:
+        return jsonify({"error": "Combo not found"}), 404
+
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == "POST":

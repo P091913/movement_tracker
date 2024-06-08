@@ -109,6 +109,8 @@ class Combo(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"))
     user = db.relationship('User', backref='combos')
 
+    combo_share = db.Column(db.String(1), nullable=False, default='N')
+
     combo_tricks = db.relationship('ComboTricks', order_by='ComboTricks.position', backref='combo', cascade="all, delete-orphan")
 
 
