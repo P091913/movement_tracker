@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>Training Book</title>
+    <title>Floor Underground Training Book</title>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/webdisp.png') }}"/>
     <!-- Font Awesome icons (free version)-->
@@ -308,7 +308,11 @@
                                 <!-- Icon Divider-->
                                 <div class="divider-custom">
                                     <div class="divider-custom-line"></div>
-                                    <!-- <div class="divider-custom-icon"><i class="fas fa-star"></i></div> -->
+                                    {% if current_user.combos[i].combo_share == "N" %}
+                                        <button type="button" class="btn btn-secondary" id="shareButton{{ current_user.combos[i].id }}" onclick="shareCombo({{ current_user.combos[i].id }})">Share Combo</button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-danger" id="unshareButton{{ current_user.combos[i].id }}" onclick="unShareCombo({{ current_user.combos[i].id }})">Unshare Combo</button>
+                                    {% endif %}
                                     <div class="divider-custom-line"></div>
                                 </div>
                                 <!-- Portfolio Modal - Image-->
@@ -752,7 +756,47 @@
         }
     }
 
-    //****** delete session details
+    //****** share combo
+    function shareCombo(comboId) {
+        if (confirm("Are you sure you want to remove this session info?")) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/share_combo", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var button = document.getElementById("shareButton" + comboId);
+                    button.classList.remove("btn-primary");
+                    button.classList.add("btn-danger");
+                    button.innerText = "unShare Combo";
+                    button.setAttribute("onclick", `unshareCombo(${comboId})`);
+                }
+            };
+            xhr.send("combo_id=" + encodeURIComponent(comboId));
+        }
+    }
+    // **** code to share combo ****
+
+
+    //****** unshare combo
+    function unShareCombo(comboId) {
+        if (confirm("Are you sure you want to remove this session info?")) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/unshare_combo", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var button = document.getElementById("unshareButton" + comboId);
+                    button.classList.remove("btn-danger");
+                    button.classList.add("btn-primary");
+                    button.innerText = "Share Combo";
+                    button.setAttribute("onclick", `shareCombo(${comboId})`);
+                }
+            };
+            xhr.send("combo_id=" + encodeURIComponent(comboId));
+        }
+    }
+    // **** code to share combo ****
+
 </script>
 
 </body>
