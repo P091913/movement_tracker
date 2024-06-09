@@ -126,10 +126,10 @@
         <div class="container overflow-auto">
             <div class="row justify-content-center">
                 <!-- Portfolio Items -->
-                {% for i in range(0, current_user.combos|length) %}
+                {% for i in range(0, shared_combos|length) %}
                     <div class="col-sm-6 col-md-4 col-lg-3 mb-5 mb-sm-2">
                         <div class="portfolio-item mx-auto shadow p-3 mb-5 bg-white rounded" data-bs-toggle="modal"
-                             data-bs-target="#comboModal{{ current_user.combos[i].id }}">
+                             data-bs-target="#comboModal{{ shared_combos[i].id }}">
                             <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
                                 <div class="portfolio-item-caption-content text-center text-white"><i
                                         class="fa fa-eye"></i></div>

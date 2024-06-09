@@ -80,6 +80,14 @@ def training():
                            )
 
 
+@app.route('/community', methods=['POST'])
+def community():
+    user = current_user
+    shared_combos = Combo.query.filter_by(combo_share='Y').all()
+
+    return render_template("community.html", shared_combos=shared_combos)
+
+
 @app.route('/delete_sess_detail', methods=['POST'])
 def delete_sess_detail():
     trick_id = request.form['trick_id']
