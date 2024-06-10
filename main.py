@@ -5,15 +5,20 @@ from models import *
 from val_creat import *
 from email_validator import validate_email, EmailNotValidError
 from jinja2 import Environment
+from flask_caching import Cache
 
 app = Flask(__name__)
 app.secret_key = "dfdf23hh34"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
+app.config['CACHE_TYPE'] = 'simple'
 db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+cache = Cache(app)
+cache.init_app(app)
 
 
 # Define the slugify function
@@ -32,7 +37,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template("login.html")
+    return redirect(url_for('login'))
 
 
 @app.route('/training')
@@ -234,6 +239,19 @@ def login():
     if request.method == "POST":
         username = request.form['username']
         password = request.form['password']
+
+        # check cached information
+        cached_password = cache.get(username)
+        if cached_password:
+            if cached_password == password:
+                user = User.query.filter_by(username=username).first()
+                if user:
+                    login_user(user)
+                    return redirect(url_for('training'))
+            else:
+                flash("Invalid username or password")
+                return render_template('login.html')
+
         user = User.query.filter_by(username=username).first()
         if user and user.password == password:
             login_user(user)
