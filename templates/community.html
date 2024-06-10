@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Floor Underground Training Book</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/webdisp.png') }}"/>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
+
+</head>
+<body id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand fs-5 fs-md-4 fs-lg-3 fs-xl-2" href="#page-top">Floor Underground</a>
+        <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{ url_for('training') }}">Training
+                    Book</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#portfolio">Community</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                                                     href="{{ url_for('logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+<!-- Portfolio Section-->
+<section class="page-section portfolio" id="portfolio">
+    <div class="container">
+        <!-- Portfolio Section Heading-->
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Community Combos</h2>
+        <!-- Icon Divider-->
+        <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+
+        <div class="container overflow-auto">
+            <div class="row justify-content-center">
+                <!-- Portfolio Items -->
+                {% for i in range(0, shared_combos|length) %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                        <div class="portfolio-item mx-auto shadow p-3 bg-white rounded" data-bs-toggle="modal"
+                             data-bs-target="#comboModal{{ shared_combos[i].id }}" style="padding: 15px;">
+                            <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                <div class="portfolio-item-caption-content text-center text-white"><i
+                                        class="fa fa-eye"></i></div>
+                            </div>
+                            <h1 class="text-center">{{ shared_combos[i].title }}</h1>
+                            <small class="text-muted creator">Creator: {{ shared_combos[i].username }}</small>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- About Section-->
+<!-- Contact Section-->
+
+<!-- Footer-->
+
+<!-- Copyright Section
+<div class="copyright py-4 text-center text-white">
+    <div class="container"><small>Copyright &copy; Floor Underground 2024</small></div>
+</div> -->
+
+{% include 'Modals/edit_existing_combo.html' %}
+
+<!-- Portfolio Modal 1-->
+{% for i in range(0, shared_combos|length) %}
+    <div class="portfolio-modal modal fade" id="comboModal{{ shared_combos[i].id }}" tabindex="-1"
+         aria-labelledby="comboModalLabel{{ shared_combos[i].id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center pb-5">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">{{ shared_combos[i].title }}</h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image-->
+                                <!-- Portfolio Modal - Text-->
+                                <p class="card-text">{{ shared_combos[i].description }}</p>
+                                <ul class="list-group mb-4">
+                                    {% for trick in shared_combos[i].combo_tricks %}
+                                        <li class="list-group-item">
+                                            {% if trick.trick_type == 'official' %}
+                                                {{ trick.move_name }}
+                                            {% else %}
+                                                {{ trick.move_name }}
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <!--<button type="button" class="btn btn-sm btn-outline-secondary"
+                                                onclick="addComboToBook({{ shared_combos[i].id }})">Add To Your Combos
+                                        </button> -->
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">Created: {{ shared_combos[i].date_created.strftime('%Y-%m-%d') }}</small>
+                                        <br>
+                                        <small class="text-muted">Creator: {{ shared_combos[i].username }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<!-- Bootstrap core JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+<script>
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

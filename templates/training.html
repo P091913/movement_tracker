@@ -78,6 +78,7 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#portfolio">Training
                     Book</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{ url_for('community') }}">Community</a></li>
                 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
                                                      href="{{ url_for('logout') }}">Logout</a>
                 </li>
@@ -127,9 +128,9 @@
             <div class="row justify-content-center">
                 <!-- Portfolio Items -->
                 {% for i in range(0, current_user.combos|length) %}
-                    <div class="col-sm-6 col-md-4 col-lg-3 mb-5 mb-sm-2">
-                        <div class="portfolio-item mx-auto shadow p-3 mb-5 bg-white rounded" data-bs-toggle="modal"
-                             data-bs-target="#comboModal{{ current_user.combos[i].id }}">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+                        <div class="portfolio-item mx-auto shadow p-3 bg-white rounded" data-bs-toggle="modal"
+                             data-bs-target="#comboModal{{ current_user.combos[i].id }}" style="padding: 15px;">
                             <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
                                 <div class="portfolio-item-caption-content text-center text-white"><i
                                         class="fa fa-eye"></i></div>
@@ -767,8 +768,9 @@
                     var button = document.getElementById("shareButton" + comboId);
                     button.classList.remove("btn-primary");
                     button.classList.add("btn-danger");
-                    button.innerText = "unShare Combo";
+                    button.innerText = "Unpublish";
                     button.setAttribute("onclick", `unshareCombo(${comboId})`);
+                    button.id = "unshareButton" + comboId;
                 }
             };
             xhr.send("combo_id=" + encodeURIComponent(comboId));
@@ -788,8 +790,9 @@
                     var button = document.getElementById("unshareButton" + comboId);
                     button.classList.remove("btn-danger");
                     button.classList.add("btn-primary");
-                    button.innerText = "Share Combo";
+                    button.innerText = "Publish";
                     button.setAttribute("onclick", `shareCombo(${comboId})`);
+                    button.id = "shareButton" + comboId;
                 }
             };
             xhr.send("combo_id=" + encodeURIComponent(comboId));

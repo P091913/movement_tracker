@@ -32,7 +32,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template("index.html", page='index')
+    return render_template("login.html")
 
 
 @app.route('/training')
@@ -78,6 +78,51 @@ def training():
                            sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
                            custom_moves=custom_moves, combined_dates=combined_dates
                            )
+
+
+@app.route('/community', methods=['POST', 'GET'])
+@login_required
+def community():
+    # Retrieve all combos and their details
+    combos_with_details = db.session.query(Combo, User.username). \
+        join(User, Combo.user_id == User.id). \
+        filter(Combo.combo_share == "Y").all()
+
+    # Prepare the data structure for the template
+    shared_combos = []
+    for combo, username in combos_with_details:
+        combo_details = {
+            'id': combo.id,
+            'title': combo.title,
+            'description': combo.description,
+            'date_created': combo.date_created,  # Ensure this field exists in your model
+            'username': username,
+            'combo_tricks': []
+        }
+
+        # Retrieve tricks associated with the combo
+        for combo_trick in combo.combo_tricks:
+            if combo_trick.trick_type == 'official':
+                trick_name = combo_trick.move.move_name if combo_trick.move else 'Unknown'
+                print(trick_name)
+            else:
+                # Query the CustomTrick table to get the trick_name
+                print(combo_trick.custom_trick_id)
+                custom_trick = db.session.query(CustomTrick).get(combo_trick.custom_trick_id)
+                trick_name = custom_trick.trick_name if custom_trick else 'Unknown'
+
+            trick_details = {
+                'trick_type': combo_trick.trick_type,
+                'move_name': trick_name
+            }
+            combo_details['combo_tricks'].append(trick_details)
+
+        print(combo_details)
+        print(username)
+        shared_combos.append(combo_details)
+
+
+    return render_template('community.html', shared_combos=shared_combos)
 
 
 @app.route('/delete_sess_detail', methods=['POST'])
