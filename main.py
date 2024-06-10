@@ -1,24 +1,22 @@
-from flask import Flask, render_template, request, url_for, redirect, flash, jsonify
+import uuid
+from flask import Flask, render_template, request, url_for, redirect, flash, jsonify, make_response
 from flask_login import *
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from models import *
 from val_creat import *
 from email_validator import validate_email, EmailNotValidError
 from jinja2 import Environment
-from flask_caching import Cache
 
 app = Flask(__name__)
 app.secret_key = "dfdf23hh34"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/movement'
 app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://movement_ulas_user:9Kh8ZtfvYtMzICBvWcpJRwlZhUSUkGMJ@dpg-cpa93dm3e1ms739m73fg-a.oregon-postgres.render.com/movement_ulas'
-app.config['CACHE_TYPE'] = 'simple'
 db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-cache = Cache(app)
-cache.init_app(app)
 
 
 # Define the slugify function
@@ -236,28 +234,31 @@ def share_combo():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    # Check if the user has a valid session token
+    session_token = request.cookies.get('session_token')
+    if session_token:
+        user = User.query.filter_by(session_token=session_token).first()
+        if user:
+            login_user(user)
+            return redirect(url_for('training'))
+
     if request.method == "POST":
         username = request.form['username']
         password = request.form['password']
 
-        # check cached information
-        cached_password = cache.get(username)
-        if cached_password:
-            if cached_password == password:
-                user = User.query.filter_by(username=username).first()
-                if user:
-                    login_user(user)
-                    return redirect(url_for('training'))
-            else:
-                flash("Invalid username or password")
-                return render_template('login.html')
-
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for('training'))
+            # Set session token cookie
+            session_token = str(uuid.uuid4())
+            user.session_token = session_token
+            db.session.commit()
+            response = make_response(redirect(url_for('training')))
+            response.set_cookie('session_token', session_token, max_age=30 * 24 * 60 * 60)  # Cookie valid for 30 days
+            return response
         else:
             flash("Invalid Username and Password")
+
     return render_template("login.html")
 
 
@@ -405,7 +406,7 @@ def create():
                         # Create a new user if the email doesn't exist
                         user = User()
                         user.username = username
-                        user.password = password
+                        user.password = generate_password_hash(password)
                         user.email = email
                         db.session.add(user)
                         db.session.commit()
@@ -732,6 +733,15 @@ def add_friend():
 def create_app():
     with app.app_context():
         db.create_all()
+        #users = User.query.all()
+
+        # Iterate through each user and update their password to a hashed password
+        #for user in users:
+        #    hashed_password = generate_password_hash(user.password)
+        #    user.password = hashed_password
+
+        # Commit the changes to the database
+        #db.session.commit()
     return app
 
 
