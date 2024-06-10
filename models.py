@@ -53,8 +53,9 @@ class CustomTrick(db.Model):
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), unique=True)
-    password = db.Column(db.String(15))
+    password = db.Column(db.String(256), nullable=False)
     email = db.Column(db.String(35), unique=True)
+    session_token = db.Column(db.String(150), unique=True, nullable=True)
 
     user_moves = db.relationship('UserMoves', back_populates='user', cascade="all, delete-orphan")
     posts = db.relationship('Post', backref='author', lazy=True)
