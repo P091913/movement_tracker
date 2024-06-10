@@ -266,7 +266,9 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    response = make_response(redirect(url_for('login')))
+    response.delete_cookie('session_token')
+    return response
 
 
 @app.route('/add_custom_trick', methods=['POST'])
