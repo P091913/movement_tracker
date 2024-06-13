@@ -76,12 +76,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#portfolio">Training
-                    Book</a></li>
-                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{ url_for('community') }}">Community</a></li>
-                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#portfolio">Training
+                    Book</a></li> <!-- Adjusted py-2 -->
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="{{ url_for('community') }}">Community</a></li> <!-- Adjusted py-2 -->
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded"
                                                      href="{{ url_for('logout') }}">Logout</a>
-                </li>
+                </li> <!-- Adjusted py-2 -->
             </ul>
         </div>
     </div>
@@ -90,41 +90,41 @@
 <!-- Portfolio Section-->
 <section class="page-section portfolio" id="portfolio">
     <div class="container">
-        <!-- Portfolio Section Heading-->
+        <!-- Portfolio Section Heading -->
         <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Trick Portfolio</h2>
-        <!-- Icon Divider-->
+
+        <!-- Icon Divider -->
         <div class="divider-custom">
             <div class="divider-custom-line"></div>
             <div class="divider-custom-icon"><i class="fa fa-book"></i></div>
             <div class="divider-custom-line"></div>
         </div>
 
+        <!-- Combos Section Heading with Button -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-muted mb-0">Combos</h1>
+            <button class="btn btn-primary shadow p-3 rounded" type="button"
+                    id="dropdownMenuButton"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addComboModal">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        <!-- Divider Line -->
+        <hr>
+
         {% include 'Modals/custom_trick.html' %}
         {% include 'Modals/add_new_combo.html' %}
         {% include 'Modals/add_combo_to_progress.html' %}
 
-        <div class="row justify-content-end">
-            <div class="col-auto">
-                <div class="dropdown d-inline-block">
-                    <button class="navbar-toggler-sub-menu dropdown-toggle shadow p-3 mb-5 rounded" type="button"
-                            id="dropdownMenuButton"
-                            aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-plus"></i>
-                    </button>
-
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                        <!-- Dropdown menu content -->
-                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal"
-                           data-bs-target="#addCustomTrickModal">Add
-                            Custom Trick</a>
-                        <a class="dropdown-item btn btn-primary" data-bs-toggle="modal" data-bs-target="#addComboModal">Add
-                            Combo</a>
-                    </div>
-                </div>
-            </div>
+        <div class="row">
+            <!-- Your other content here -->
         </div>
+    </div>
 
-        <div class="container overflow-auto">
+        <div class="container overflow-auto" style="max-height: 400px;">
             <div class="row justify-content-center">
                 <!-- Portfolio Items -->
                 {% for i in range(0, current_user.combos|length) %}
@@ -468,7 +468,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const handleCustomTrickFormSubmit = function (event) {
             event.preventDefault(); // Prevent default form submission behavior
-            const customTrickForm = document.getElementById('customTrickForm');
+            //const customTrickForm = document.getElementById('customTrickForm');
             const formData = new FormData(customTrickForm);
             const jsonData = {};
             for (const [key, value] of formData.entries()) {
@@ -495,7 +495,7 @@
                 .catch(error => console.error('Error:', error)); // Handle errors if needed
         };
 
-// Add event listener to custom trick form
+        // Add event listener to custom trick form
         const customTrickForm = document.getElementById('customTrickForm');
         customTrickForm.addEventListener('submit', handleCustomTrickFormSubmit);
     });
@@ -551,71 +551,153 @@
         // Show the editComboModal
         modalInstance.show();
     }
-
     //******* end of code to edit existing combo
 
 
     // ****** add code for tricks dropdown when users want to add more to each combo
     function addTrickDropdown(isCustom = false, customMoveId = null) {
-        const trickDropdowns = document.getElementById('trick-dropdowns');
-        const dropdownContainer = document.createElement('div');
+    const container = document.getElementById('datalistContainer');
 
-        const select = document.createElement('select');
-        select.classList.add('form-control');
-        select.classList.add('me-3')
-        select.name = 'tricks[]';
-        select.required = true;
+    // Create a unique ID for the new datalist
+    const datalistId = 'datalist-' + Date.now();
 
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        defaultOption.textContent = 'Select a trick';
-        select.appendChild(defaultOption);
+    // Create the new div with class 'mb-3'
+    const newDiv = document.createElement('div');
+    newDiv.className = 'd-flex align-items-center mb-3';
 
-        if (isCustom) {
-            // Options for custom tricks
-            const customTricks = [
-                {% for custom_trick in custom_moves %}
-                    {move_id: '{{ custom_trick.id }}', move_name: '{{ custom_trick.trick_name }}'},
-                {% endfor %}
-            ];
-            customTricks.forEach(move => {
-                const option = document.createElement('option');
-                option.value = 'custom-' + move.move_id; // Include the custom move's ID
-                option.textContent = move.move_name;
-                select.appendChild(option);
-            });
-        } else {
-            // Options for official tricks
-            const officialTricks = [
-                {% for move in moves %}
-                    {move_id: '{{ move.move_id }}', move_name: '{{ move.move_name }}'},
-                {% endfor %}
-            ];
-            officialTricks.forEach(move => {
-                const option = document.createElement('option');
-                option.value = 'official-' + move.move_id;
-                option.textContent = move.move_name;
-                select.appendChild(option);
-            });
-        }
+    // Create the label
+    const newLabel = document.createElement('label');
+    newLabel.setAttribute('for', datalistId + '-input');
+    newLabel.className = 'form-label';
 
-        const minusButton = document.createElement('button');
-        minusButton.type = 'button';
-        minusButton.classList.add('btn', 'btn-danger', 'btn-remove');
-        minusButton.textContent = '-';
-        minusButton.addEventListener('click', function () {
-            removeTrickDropdown(this);
+    // Create the new input field
+    const newInput = document.createElement('input');
+    newInput.type = 'text';
+    newInput.id = datalistId + '-input';
+    newInput.setAttribute('list', datalistId);
+    newInput.className = 'form-control';
+    newInput.placeholder = 'Type or Enter New Trick';
+    newInput.name = 'tricks[]';
+
+    // Create the new datalist
+    const newDatalist = document.createElement('datalist');
+    newDatalist.id = datalistId;
+    newDatalist.name = 'tricks[]';
+
+
+    // Create the remove button
+    const minusButton = document.createElement('button');
+    minusButton.type = 'button';
+    minusButton.classList.add('btn', 'btn-danger', 'btn-remove');
+    minusButton.textContent = '-';
+
+    // Append the label, input field, and datalist to the new div
+    newDiv.appendChild(newLabel);
+    newDiv.appendChild(newInput);
+    newDiv.appendChild(newDatalist);
+    newDiv.appendChild(minusButton);
+
+    // Append the new div to the container
+    container.appendChild(newDiv);
+
+    // Options for custom tricks
+    const customTricks = [
+        {% for custom_trick in custom_moves %}
+            {move_type: 'custom-', move_id: '{{ custom_trick.id }}', move_name: '{{ custom_trick.trick_name }}'},
+        {% endfor %}
+    ];
+
+    // Options for official tricks
+    const officialTricks = [
+        {% for move in moves %}
+            {move_type: 'official-', move_id: '{{ move.move_id }}', move_name: '{{ move.move_name }}'},
+        {% endfor %}
+    ];
+
+    let trick_setup = [customTricks, officialTricks];
+
+    trick_setup.forEach(allTricks => {
+        allTricks.forEach(move => {
+            const option = document.createElement('option');
+            option.textContent = move.move_name;
+            //option.value = `${move.move_type}%${move.move_id}%${move.move_name}`;
+            newDatalist.appendChild(option);
         });
-        dropdownContainer.classList.add('d-flex', 'align-items-center', 'mb-3');
+    });
 
-        dropdownContainer.appendChild(select);
-        dropdownContainer.appendChild(minusButton);
-        trickDropdowns.appendChild(dropdownContainer);
+    // Event listener to create hidden inputs for selected tricks
+    newInput.addEventListener('input', function() {
+        const selectedOption = this.list.querySelector(`option[value="${this.value}"]`);
+        if (selectedOption) {
+            this.value = selectedOption.textContent;
+        }
+    });
+
+        minusButton.addEventListener('click', function () {
+            newDiv.remove();
+        });
+    }
+    //****** end add tricks to combos
+
+
+
+
+    function sendAjaxRequest(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+
+        const comboForm = document.getElementById('combo-form');
+        const formData = new FormData(comboForm);
+        const jsonData = {};
+
+        // Collect form data
+        formData.forEach((value, key) => {
+            if (!jsonData[key]) {
+                jsonData[key] = value;
+            } else {
+                if (!Array.isArray(jsonData[key])) {
+                    jsonData[key] = [jsonData[key]];
+                }
+                jsonData[key].push(value);
+            }
+        });
+
+        // Collect tricks data
+        const selectedTricks = [];
+        document.querySelectorAll('input[name="tricks[]"]').forEach(input => {
+            if (input.value.trim() !== '') {
+                selectedTricks.push(input.value);
+            }
+        });
+
+        jsonData['tricks[]'] = selectedTricks;
+
+        fetch('/custom_add_combo', {
+            method: 'POST',
+            body: JSON.stringify(jsonData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Ajax request successful');
+            console.log('Response:', data);
+        })
+        .catch(error => {
+            console.error('Ajax request error:', error);
+        });
     }
 
-    //****** end add tricks to combos
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('AddComboButton').addEventListener('click', function(event) {
+            sendAjaxRequest(event);
+        });
+        console.log("Document ready");
+    });
+
+
+
+
 
 
     // ****** add code for edit tricks dropdown when users want to add more to each combo

@@ -31,11 +31,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="{{ url_for('login') }}">Login</a></li>
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="{{ url_for('login') }}">Login</a></li> <!-- Adjusted py-2 -->
             </ul>
         </div>
     </div>
 </nav>
+
 
 
 
@@ -50,19 +51,19 @@
 
             <div class="col-sm-12 col-md-8 col-lg-8 mx-auto">
                 <form action="/create" method="post" class="mt-5">
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="username">Username:</label>
                         <input type="text" id="username" name="username" class="form-control" placeholder="Enter Your Username" maxlength="25">
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="password">Password:</label>
                         <input type="password" id="password" name="password" class="form-control" placeholder="Enter Your Password" maxlength="15">
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label for="email">Email:</label>
                         <input type="text" id="email" name="email" class="form-control" placeholder="Enter Your Email" maxlength="35">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Sign Up</button>
                 </form>
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
