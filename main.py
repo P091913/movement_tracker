@@ -271,21 +271,27 @@ def logout():
     return response
 
 
-@app.route('/add_custom_trick', methods=['POST'])
-def add_custom_trick():
-    data = request.json
-    trick_name = data.get('trickName')
+def add_custom_trick(trick_name):
+    #data = request.json
 
     existing_trick = CustomTrick.query.filter_by(user_id=current_user.id, trick_name=trick_name).first()
     if existing_trick:
-        return jsonify({'error': 'Trick already exists for this user'})
+        #return jsonify({'error': 'Trick already exists for this user'})
+        print(trick_name, "Already Exists")
+        return existing_trick.id
     else:
+        if trick_name.isspace():
+            return "Trick Cannot be spaces"
+
         # Create and store the custom trick in the database
         custom_trick = CustomTrick(trick_name=trick_name, user_id=current_user.id)
         # combo_trick = ComboTricks(combo_id=combo_id, trick_id=trick_id, trick_type=trick_type, position=position)
         db.session.add(custom_trick)
         db.session.commit()
-        return jsonify({'message': 'Custom trick added successfully'})
+        new_trick = CustomTrick.query.filter_by(user_id=current_user.id, trick_name=trick_name).first()
+        return new_trick.id
+
+
 
 
 @app.route('/fetch_custom_tricks')
@@ -509,11 +515,16 @@ def add_combo_tricks():
 
 @app.route('/custom_add_combo', methods=['POST'])
 def custom_add_combo():
-    combo_id = request.form.get('combo-id')
-    combo_title = request.form['combo-title']
-    combo_description = request.form['combo-description']
-    selected_tricks = request.form.getlist('tricks[]')
-    #print(combo_title, combo_description, selected_tricks)
+    try:
+        data = request.get_json()
+        print(data)
+        combo_id = data.get('combo-id')
+        combo_title = data.get('combo-title')
+        combo_description = data.get('combo-description')
+        selected_tricks = data.get('tricks[]')
+    except Exception as e:
+        print(f'Error: {e}')
+        return jsonify({'status': 'error', 'message': str(e)}), 400
 
     # Create a new Combo object
     new_combo = Combo(title=combo_title, description=combo_description, user_id=current_user.id)
@@ -522,22 +533,41 @@ def custom_add_combo():
     db.session.add(new_combo)
     db.session.commit()
 
+    print(selected_tricks)
+
     for position, trick in enumerate(selected_tricks, start=1):
-        trick_parts = trick.split('-')
-        if len(trick_parts) != 2:
-            #print("Error: Trick does not contain expected format:", trick)
-            continue
-        trick_type, trick_id = trick_parts
-        #print("Trick Type:", trick_type)
-        #print("Trick ID:", trick_id)
-        trick_id = int(trick_id)
+
+        # Check if the trick exists in the Moves database
+        move = Moves.query.filter_by(move_name=trick).first()
+        if move:
+            trick_type = 'official'
+            trick_id = int(move.move_id)
+        else:
+             # Check if the trick exists in the CustomTrick database for the user
+            custom_trick = CustomTrick.query.filter_by(trick_name=trick, user_id=current_user.id).first()
+            if custom_trick:
+                trick_type = 'custom'
+                trick_id = int(custom_trick.id)
+            else:
+                move_name = trick.strip()
+                trick_id = add_custom_trick(move_name)
+                if trick_id == "Trick Cannot be spaces":
+                    print(trick_id)
+                    return "Success"
+                trick_type = 'custom'
+
+
+    #return jsonify({"status": "success", "message": "Tricks processed successfully"}), 200
 
         # Create a new ComboTricks object
+        print(trick_type)
         if trick_type == 'custom':
+            print("Addng Customer Trick")
             combo_trick = ComboTricks(combo_id=new_combo.id, trick_id=trick_id, trick_type=trick_type,
                                       position=position,
                                       custom_trick_id=trick_id)
         else:
+            print("Adding Official Trick")
             combo_trick = ComboTricks(combo_id=new_combo.id, trick_id=trick_id, trick_type=trick_type,
                                       position=position,
                                       move_id=trick_id)
