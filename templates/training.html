@@ -524,32 +524,60 @@
     //***** code to edit existing combo
     function editCombo(comboId) {
 var modal = document.getElementById("editComboModal-" + comboId);
-        var viewComboModal = document.getElementById("comboModal" + comboId);
-        var modalInstance = new bootstrap.Modal(modal);
-        var viewComboInstance = new bootstrap.Modal(viewComboModal);
+    var viewComboModal = document.getElementById("comboModal" + comboId);
+    var modalInstance = new bootstrap.Modal(modal);
+    var viewComboInstance = new bootstrap.Modal(viewComboModal);
 
-        // Set the style.display property to 'none'
-        viewComboModal.style.display = 'none';
+    // Set the style.display property to 'none'
+    viewComboModal.style.display = 'none';
 
-        // Remove the role attribute
-        viewComboModal.removeAttribute('role');
+    // Remove the role attribute
+    viewComboModal.removeAttribute('role');
 
-        // Set aria-hidden attribute to true
-        viewComboModal.setAttribute('aria-hidden', 'true');
+    // Set aria-hidden attribute to true
+    viewComboModal.setAttribute('aria-hidden', 'true');
 
-        // Remove aria-modal attribute
-        viewComboModal.removeAttribute('aria-modal');
+    // Remove aria-modal attribute
+    viewComboModal.removeAttribute('aria-modal');
 
-        // Remove the class 'classNameToRemove' from the element
-        viewComboModal.classList.remove('show');
+    // Remove the class 'classNameToRemove' from the element
+    viewComboModal.classList.remove('show');
 
+    // Show the editComboModal
+    modalInstance.show();
 
-        // Close the viewComboModal
-        //viewComboInstance.hide();
-        //viewComboInstance.hide();
+    // Function to handle click outside modal
+    function clickOutsideHandler(event) {
+        if (!modal.contains(event.target) && !event.target.closest('.modal')) {
+            // Clicked outside the modal, hide it
+            modalInstance.hide();
+        }
+    }
 
-        // Show the editComboModal
-        modalInstance.show();
+    // Event listener for when the modal is fully shown
+    modal.addEventListener('shown.bs.modal', function () {
+        // Add event listener to hide modal when clicking outside of it
+        document.addEventListener('click', clickOutsideHandler);
+    });
+
+    // Event listener for when the modal is fully hidden
+    modal.addEventListener('hidden.bs.modal', function () {
+        // Remove the click outside handler
+        document.removeEventListener('click', clickOutsideHandler);
+        // Ensure the modal and backdrop are properly removed
+        viewComboModal.style.display = '';
+        viewComboModal.setAttribute('role', 'dialog');
+        viewComboModal.removeAttribute('aria-hidden');
+        viewComboModal.setAttribute('aria-modal', 'true');
+        viewComboModal.classList.add('show');
+
+        // Remove the backdrop if it exists
+        var backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+    });
+
     }
     //******* end of code to edit existing combo
 
