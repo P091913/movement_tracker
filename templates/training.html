@@ -523,7 +523,7 @@
 
     //***** code to edit existing combo
     function editCombo(comboId) {
-var modal = document.getElementById("editComboModal-" + comboId);
+ var modal = document.getElementById("editComboModal-" + comboId);
     var viewComboModal = document.getElementById("comboModal" + comboId);
     var modalInstance = new bootstrap.Modal(modal);
     var viewComboInstance = new bootstrap.Modal(viewComboModal);
@@ -564,6 +564,7 @@ var modal = document.getElementById("editComboModal-" + comboId);
     modal.addEventListener('hidden.bs.modal', function () {
         // Remove the click outside handler
         document.removeEventListener('click', clickOutsideHandler);
+
         // Ensure the modal and backdrop are properly removed
         viewComboModal.style.display = '';
         viewComboModal.setAttribute('role', 'dialog');
@@ -571,11 +572,15 @@ var modal = document.getElementById("editComboModal-" + comboId);
         viewComboModal.setAttribute('aria-modal', 'true');
         viewComboModal.classList.add('show');
 
-        // Remove the backdrop if it exists
-        var backdrop = document.querySelector('.modal-backdrop');
-        if (backdrop) {
+        // Remove any remaining backdrops
+        var backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(function(backdrop) {
             backdrop.remove();
-        }
+        });
+
+        // Remove the 'modal-open' class from the body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = ''; // Ensure scroll behavior is restored
     });
 
     }
