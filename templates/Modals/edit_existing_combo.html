@@ -23,23 +23,29 @@
                         <div class="form-group" id="edit-trick-dropdowns">
                             {% for trick in current_user.combos[i].combo_tricks %}
                                 <div class="d-flex align-items-center mb-3">
-                                    <select class="form-control me-3" name="tricks[]" required>
-                                        {% if trick.trick_type == 'official' %}
-                                            <option value="official-{{ trick.move_id }}">{{ trick.move.move_name }}</option>
-                                        {% else %}
-                                            <option value="custom-{{ trick.custom_trick.id }}">{{ trick.custom_trick.trick_name }}</option>
-                                        {% endif %}
-                                    </select>
+                                    <!-- Input with datalist -->
+                                    <input class="form-control me-3" list="trickOptions" name="tricks[]" required
+                                           value="{% if trick.trick_type == 'official' %}{{ trick.move.move_name }}{% else %}{{ trick.custom_trick.trick_name }}{% endif %}">
+
+                                    <!-- Datalist options -->
+                                    <datalist id="trickOptions">
+                                        {% for trick in current_user.combos[i].combo_tricks %}
+                                            {% if trick.trick_type == 'official' %}
+                                                <option value="{{ trick.move.move_name }}">{{ trick.move.move_name }}</option>
+                                            {% else %}
+                                                <option value="{{ trick.custom_trick.trick_name }}">{{ trick.custom_trick.trick_name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </datalist>
+
+                                    <!-- Remove button -->
                                     <button type="button" class="btn btn-danger btn-remove"
                                             onclick="removeTrickDropdown(this)">-
                                     </button>
                                 </div>
                             {% endfor %}
                         </div>
-                        <button type="button" class="btn btn-secondary" onclick="editTrickDropdown()">Add More Tricks
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="editTrickDropdown(true)">Add Custom
-                            Trick
+                        <button type="button" class="btn btn-secondary" onclick="editTrickDropdown()">Add Tricks
                         </button>
                         <button type="submit" class="btn btn-success">Save Changes</button>
                     </form>

@@ -38,9 +38,18 @@ def index():
     return redirect(url_for('login'))
 
 
+
 @app.route('/training')
 @login_required
 def training():
+    session_token = request.cookies.get('session_token')
+    if session_token:
+        user = User.query.filter_by(session_token=session_token).first()
+        if user:
+            login_user(user)
+    else:
+        return redirect(url_for('login'))
+
     user = current_user
     session_details = user.user_session_details
     combos = user.combos
@@ -74,9 +83,6 @@ def training():
 
     custom_moves = CustomTrick.query.filter(CustomTrick.user_id == current_user.id).all()
 
-    #print(custom_moves)
-    #print(combined_dates)
-
     return render_template("training.html", moves=moves, user_moves=user_moves,
                            sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
                            custom_moves=custom_moves, combined_dates=combined_dates
@@ -86,6 +92,13 @@ def training():
 @app.route('/community', methods=['POST', 'GET'])
 @login_required
 def community():
+    session_token = request.cookies.get('session_token')
+    if session_token:
+        user = User.query.filter_by(session_token=session_token).first()
+        if user:
+            login_user(user)
+    else:
+        return redirect(url_for('login'))
     # Retrieve all combos and their details
     combos_with_details = db.session.query(Combo, User.username). \
         join(User, Combo.user_id == User.id). \
@@ -557,8 +570,6 @@ def custom_add_combo():
                 trick_type = 'custom'
 
 
-    #return jsonify({"status": "success", "message": "Tricks processed successfully"}), 200
-
         # Create a new ComboTricks object
         print(trick_type)
         if trick_type == 'custom':
@@ -578,7 +589,7 @@ def custom_add_combo():
     # Commit all changes to the database
     db.session.commit()
 
-    return redirect(url_for('training'))
+    return jsonify({"status": "success", "message": "Tricks processed successfully"}), 200
 
     # return "Success"  # You can return a response as needed
 
@@ -595,21 +606,33 @@ def custom_edit_combo():
 
     existing_combo = Combo.query.get(combo_id)
 
+    print(selected_tricks)
     if existing_combo:
         existing_combo.title = combo_title
         existing_combo.description = combo_description
 
         ComboTricks.query.filter_by(combo_id=combo_id).delete()
 
+
         for position, trick in enumerate(selected_tricks, start=1):
-            trick_parts = trick.split('-')
-            if len(trick_parts) != 2:
-                #print("Error: Trick does not contain expected format:", trick)
-                continue
-            trick_type, trick_id = trick_parts
-            #print("Trick Type:", trick_type)
-            #print("Trick ID:", trick_id)
-            trick_id = int(trick_id)
+
+            move = Moves.query.filter_by(move_name=trick).first()
+            if move:
+                trick_type = 'official'
+                trick_id = int(move.move_id)
+            else:
+                # Check if the trick exists in the CustomTrick database for the user
+                custom_trick = CustomTrick.query.filter_by(trick_name=trick, user_id=current_user.id).first()
+                if custom_trick:
+                    trick_type = 'custom'
+                    trick_id = int(custom_trick.id)
+                else:
+                    move_name = trick.strip()
+                    trick_id = add_custom_trick(move_name)
+                    if trick_id == "Trick Cannot be spaces":
+                        print(trick_id)
+                        return "Success"
+                    trick_type = 'custom'
 
             # Create a new ComboTricks object
             if trick_type == 'custom':
