@@ -950,6 +950,61 @@
     }
     // **** code to share combo ****
 
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let timer;
+
+        document.querySelectorAll('.portfolio-item').forEach(function(item) {
+            // Mouse events
+            item.addEventListener('mousedown', function(event) {
+                startPressTimer(event);
+            });
+
+            item.addEventListener('mouseup', function(event) {
+                clearPressTimer();
+                handleClick(event);
+            });
+
+            item.addEventListener('mouseleave', function(event) {
+                clearPressTimer();
+            });
+
+            // Touch events
+            item.addEventListener('touchstart', function(event) {
+                startPressTimer(event);
+            });
+
+            item.addEventListener('touchend', function(event) {
+                clearPressTimer();
+                handleClick(event);
+            });
+
+            item.addEventListener('touchcancel', function(event) {
+                clearPressTimer();
+            });
+        });
+
+        function startPressTimer(event) {
+            timer = setTimeout(function() {
+                handleLongPress(event);
+            }, 1000); // 1 second threshold for long press
+        }
+
+        function clearPressTimer() {
+            clearTimeout(timer);
+        }
+
+        function handleClick(event) {
+            console.log('Card clicked', event.currentTarget.id);
+            // Place your click handling logic here
+        }
+
+        function handleLongPress(event) {
+            console.log('Long press detected on', event.currentTarget.id);
+            // Place your long press handling logic here
+        }
+    });
+
 </script>
 
 </body>
