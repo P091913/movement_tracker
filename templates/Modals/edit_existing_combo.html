@@ -1,34 +1,31 @@
 {% for i in range(0, current_user.combos|length) %}
-    <div class="modal fade" id="editComboModal-{{ current_user.combos[i].id }}" tabindex="-1"
-         aria-labelledby="editComboModalLabel-{{ current_user.combos[i].id }}" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="editComboModal-{{ current_user.combos[i].id }}" tabindex="-1" aria-labelledby="editComboModalLabel-{{ current_user.combos[i].id }}" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title card-title" id="editComboModalLabel">Edit Combo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                <div class="modal-header d-flex justify-content-center align-items-center"> <!-- Add align-items-center class for vertical alignment -->
+                <h5 class="modal-title card-title text-center mb-0" id="editComboModalLabel-{{ current_user.combos[i].id }}">Modify Combo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="showOffcanvas({{ current_user.combos[i].id }})"></button>
+            </div>
                 <div class="modal-body">
-                    <form id="edit-combo-form" action="{{ url_for('custom_edit_combo') }}" method="POST">
-                        <input type="hidden" id="edit-combo-id" name="combo-id" value="{{ current_user.combos[i].id }}">
+                    <form id="edit-combo-form-{{ current_user.combos[i].id }}" action="{{ url_for('custom_edit_combo') }}" method="POST">
+                        <input type="hidden" id="edit-combo-id-{{ current_user.combos[i].id }}" name="combo-id" value="{{ current_user.combos[i].id }}">
                         <div class="form-group">
-                            <label class="card-title" for="edit-combo-title">Combo Title</label>
-                            <input type="text" class="form-control" id="edit-combo-title" name="combo-title"
-                                   value="{{ current_user.combos[i].title }}" required>
+                            <label class="card-title" for="edit-combo-title-{{ current_user.combos[i].id }}">Combo Title</label>
+                            <input type="text" class="form-control" id="edit-combo-title-{{ current_user.combos[i].id }}" name="combo-title" value="{{ current_user.combos[i].title }}" required>
                         </div>
                         <div class="form-group" style="margin-bottom: 20px;">
-                            <label class="card-title" for="edit-combo-description">Combo Description</label>
-                            <textarea class="form-control" id="edit-combo-description" name="combo-description" rows="3"
-                                      required>{{ current_user.combos[i].description }}</textarea>
+                            <label class="card-title" for="edit-combo-description-{{ current_user.combos[i].id }}">Combo Description</label>
+                            <textarea class="form-control" id="edit-combo-description-{{ current_user.combos[i].id }}" name="combo-description" rows="3" required>{{ current_user.combos[i].description }}</textarea>
                         </div>
-                        <div class="form-group" id="edit-trick-dropdowns">
+                        <div class="form-group" id="edit-trick-dropdowns-{{ current_user.combos[i].id }}">
                             {% for trick in current_user.combos[i].combo_tricks %}
                                 <div class="d-flex align-items-center mb-3">
                                     <!-- Input with datalist -->
-                                    <input class="form-control me-3" list="trickOptions" name="tricks[]" required
+                                    <input class="form-control me-3" list="trickOptions-{{ current_user.combos[i].id }}" name="tricks[]" required
                                            value="{% if trick.trick_type == 'official' %}{{ trick.move.move_name }}{% else %}{{ trick.custom_trick.trick_name }}{% endif %}">
 
                                     <!-- Datalist options -->
-                                    <datalist id="trickOptions">
+                                    <datalist id="trickOptions-{{ current_user.combos[i].id }}">
                                         {% for trick in current_user.combos[i].combo_tricks %}
                                             {% if trick.trick_type == 'official' %}
                                                 <option value="{{ trick.move.move_name }}">{{ trick.move.move_name }}</option>
@@ -39,14 +36,11 @@
                                     </datalist>
 
                                     <!-- Remove button -->
-                                    <button type="button" class="btn btn-danger btn-remove"
-                                            onclick="removeTrickDropdown(this)">-
-                                    </button>
+                                    <button type="button" class="btn btn-danger btn-remove" onclick="removeTrickDropdown(this)">-</button>
                                 </div>
                             {% endfor %}
                         </div>
-                        <button type="button" class="btn btn-secondary" onclick="editTrickDropdown()">Add Tricks
-                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="editTrickDropdown({{ current_user.combos[i].id }})">Add Tricks</button>
                         <button type="submit" class="btn btn-success">Save Changes</button>
                     </form>
                 </div>
