@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
           type="text/css"/>
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
     <!-- Core theme CSS (includes Bootstrap)-->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
     <style>
@@ -61,7 +62,6 @@
             cursor: pointer;
         }
 
-
     </style>
 </head>
 <body id="page-top">
@@ -86,9 +86,11 @@
         </div>
     </div>
 </nav>
+{% include 'Modals/edit_existing_combo.html' %}
 
 <!-- Portfolio Section-->
 <section class="page-section portfolio" id="portfolio">
+
     <div class="container">
         <!-- Portfolio Section Heading -->
         <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Trick Portfolio</h2>
@@ -129,8 +131,8 @@
                 <!-- Portfolio Items -->
                 {% for i in range(0, current_user.combos|length) %}
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
-                        <div class="portfolio-item mx-auto shadow p-3 bg-white rounded" data-bs-toggle="modal"
-                             data-bs-target="#comboModal{{ current_user.combos[i].id }}" style="padding: 15px;">
+                        <div class="portfolio-item mx-auto shadow p-3 bg-white rounded" data-bs-toggle="offcanvas"
+                             data-bs-target="#comboOffcanvas{{ current_user.combos[i].id }}" style="padding: 15px;">
                             <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
                                 <div class="portfolio-item-caption-content text-center text-white"><i
                                         class="fa fa-eye"></i></div>
@@ -141,8 +143,8 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
 </section>
+
 <!-- About Section-->
 <section class="page-section bg-primary text-white mb-0" id="about">
     <div class="container">
@@ -289,67 +291,50 @@
     <div class="container"><small>Copyright &copy; Floor Underground 2024</small></div>
 </div>
 
-{% include 'Modals/edit_existing_combo.html' %}
 
-<!-- Portfolio Modal 1-->
+
+<!-- OffCanvas Combo Views-->
 {% for i in range(0, current_user.combos|length) %}
-    <div class="portfolio-modal modal fade" id="comboModal{{ current_user.combos[i].id }}" tabindex="-1"
-         aria-labelledby="comboModalLabel{{ current_user.combos[i].id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center pb-5">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <!-- Portfolio Modal - Title-->
-                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">{{ current_user.combos[i].title }}</h2>
-                                <!-- Icon Divider-->
-                                <div class="divider-custom">
-                                    <div class="divider-custom-line"></div>
-                                    {% if current_user.combos[i].combo_share == "N" %}
-                                        <button type="button" class="btn btn-secondary" id="shareButton{{ current_user.combos[i].id }}" onclick="shareCombo({{ current_user.combos[i].id }})">Share Combo</button>
+    <div class="offcanvas offcanvas-bottom offcanvas-bottom-fullscreen" tabindex="-1" id="comboOffcanvas{{ current_user.combos[i].id }}" aria-labelledby="comboOffcanvasLabel{{ current_user.combos[i].id }}">
+    <div class="offcanvas-header text-center"> <!-- Center align the content -->
+        <h5 class="offcanvas-title mb-0">View Combo</h5> <!-- Remove the margin-bottom -->
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+        <div class="offcanvas-body">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h2 class="card-text text-center">{{ current_user.combos[i].title }}</h2>
+                    <div class="divider-custom">
+                            <div class="divider-custom-line"></div>
+                            {% if current_user.combos[i].combo_share == "N" %}
+                                <button type="button" class="btn btn-secondary" id="shareButton{{ current_user.combos[i].id }}" onclick="shareCombo({{ current_user.combos[i].id }})">Share Combo</button>
+                            {% else %}
+                                <button type="button" class="btn btn-danger" id="unshareButton{{ current_user.combos[i].id }}" onclick="unShareCombo({{ current_user.combos[i].id }})">Unshare Combo</button>
+                            {% endif %}
+                            <div class="divider-custom-line"></div>
+                        </div>
+                        <p class="card-text">Description: {{ current_user.combos[i].description }}</p>
+                        <ul class="list-group mb-4">
+                            {% for trick in current_user.combos[i].combo_tricks %}
+                                <li class="list-group-item">
+                                    {% if trick.trick_type == 'official' %}
+                                        {{ trick.move.move_name }}
                                     {% else %}
-                                        <button type="button" class="btn btn-danger" id="unshareButton{{ current_user.combos[i].id }}" onclick="unShareCombo({{ current_user.combos[i].id }})">Unshare Combo</button>
+                                        {{ trick.custom_trick.trick_name }}
                                     {% endif %}
-                                    <div class="divider-custom-line"></div>
-                                </div>
-                                <!-- Portfolio Modal - Image-->
-                                <!-- Portfolio Modal - Text-->
-                                <p class="card-text">{{ current_user.combos[i].description }}</p>
-                                <ul class="list-group mb-4">
-                                    {% for trick in current_user.combos[i].combo_tricks %}
-                                        <li class="list-group-item">
-                                            {% if trick.trick_type == 'official' %}
-                                                {{ trick.move.move_name }}
-                                            {% else %}
-                                                {{ trick.custom_trick.trick_name }}
-                                            {% endif %}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                onclick="editCombo({{ current_user.combos[i].id }})">Edit
-                                        </button>
-                                        <button type="button" class="btn btn-danger"
-                                                onclick="removeCombo({{ current_user.combos[i].id }})">
-                                            Remove Combo
-                                        </button>
-                                        <!-- <button type="button" class="btn btn-primary"
-                                                onclick="showAddToPlannerModal('{{ current_user.combos[i].id }}', '{{ current_user.combos[i].title }}')">
-                                            Add to Session Planner
-                                        </button> -->
-                                    </div>
-                                    <div>
-                                        <small class="text-muted">Created: {{ current_user.combos[i].date_created.strftime('%Y-%m-%d') }}</small>
-                                        <br>
-                                        <small class="text-muted">Creator: {{ current_user.username }}</small>
-                                    </div>
-                                </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editComboModal-{{ current_user.combos[i].id }}" onclick="hideOffcanvas({{ current_user.combos[i].id }})">Edit</button>
+                                <button type="button" class="btn btn-danger" onclick="removeCombo({{ current_user.combos[i].id }})">Remove Combo</button>
+                            </div>
+                            <div>
+                                <small class="text-muted">Created: {{ current_user.combos[i].date_created.strftime('%Y-%m-%d') }}</small><br>
+                                <small class="text-muted">Creator: {{ current_user.username }}</small>
                             </div>
                         </div>
                     </div>
@@ -359,18 +344,31 @@
     </div>
 {% endfor %}
 <!-- Bootstrap core JS-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <!-- Core theme JS-->
 <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 <!-- Bootstrap core JS -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
 
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
 <!-- * *                               SB Forms JS                               * *-->
 <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
 <script>
+
+    function hideOffcanvas(comboIdentify) {
+    const offcanvasElement = document.getElementById('comboOffcanvas' + comboIdentify); // Change 'comboOffcanvas1' to your actual off-canvas ID
+    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+    offcanvasInstance.hide();
+  }
+
+  function showOffcanvas(comboIdentify) {
+    const offcanvasElement = document.getElementById('comboOffcanvas' + comboIdentify); // Change 'comboOffcanvas1' to your actual off-canvas ID
+    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+    offcanvasInstance.show();
+  }
 
     var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
     var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
@@ -523,67 +521,17 @@
 
     //***** code to edit existing combo
     function editCombo(comboId) {
- var modal = document.getElementById("editComboModal-" + comboId);
-    var viewComboModal = document.getElementById("comboModal" + comboId);
-    var modalInstance = new bootstrap.Modal(modal);
-    var viewComboInstance = new bootstrap.Modal(viewComboModal);
+        const bsOffcanvas = new bootstrap.Offcanvas('#comboOffcanvas' + comboId);
+      bsOffcanvas.hide();
 
-    // Set the style.display property to 'none'
-    viewComboModal.style.display = 'none';
+      var modal = document.getElementById("editComboModal-" + comboId);
+      var modalInstance = new bootstrap.Modal(modal);
 
-    // Remove the role attribute
-    viewComboModal.removeAttribute('role');
-
-    // Set aria-hidden attribute to true
-    viewComboModal.setAttribute('aria-hidden', 'true');
-
-    // Remove aria-modal attribute
-    viewComboModal.removeAttribute('aria-modal');
-
-    // Remove the class 'classNameToRemove' from the element
-    viewComboModal.classList.remove('show');
-
-    // Show the editComboModal
-    modalInstance.show();
-
-    // Function to handle click outside modal
-    function clickOutsideHandler(event) {
-        if (!modal.contains(event.target) && !event.target.closest('.modal')) {
-            // Clicked outside the modal, hide it
-            modalInstance.hide();
-        }
+      // Show the editComboModal
+      modalInstance.show();
     }
 
-    // Event listener for when the modal is fully shown
-    modal.addEventListener('shown.bs.modal', function () {
-        // Add event listener to hide modal when clicking outside of it
-        document.addEventListener('click', clickOutsideHandler);
-    });
 
-    // Event listener for when the modal is fully hidden
-    modal.addEventListener('hidden.bs.modal', function () {
-        // Remove the click outside handler
-        document.removeEventListener('click', clickOutsideHandler);
-
-        // Ensure the modal and backdrop are properly removed
-        viewComboModal.style.display = '';
-        viewComboModal.setAttribute('role', 'dialog');
-        viewComboModal.removeAttribute('aria-hidden');
-        viewComboModal.setAttribute('aria-modal', 'true');
-        viewComboModal.classList.add('show');
-
-        // Remove any remaining backdrops
-        var backdrops = document.querySelectorAll('.modal-backdrop');
-        backdrops.forEach(function(backdrop) {
-            backdrop.remove();
-        });
-
-        // Remove the 'modal-open' class from the body
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = ''; // Ensure scroll behavior is restored
-    });
-
-    }
     //******* end of code to edit existing combo
 
 
@@ -743,21 +691,25 @@
 
 
     // ****** add code for edit tricks dropdown when users want to add more to each combo
-    function editTrickDropdown(isCustom = false, customMoveId = null) {
-        const container = document.getElementById('edit-trick-dropdowns');
+    function editTrickDropdown(customMoveId = null) {
+
+        const container = document.getElementById('edit-trick-dropdowns-' + customMoveId);
         const dropdownContainer = document.createElement('div');
 
     // Create a unique ID for the new datalist
     const datalistId = 'datalist-' + Date.now();
 
+
     // Create the new div with class 'mb-3'
     const newDiv = document.createElement('div');
     newDiv.className = 'd-flex align-items-center mb-3';
+
 
     // Create the label
     const newLabel = document.createElement('label');
     newLabel.setAttribute('for', datalistId + '-input');
     newLabel.className = 'form-label';
+
 
     // Create the new input field
     const newInput = document.createElement('input');
@@ -767,6 +719,7 @@
     newInput.className = 'form-control';
     newInput.placeholder = 'Type or Enter New Trick';
     newInput.name = 'tricks[]';
+
 
     // Create the new datalist
     const newDatalist = document.createElement('datalist');
@@ -780,14 +733,17 @@
     minusButton2.classList.add('btn', 'btn-danger', 'btn-remove');
     minusButton2.textContent = '-';
 
+
     // Append the label, input field, and datalist to the new div
     newDiv.appendChild(newLabel);
     newDiv.appendChild(newInput);
     newDiv.appendChild(newDatalist);
     newDiv.appendChild(minusButton2);
 
+
     // Append the new div to the container
     container.appendChild(newDiv);
+
 
     // Options for custom tricks
     const customTricks = [
@@ -796,6 +752,7 @@
         {% endfor %}
     ];
 
+
     // Options for official tricks
     const officialTricks = [
         {% for move in moves %}
@@ -803,7 +760,9 @@
         {% endfor %}
     ];
 
+
     let trick_setup = [customTricks, officialTricks];
+
 
     trick_setup.forEach(allTricks => {
         allTricks.forEach(move => {
@@ -814,6 +773,7 @@
         });
     });
 
+
         // Event listener to create hidden inputs for selected tricks
     newInput.addEventListener('input', function() {
         const selectedOption = this.list.querySelector(`option[value="${this.value}"]`);
@@ -821,6 +781,7 @@
             this.value = selectedOption.textContent;
         }
     });
+
 
         minusButton2.addEventListener('click', function () {
             newDiv.remove();
@@ -951,59 +912,6 @@
     // **** code to share combo ****
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-        let timer;
-
-        document.querySelectorAll('.portfolio-item').forEach(function(item) {
-            // Mouse events
-            item.addEventListener('mousedown', function(event) {
-                startPressTimer(event);
-            });
-
-            item.addEventListener('mouseup', function(event) {
-                clearPressTimer();
-                handleClick(event);
-            });
-
-            item.addEventListener('mouseleave', function(event) {
-                clearPressTimer();
-            });
-
-            // Touch events
-            item.addEventListener('touchstart', function(event) {
-                startPressTimer(event);
-            });
-
-            item.addEventListener('touchend', function(event) {
-                clearPressTimer();
-                handleClick(event);
-            });
-
-            item.addEventListener('touchcancel', function(event) {
-                clearPressTimer();
-            });
-        });
-
-        function startPressTimer(event) {
-            timer = setTimeout(function() {
-                handleLongPress(event);
-            }, 1000); // 1 second threshold for long press
-        }
-
-        function clearPressTimer() {
-            clearTimeout(timer);
-        }
-
-        function handleClick(event) {
-            console.log('Card clicked', event.currentTarget.id);
-            // Place your click handling logic here
-        }
-
-        function handleLongPress(event) {
-            console.log('Long press detected on', event.currentTarget.id);
-            // Place your long press handling logic here
-        }
-    });
 
 </script>
 
