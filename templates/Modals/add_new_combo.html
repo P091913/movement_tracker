@@ -1,43 +1,39 @@
-<div class="modal fade" id="addComboModal" tabindex="-1" aria-labelledby="addComboModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title card-title" id="addComboModalLabel">Add Combo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div id="offcanvasRight" class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Add Combo</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="combo-form" method="POST">
+            <div class="form-group mb-3">
+                <label class="card-title mb-3" for="combo-title">Combo Title</label>
+                <input type="text" class="form-control" id="combo-title" name="combo-title"
+                       placeholder="Enter combo title" maxlength="35" required>
             </div>
-            <div class="modal-body">
-                <form id="combo-form" method="POST">
-                    <div class="form-group">
-                        <label class="card-title mb-3" for="combo-title">Combo Title</label>
-                        <input type="text" class="form-control" id="combo-title" name="combo-title"
-                               placeholder="Enter combo title" maxlength="35" required>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label class="card-title mb-3" for="combo-description">Combo Description</label>
-                        <textarea class="form-control" id="combo-description" name="combo-description" rows="3"
-                                  placeholder="Enter combo description" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <div id="datalistContainer">
+            <div class="form-group mb-3" style="margin-bottom: 20px;">
+                <label class="card-title mb-3" for="combo-description">Combo Description</label>
+                <textarea class="form-control" id="combo-description" name="combo-description" rows="3"
+                          placeholder="Enter combo description" required></textarea>
+            </div>
+            <div class="mb-3">
+                <div id="datalistContainer">
 
-                        </div>
-                    </div>
-                    <!-- Button for adding more tricks -->
-                    <div class="row">
-                        <div class="col mb-3">
-                            <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="addTrickDropdown()">Add Trick</button>
-                        </div>
-                        <!-- <div class="col">
-                            <div class="form-group mb-3">
-                                <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="addTrickDropdown(true)">Custom Trick</button>
-                            </div>
-                        </div> -->
-                    </div>
-                    <div class="form-group mb-3">
-                        <button type="button" id="AddComboButton" class="btn btn-success btn-lg btn-block" onclick="sendAjaxRequest()">Save Combo</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+            <!-- Button for adding more tricks -->
+            <div class="row">
+                <div class="col mb-3">
+                    <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="addTrickDropdown()">Add Trick</button>
+                </div>
+                <!-- <div class="col">
+                    <div class="form-group mb-3">
+                        <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="addTrickDropdown(true)">Custom Trick</button>
+                    </div>
+                </div> -->
+            </div>
+            <div class="form-group mb-3">
+                <button type="button" id="AddComboButton" class="btn btn-success btn-lg btn-block" onclick="sendAjaxRequest()">Save Combo</button>
+            </div>
+        </form>
     </div>
 </div>

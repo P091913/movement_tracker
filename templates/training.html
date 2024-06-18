@@ -109,8 +109,8 @@
                     id="dropdownMenuButton"
                     aria-haspopup="true"
                     aria-expanded="false"
-                    data-bs-toggle="modal"
-                    data-bs-target="#addComboModal">
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasRight">
                 <i class="fas fa-plus"></i>
             </button>
         </div>
@@ -556,7 +556,7 @@
     newInput.type = 'text';
     newInput.id = datalistId + '-input';
     newInput.setAttribute('list', datalistId);
-    newInput.className = 'form-control';
+    newInput.className = 'form-control me-3';
     newInput.placeholder = 'Type or Enter New Trick';
     newInput.name = 'tricks[]';
 
@@ -612,6 +612,11 @@
         if (selectedOption) {
             this.value = selectedOption.textContent;
         }
+    });
+
+    // Show dropdown when input field receives focus
+    newInput.addEventListener('focus', function() {
+        newInput.setAttribute('list', datalistId);
     });
 
         minusButton.addEventListener('click', function () {
@@ -716,7 +721,7 @@
     newInput.type = 'text';
     newInput.id = datalistId + '-input';
     newInput.setAttribute('list', datalistId);
-    newInput.className = 'form-control';
+    newInput.className = 'form-control me-3';
     newInput.placeholder = 'Type or Enter New Trick';
     newInput.name = 'tricks[]';
 
@@ -780,6 +785,11 @@
         if (selectedOption) {
             this.value = selectedOption.textContent;
         }
+    });
+
+    // Show dropdown when input field receives focus
+    newInput.addEventListener('focus', function() {
+        newInput.setAttribute('list', datalistId);
     });
 
 
