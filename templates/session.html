@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Floor Underground Training Book</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/webdisp.png') }}"/>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ url_for('static', filename='css/bootstrap.css') }}" rel="stylesheet">
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"/>
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu,
+        .dropdown-menu-session {
+            position: absolute;
+            top: 100%;
+            left: -50px; /* Adjust the value to align the dropdown */
+            display: none;
+            z-index: 1000;
+            float: left;
+            min-width: 10rem;
+            padding: .5rem 0;
+            margin: .125rem 0 0;
+            font-size: 1rem;
+            color: #212529;
+            text-align: left;
+            list-style: none;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, .15);
+            border-radius: .25rem;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .175);
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem; /* Adjust padding as needed */
+        }
+
+        .dropdown-menu.show,
+        .dropdown-menu-session.show {
+            display: block;
+            right: 0;
+            left: auto;
+        }
+
+        .navbar-toggler-sub-menu {
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .date-container {
+    margin-bottom: 20px;
+}
+
+        .portfolio-item {
+        cursor: pointer;
+    }
+
+
+
+/* Style the expanded section */
+#about .accordion-body {
+    background-color: #2e2d2d;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
+    </style>
+</head>
+<body id="page-top">
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand fs-5 fs-md-4 fs-lg-3 fs-xl-2" href="#page-top">Floor Underground - Session</a>
+        <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="{{ url_for('training') }}">Training
+                    Book</a></li> <!-- Adjusted py-2 -->
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="{{ url_for('community') }}">Community</a></li> <!-- Adjusted py-2 -->
+                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded"
+                                                     href="{{ url_for('logout') }}">Logout</a>
+                </li> <!-- Adjusted py-2 -->
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- About Section-->
+<section class="page-section mb-0" id="about">
+    <div class="container">
+
+        {% include 'Modals/session_prog.html' %}
+        {% include 'Modals/add_combo_to_progress.html' %}
+
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="text-muted mb-0">History</h1>
+            </div>
+            <div class="col-auto">
+                <div aria-label="Session Options">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#comboProgressModal">Add Combo Progress</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#progressModal">Add Trick Progress</button>
+                </div>
+            </div>
+        </div>
+
+    <hr>
+
+
+
+        <!-- Off-Canvas -->
+<div class="offcanvas offcanvas-bottom offcanvas-bottom-fullscreen" tabindex="-1" id="offcanvasInfo" aria-labelledby="offcanvasInfoLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasInfoLabel">Session Details</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <!-- This content will be dynamically loaded -->
+        <div id="offcanvasContent"></div>
+    </div>
+</div>
+
+
+        <div class="container overflow-auto mt-4">
+            <div class="row justify-content-center">
+                <!-- Portfolio Items -->
+                {% for date in combined_dates %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3">
+    <div class="portfolio-item mx-auto shadow p-3 bg-white rounded" onclick="loadContent('{{ date }}')" style="padding: 15px;">
+        <div class="portfolio-item-caption d-flex flex-column justify-content-between h-100 w-100">
+            <div class="text-center">
+                <h4>{{ date | custom_date_format }}</h4>
+            </div>
+            <div class="text-right text-muted">
+                <h6>{{ date | days_ago }}</h6>
+            </div>
+        </div>
+    </div>
+</div>
+
+                <div id="{{ date }}" style="display: none;">
+                    <!-- Example Skill Section -->
+                    <div class="card-accord">
+                        <div class="card-header-accord" id="headingBackflip">
+                        </div>
+                        <div class="card-body-accord">
+                            <!-- Trick Sessions Heading -->
+                            <h6>Session Skills</h6>
+                            <!-- Trick Sessions Accordion -->
+                            <div class="accordion" id="trickAccordion{{ date }}">
+                                {% if date in sessions_by_date and sessions_by_date[date] %}
+                                    {% for sess_det in sessions_by_date[date] %}
+                                        <div class="accordion-item">
+                                            <div class="d-flex justify-content-between align-items-center w-100">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{ sess_det.trick_name|slugify }}{{ date }}"
+                                aria-expanded="false"
+                                aria-controls="collapse{{ sess_det.trick_name|slugify }}{{ date }}">
+                            {{ sess_det.trick_name }}
+                        </button>
+                        <!-- Delete Button -->
+                        <button class="btn btn-danger btn-md ms-2" style="margin-right: 10px"
+                                onclick="deleteTricksInSession('{{ sess_det.id }}', '{{ date }}', 1)">
+                            -
+                        </button>
+                    </div>
+
+                                            <div id="collapse{{ sess_det.trick_name|slugify }}{{ date }}"
+                                                 class="accordion-collapse collapse"
+                                                 aria-labelledby="heading{{ sess_det.trick_name|slugify }}"
+                                                 data-bs-parent="#trickAccordion{{ date }}">
+                                                <div class="accordion-body"
+                                                     style="background-color: #2e2d2d; color: white;">
+                                                    <div class="row mb-2">
+                            <label for="attempts{{ sess_det.id }}" class="col-4 col-form-label">Attempts:</label>
+                            <div class="col-8">
+                                <input type="number" id="attempts{{ sess_det.id }}" class="form-control form-control-sm w-50" value="{{ sess_det.attempts }}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="successes{{ sess_det.id }}" class="col-4 col-form-label">Successes:</label>
+                            <div class="col-8">
+                                <input type="number" id="successes{{ sess_det.id }}" class="form-control form-control-sm w-50" value="{{ sess_det.successful_landings }}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="notes{{ sess_det.id }}" class="col-12 col-form-label">Notes:</label>
+                            <div class="col-12">
+                                <textarea id="notes{{ sess_det.id }}" class="form-control form-control-sm" rows="3">{{ sess_det.notes }}</textarea>
+                            </div>
+                        </div>
+
+                                                    <button class="btn btn-success btn-md ms-2" style="margin-right: 10px"
+                                onclick="updateTricksInSession('{{ sess_det.id }}', '{{ date }}', 1, document.getElementById('attempts{{ sess_det.id }}').value, document.getElementById('successes{{ sess_det.id }}').value, document.getElementById('notes{{ sess_det.id }}').value)">
+                            Save Changes
+                        </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
+                            <br><br>
+
+                            <!-- Combo Sessions Heading -->
+                            {% if date in combos_by_date %}
+                            <h6>Session Combos</h6>
+                            <!-- Combo Sessions Accordion -->
+                            <div class="accordion" id="comboAccordion{{ date }}">
+                                {% if date in combos_by_date and combos_by_date[date] %}
+                                    {% for combo in combos_by_date[date] %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading{{ combo.combo_name|slugify }}">
+                                                <div class="d-flex justify-content-between align-items-center w-100">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapse{{ combo.combo_name|slugify }}{{ date }}"
+                                aria-expanded="false"
+                                aria-controls="collapse{{ combo.combo_name|slugify }}{{ date }}">
+                            {{ combo.combo_name }}
+                        </button>
+                        <!-- Update Button -->
+
+                        <!-- Delete Button -->
+                        <button class="btn btn-danger btn-md ms-2" style="margin-right: 10px"
+                                onclick="deleteTricksInSession('{{ combo.id }}', '{{ date }}', 2)">
+                            -
+                        </button>
+                    </div>
+
+                                            </h2>
+                                            <div id="collapse{{ combo.combo_name|slugify }}{{ date }}"
+                                                 class="accordion-collapse collapse"
+                                                 aria-labelledby="heading{{ combo.combo_name|slugify }}"
+                                                 data-bs-parent="#comboAccordion{{ date }}">
+                                                <div class="accordion-body"
+                                                     style="background-color: #2e2d2d; color: white;">
+
+                                                    <div class="row mb-2">
+                            <label for="attempts{{ combo.id }}" class="col-4 col-form-label">Attempts:</label>
+                            <div class="col-8">
+                                <input type="number" id="attempts{{ combo.id }}" class="form-control form-control-sm w-50" value="{{ combo.attempts }}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="successes{{ combo.id }}" class="col-4 col-form-label">Successes:</label>
+                            <div class="col-8">
+                                <input type="number" id="successes{{ combo.id }}" class="form-control form-control-sm w-50" value="{{ combo.successes }}">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="notes{{ combo.id }}" class="col-12 col-form-label">Notes:</label>
+                            <div class="col-12">
+                                <textarea id="notes{{ combo.id }}" class="form-control form-control-sm" rows="3">{{ combo.notes }}</textarea>
+                            </div>
+                        </div>
+                                                    <button class="btn btn-success btn-md ms-2" style="margin-right: 10px"
+                                onclick="updateTricksInSession('{{ combo.id }}', '{{ date }}', 2, document.getElementById('attempts{{ combo.id }}').value, document.getElementById('successes{{ combo.id }}').value, document.getElementById('notes{{ combo.id }}').value)">
+                            Save Changes
+                        </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+                    </div>
+        </div>
+    </div>
+</section>
+<!-- Contact Section-->
+
+<!-- Footer-->
+
+<!-- Copyright Section
+<div class="copyright py-4 text-center text-white">
+    <div class="container"><small>Copyright &copy; Floor Underground 2024</small></div>
+</div> -->
+
+
+<!-- Bootstrap core JS-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core theme JS-->
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<!-- Bootstrap core JS -->
+
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<!-- * *                               SB Forms JS                               * *-->
+<!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+<script>
+
+    // Set the max attribute to today's date
+    const dateInput = document.getElementById('date');
+    const comboDateInput = document.getElementById('combo-date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('max', today);
+    comboDateInput.setAttribute('max', today);
+
+
+function loadContent(date) {
+    // Get the content for the selected date
+    var content = document.getElementById(date).innerHTML;
+
+    // Set the content inside the off-canvas body
+    document.getElementById('offcanvasContent').innerHTML = content;
+
+    // Show the off-canvas component
+    var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasInfo'));
+    offcanvas.show();
+}
+
+    function hideOffcanvas(comboIdentify) {
+    const offcanvasElement = document.getElementById('comboOffcanvas' + comboIdentify); // Change 'comboOffcanvas1' to your actual off-canvas ID
+    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+    offcanvasInstance.hide();
+  }
+
+  function showOffcanvas(comboIdentify) {
+    const offcanvasElement = document.getElementById('comboOffcanvas' + comboIdentify); // Change 'comboOffcanvas1' to your actual off-canvas ID
+    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+    offcanvasInstance.show();
+  }
+
+
+
+
+
+
+
+
+    //****** Begin code for date dropdown related stuff and session progress tracking
+    // Function to toggle dropdown
+    function toggleDropdown(date) {
+        const element = document.getElementById(date);
+        if (element.style.display === 'none' || element.style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+
+    const handleComboProgressFormSubmit = function (event) {
+        event.preventDefault(); // Prevent default form submission behavior
+        const comboProgressForm = document.getElementById('combo-progress-form');
+        const formData = new FormData(comboProgressForm);
+        const jsonData = {};
+        for (const [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+
+        fetch('/add_combo_progress', {
+            method: 'POST',
+            body: JSON.stringify(jsonData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+            .then(data => {
+                // Hide the modal using Bootstrap 5 method
+                const comboProgressModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('comboProgressModal'));
+                comboProgressModal.hide();
+
+                // Optionally reload the page
+                location.reload(); // Hard refresh the page
+            })
+            .catch(error => console.error('Error:', error)); // Handle errors if needed
+    };
+
+
+    // Add event listener to combo progress form
+    const comboProgressForm = document.getElementById('combo-progress-form');
+    comboProgressForm.addEventListener('submit', handleComboProgressFormSubmit);
+
+    //***** ENd code seciton related to session progress tracking
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //***** single trick related code for adding trick progress to dates
+    // Function to handle progress form submission`
+    document.addEventListener('DOMContentLoaded', function () {
+        const handleProgressFormSubmit = function (event) {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const progressForm = document.getElementById('progress-form');
+            const formData = new FormData(progressForm);
+            const jsonData = {};
+
+            for (const [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+
+            // Get the selected trick_id from the dropdown menu
+            const trickSelect = document.getElementById('trick');
+            const selectedOption = trickSelect.options[trickSelect.selectedIndex];
+            const moveId = selectedOption.getAttribute('data-move-id');
+
+            jsonData['trick_id'] = moveId;
+
+            fetch('/add_progress_entry', {
+                method: 'POST',
+                body: JSON.stringify(jsonData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.ok ? response.json() : Promise.reject('Network response was not ok'))
+                .then(data => {
+                    console.log(data); // Handle response data if needed
+
+                    // Hide the modal using Bootstrap 5 method
+                    const progressModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('progressModal'));
+                    progressModal.hide();
+
+                    // Optionally reload the page
+                    location.reload(); // Hard refresh the page
+                })
+                .catch(error => console.error('Error:', error)); // Handle errors if needed
+        };
+
+        // Add event listener to progress form
+        const progressForm = document.getElementById('progress-form');
+        progressForm.addEventListener('submit', handleProgressFormSubmit);
+    });
+    //*********
+
+
+    //***** dropdown to delete session details from dates
+    function deleteTricksInSession(trick_id, date, trickComboDet) {
+        if (confirm("Are you sure you want to remove this session info?")) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/delete_sess_detail", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    location.reload();
+                }
+            };
+            xhr.send("trick_id=" + encodeURIComponent(trick_id) + "&session_date=" + encodeURIComponent(date) + "&trickComboDet=" + encodeURIComponent(trickComboDet));
+
+        }
+    }
+
+    // **** update session details
+    function updateTricksInSession(trick_id, date, trickComboDet, attempts, success, notes) {
+        if (confirm("Are you sure you want to update this info?")) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/update_sess_detail", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    location.reload();
+                }
+            };
+            xhr.send("trick_id=" + encodeURIComponent(trick_id) +
+                     "&session_date=" + encodeURIComponent(date) +
+                     "&trickComboDet=" + encodeURIComponent(trickComboDet) +
+                     "&attempts=" + encodeURIComponent(attempts) +
+                     "&success=" + encodeURIComponent(success) +
+                     "&notes=" + encodeURIComponent(notes));
+
+        }
+    }
+
+
+
+</script>
+
+</body>
+</html>

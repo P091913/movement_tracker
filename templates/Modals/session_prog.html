@@ -1,6 +1,6 @@
 <!-- Modal for Adding New Entry -->
 <div class="modal fade" id="progressModal" tabindex="-1" aria-labelledby="progressModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-fullscreen" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title card-title text-dark" id="progressModalLabel">Add Trick Progress</h5>
@@ -10,7 +10,7 @@
                 <form id="progress-form">
                     <div class="mb-3">
                         <label class="card-title text-dark" for="date">Date</label>
-                        <input type="date" class="form-control" id="date" name="date" required>
+                        <input type="date" class="form-control" id="date" name="date" required max="">
                     </div>
                     <div class="mb-3" id="trick-dropdowns">
                         <label class="card-title text-dark" for="trick">Trick</label>
@@ -35,7 +35,7 @@
                         <label class="card-title text-dark" for="notes">Notes</label>
                         <input type="text" class="form-control" id="notes" name="notes" placeholder="Notes">
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Entry</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Add Entry</button>
                 </form>
             </div>
         </div>
