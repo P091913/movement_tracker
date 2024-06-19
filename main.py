@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, url_for, redirect, flash, jso
 from flask_login import *
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime, timedelta
 
 from models import *
 from val_creat import *
@@ -24,8 +25,29 @@ def slugify(value):
     return value.lower().replace(' ', '-')
 
 
+def custom_date_format(date_obj):
+    months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ]
+    return f"{months[date_obj.month - 1]}, {date_obj.day}"
+
+
+def days_ago(session_date):
+    today = datetime.now().date()
+    delta = today - session_date
+    if delta.days == 0:
+        return 'Today'
+    elif delta.days == 1:
+        return '1 day ago'
+    else:
+        return f'{delta.days} days ago'
+
+
 # Register the slugify function as a custom Jinja2 filter
 app.jinja_env.filters['slugify'] = slugify
+app.jinja_env.filters['custom_date_format'] = custom_date_format
+app.jinja_env.filters['days_ago'] = days_ago
 
 
 @login_manager.user_loader
@@ -89,6 +111,56 @@ def training():
                            )
 
 
+@app.route('/session')
+@login_required
+def session():
+    session_token = request.cookies.get('session_token')
+    if session_token:
+        user = User.query.filter_by(session_token=session_token).first()
+        if user:
+            login_user(user)
+    else:
+        return redirect(url_for('login'))
+
+    user = current_user
+    session_details = user.user_session_details
+    combos = user.combos
+    moves = Moves.query.all()
+    user_moves = db.session.query(Moves.move_id, Moves.move_name, UserMoves.status). \
+        join(Moves, UserMoves.move_id == Moves.move_id). \
+        filter(UserMoves.user_id == current_user.id).all()
+
+    # Fetch all previous session details for the current user, ordered by date
+    previous_sessions = db.session.query(SessionDetails). \
+        filter_by(user_id=current_user.id). \
+        order_by(SessionDetails.date.desc()).all()
+
+    # Group sessions by date
+    from collections import defaultdict
+    sessions_by_date = defaultdict(list)
+    for session in previous_sessions:
+        sessions_by_date[session.date.date()].append(session)
+
+    combos_by_date = defaultdict(list)
+    for combo in combos:
+        for combo_progress in combo.combo_progress_details:
+            # Query the Combo table to get the combo name based on the combo_id
+            combo_name = db.session.query(Combo.title).filter(Combo.id == combo_progress.combo_id).scalar()
+            # Add the combo name to the ComboProgress object
+            combo_progress.combo_name = combo_name
+            # Append the ComboProgress object to the list corresponding to the date
+            combos_by_date[combo_progress.date.date()].append(combo_progress)
+
+    combined_dates = set(sessions_by_date.keys()).union(set(combos_by_date.keys()))
+
+    custom_moves = CustomTrick.query.filter(CustomTrick.user_id == current_user.id).all()
+
+    return render_template("session.html", moves=moves, user_moves=user_moves,
+                           sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
+                           custom_moves=custom_moves, combined_dates=combined_dates
+                           )
+
+
 @app.route('/community', methods=['POST', 'GET'])
 @login_required
 def community():
@@ -145,11 +217,8 @@ def community():
 def delete_sess_detail():
     trick_id = request.form['trick_id']
     session_date = request.form['session_date']
-    print("Dfsdf")
     trickComboDet = request.form['trickComboDet']
-    print("Dfsdf")
     session_date = datetime.strptime(session_date, '%Y-%m-%d')
-    print(trickComboDet)
     if trickComboDet == '1':
         session_detail = SessionDetails.query.filter_by(id=trick_id, date=session_date).first()
 
@@ -158,9 +227,7 @@ def delete_sess_detail():
             db.session.commit()
             return jsonify({'status': 'success'})
     elif trickComboDet == '2':
-        print("inside")
         combo_detail = ComboProgress.query.filter_by(id=trick_id, date=session_date).first()
-        print(combo_detail)
         if combo_detail:
             db.session.delete(combo_detail)
             db.session.commit()
@@ -168,6 +235,45 @@ def delete_sess_detail():
     else:
         return jsonify({'status': 'failure', 'message': 'Session detail not found'}), 404
 
+
+
+@app.route('/update_sess_detail', methods=['POST'])
+def update_sess_detail():
+    trick_id = request.form['trick_id']
+    session_date = request.form['session_date']
+    trickComboDet = request.form['trickComboDet']
+
+    attempts = request.form['attempts']
+    success = request.form['success']
+    notes = request.form['notes']
+
+    session_date = datetime.strptime(session_date, '%Y-%m-%d')
+    if trickComboDet == '1':
+        session_detail = SessionDetails.query.filter_by(id=trick_id, date=session_date).first()
+
+        if session_detail:
+            if attempts:
+                session_detail.attempts = attempts
+            if success:
+                session_detail.successful_landings = success
+            if notes:
+                session_detail.notes = notes
+            db.session.commit()
+            return jsonify({'status': 'success'})
+    elif trickComboDet == '2':
+        combo_detail = ComboProgress.query.filter_by(id=trick_id, date=session_date).first()
+
+        if combo_detail:
+            if attempts:
+                combo_detail.attempts = attempts
+            if success:
+                combo_detail.successful_landings = success
+            if notes:
+                combo_detail.notes = notes
+            db.session.commit()
+            return jsonify({'status': 'success'})
+    else:
+        return jsonify({'status': 'failure', 'message': 'Session detail not found'}), 404
 
 
 @app.route('/get_combo_details')
