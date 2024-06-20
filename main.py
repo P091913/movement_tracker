@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, url_for, redirect, flash, jso
 from flask_login import *
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from models import *
 from val_creat import *
@@ -33,21 +33,35 @@ def custom_date_format(date_obj):
     return f"{months[date_obj.month - 1]}, {date_obj.day}"
 
 
-def days_ago(session_date):
+def session_date_display(session_date):
     today = datetime.now().date()
-    delta = today - session_date
-    if delta.days == 0:
+    delta = (session_date - today).days
+
+    if delta == 0:
         return 'Today'
-    elif delta.days == 1:
-        return '1 day ago'
+    elif delta == 1:
+        return 'Tomorrow'
+    elif delta > 1:
+        return f'Session in {delta} days'
     else:
-        return f'{delta.days} days ago'
+        return f'{abs(delta)} days ago'
+
+
+def current_date():
+    return datetime.now().date()
+
+
+
 
 
 # Register the slugify function as a custom Jinja2 filter
 app.jinja_env.filters['slugify'] = slugify
 app.jinja_env.filters['custom_date_format'] = custom_date_format
-app.jinja_env.filters['days_ago'] = days_ago
+app.jinja_env.filters['session_date_display'] = session_date_display
+
+@app.context_processor
+def inject_now():
+    return {'current_date': current_date}
 
 
 @login_manager.user_loader
@@ -135,6 +149,8 @@ def session():
         filter_by(user_id=current_user.id). \
         order_by(SessionDetails.date.desc()).all()
 
+
+
     # Group sessions by date
     from collections import defaultdict
     sessions_by_date = defaultdict(list)
@@ -155,10 +171,10 @@ def session():
 
     custom_moves = CustomTrick.query.filter(CustomTrick.user_id == current_user.id).all()
 
+
     return render_template("session.html", moves=moves, user_moves=user_moves,
                            sessions_by_date=sessions_by_date, combos_by_date=combos_by_date,
-                           custom_moves=custom_moves, combined_dates=combined_dates
-                           )
+                           custom_moves=custom_moves, combined_dates=combined_dates)
 
 
 @app.route('/community', methods=['POST', 'GET'])
