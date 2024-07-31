@@ -493,66 +493,68 @@
 
 
     function sendAjaxRequest(event) {
-        event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault(); // Prevent default form submission behavior
 
-        const comboForm = document.getElementById('combo-form');
-        const formData = new FormData(comboForm);
-        const jsonData = {};
+    const comboForm = document.getElementById('combo-form');
+    const formData = new FormData(comboForm);
+    const jsonData = {};
 
-        // Collect form data
-        formData.forEach((value, key) => {
-            if (!jsonData[key]) {
-                jsonData[key] = value;
-            } else {
-                if (!Array.isArray(jsonData[key])) {
-                    jsonData[key] = [jsonData[key]];
-                }
-                jsonData[key].push(value);
+    // Collect form data
+    formData.forEach((value, key) => {
+        if (!jsonData[key]) {
+            jsonData[key] = value;
+        } else {
+            if (!Array.isArray(jsonData[key])) {
+                jsonData[key] = [jsonData[key]];
             }
-        });
-
-        // Collect tricks data
-        const selectedTricks = [];
-        document.querySelectorAll('input[name="tricks[]"]').forEach(input => {
-            if (input.value.trim() !== '') {
-                selectedTricks.push(input.value);
-            }
-        });
-
-        jsonData['tricks[]'] = selectedTricks;
-
-        fetch('/custom_add_combo', {
-            method: 'POST',
-            body: JSON.stringify(jsonData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Ajax request successful');
-            console.log('Response:', data);
-            window.alert(data.status)
-            if (data.status === 'success') {
-            // Close the modal after successful response
-                window.alert("IN")
-                const comboProgressModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addComboModal'));
-                comboProgressModal.hide();
-
-                location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Ajax request error:', error);
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('AddComboButton').addEventListener('click', function(event) {
-            sendAjaxRequest(event);
-        });
-        console.log("Document ready");
+            jsonData[key].push(value);
+        }
     });
+
+    // Collect tricks data
+    const selectedTricks = [];
+    document.querySelectorAll('input[name="tricks[]"]').forEach(input => {
+        if (input.value.trim() !== '') {
+            selectedTricks.push(input.value);
+        }
+    });
+
+    jsonData['tricks'] = selectedTricks;
+
+    console.log('Form Data:', jsonData); // Debug log to check collected data
+
+    fetch('/custom_add_combo', {
+        method: 'POST',
+        body: JSON.stringify(jsonData),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Ajax request successful');
+        console.log('Response:', data);
+        window.alert(data.status);
+        if (data.status === 'success') {
+            // Close the modal after successful response
+            const comboProgressModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('addComboModal'));
+            comboProgressModal.hide();
+
+            location.reload();
+        }
+    })
+    .catch(error => {
+        console.error('Ajax request error:', error);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('AddComboButton').addEventListener('click', function(event) {
+        sendAjaxRequest(event);
+    });
+    console.log("Document ready");
+});
+
 
 
 

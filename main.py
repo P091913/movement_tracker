@@ -657,6 +657,9 @@ def custom_add_combo():
         combo_title = data.get('combo-title')
         combo_description = data.get('combo-description')
         selected_tricks = data.get('tricks[]')
+        # Ensure selected_tricks is always a list
+        if not isinstance(selected_tricks, list):
+            selected_tricks = [selected_tricks] if selected_tricks else []
     except Exception as e:
         print(f'Error: {e}')
         return jsonify({'status': 'error', 'message': str(e)}), 400
@@ -671,21 +674,23 @@ def custom_add_combo():
     print(selected_tricks)
 
     for position, trick in enumerate(selected_tricks, start=1):
+        # Strip any leading/trailing whitespace
+        trick_name = trick.strip()
 
         # Check if the trick exists in the Moves database
-        move = Moves.query.filter_by(move_name=trick).first()
+        move = Moves.query.filter_by(move_name=trick_name).first()
         if move:
             trick_type = 'official'
             trick_id = int(move.move_id)
         else:
-             # Check if the trick exists in the CustomTrick database for the user
-            custom_trick = CustomTrick.query.filter_by(trick_name=trick, user_id=current_user.id).first()
+            # Check if the trick exists in the CustomTrick database for the user
+            custom_trick = CustomTrick.query.filter_by(trick_name=trick_name, user_id=current_user.id).first()
             if custom_trick:
                 trick_type = 'custom'
                 trick_id = int(custom_trick.id)
             else:
-                move_name = trick.strip()
-                trick_id = add_custom_trick(move_name)
+                # Add a new custom trick
+                trick_id = add_custom_trick(trick_name)
                 if trick_id == "Trick Cannot be spaces":
                     print(trick_id)
                     return "Success"
